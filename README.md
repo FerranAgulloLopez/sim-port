@@ -1,9 +1,11 @@
 # sim-port
 
-## Per executar:
+## Para ejecutar:
 
-`py Scheduler.py` o `python3 Scheduler.py`.
+`py Core.py [-s sources] [-p processors] [-r resources]` o `python3 Core.py [-s sources] [-p processors] [-r resources]`.
+
+Note: resources to be implemented.
 
 ## TO DO:
 
-Mover funcion "execute" de core (Scheduler) a componentes (Source, Server, ...)
+Confirmar/dudas diseño.
