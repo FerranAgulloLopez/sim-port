@@ -1,5 +1,7 @@
 ﻿Clase constantes / utiles
 Adaptar con referencias inputList / outputList...
+Implementar Queue
+[Capa de presentacion]
 
 Eliminar arribades amb diferencia 0. (DONE)
 
