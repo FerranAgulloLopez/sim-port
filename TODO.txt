@@ -2,6 +2,10 @@
 Adaptar con referencias inputList / outputList...
 Implementar Queue
 [Capa de presentacion]
+    - Django -> API
+Unit tests
+
+
 
 Eliminar arribades amb diferencia 0. (DONE)
 
