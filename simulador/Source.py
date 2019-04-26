@@ -1,5 +1,6 @@
 import numpy
 
+# from Core import Core
 from Event import Event
 
 
@@ -9,11 +10,19 @@ class Source:
 
     core = None
 
+    outputList = []
+
     # CLASS FUNCTIONS
 
     def __init__(self, core):
         self.core = core
         numpy.random.seed(0)
+    
+    def addOutput(self, outputElement):
+        self.outputList.append(outputElement)
+    
+    def removeOutput(self, outputIndex):
+        self.outputList.pop(outputIndex)
 
     def scheduleNextArrival(self):
         prob = 0.02450346
@@ -27,18 +36,17 @@ class Source:
         return arrivalEvent
 
     def startSimulation(self):
-        """Implemented by all components"""
+        """Implemented by all modules"""
         arrivalEvent = self.scheduleNextArrival()
         self.core.addEvent(arrivalEvent)
 
+    def endSimulation(self):
+        """Implemented by all modules"""
+        pass
+
     def executeEvent(self, currentEvent):
-        """Implemented by all components"""
         if currentEvent.eventName == self.core.NEXT_ARRIVAL:
             self.nextArrival()
-
-    def endSimulation(self):
-        """Implemented by all components"""
-        pass
 
     def nextArrival(self):
         self.core.entitiesSystem += 1

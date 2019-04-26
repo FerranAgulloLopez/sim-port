@@ -5,7 +5,9 @@ from queue import PriorityQueue
 
 from Event import Event
 from Processor import Processor
+# from Queue import Queue
 from Source import Source
+# from Sink import Sink
 
 
 class Core:
@@ -28,9 +30,10 @@ class Core:
 
     # CLASS ATTRIBUTES
 
-    sources = []
     processors = []
-    resources = []
+    queues = []
+    sources = []
+    sinks = []
 
     eventsList = PriorityQueue(0)  # maxsize = 0 (infinite)
     previousTime = SIMULATION_INITIAL_TIME
@@ -43,16 +46,14 @@ class Core:
 
     # CLASS FUNCTIONS
 
-    def __init__(self, sources, processors, resources):
+    def __init__(self, processors, sources):
         for _ in range(0, sources):
             self.sources.append(Source(self))
         for _ in range(0, processors):
             self.processors.append(Processor(self))
-        for _ in range(0, resources):
-            pass
 
     def startSimulation(self):
-        """Implemented by all components"""
+        """Implemented by all modules"""
         startEvent = Event(
             self,
             self.START_SIMULATION,
@@ -65,13 +66,8 @@ class Core:
         for processor in self.processors:
             processor.startSimulation()
 
-    def executeEvent(self, currentEvent):
-        """Implemented by all components"""
-        if currentEvent.eventName == self.START_SIMULATION:
-            self.startSimulation()
-
     def endSimulation(self):
-        """Implemented by all components"""
+        """Implemented by all modules"""
         endEvent = Event(
             self,
             self.END_SIMULATION,
@@ -79,6 +75,10 @@ class Core:
             self.currentTime
         )
         self.logEvent(endEvent)
+
+    def executeEvent(self, currentEvent):
+        if currentEvent.eventName == self.START_SIMULATION:
+            self.startSimulation()
 
     def run(self):
         self.logHeaders()
@@ -128,9 +128,16 @@ class Core:
         print('Max_Queue_Length', self.maxQueueLength)
 
 
+def usage():
+    print('Core.py [options]')
+    print('Model: source(s) -> queue -> processor(s) -> sink')
+    print('Options:')
+    print('-h, --help\t\tShows the program usage help.')
+    print('-p, --processors=...\tSets the number of processors.')
+    print('-s, --sources=...\tSets the number of sources.')
+
+
 # MAIN FUNCTION
-
-
 if __name__ == "__main__":
 
     # Default arguments
@@ -140,23 +147,20 @@ if __name__ == "__main__":
 
     # Get arguments
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 's:p:r', [
-                                   '--sources=', '--processors=', '--resources='])
+        opts, args = getopt.getopt(sys.argv[1:], 'hp:s:', [
+                                   'help', 'processors=', 'sources='])
         for opt, arg in opts:
-            if opt in ('-s', '--sources'):
-                sources = int(arg)
+            if opt in ('-h, --help'):
+                usage()
+                sys.exit()
             if opt in ('-p', '--processors'):
                 processors = int(arg)
-            if opt in ('-r', '--resources'):
-                resources = int(arg)
+            if opt in ('-s', '--sources'):
+                sources = int(arg)
     except getopt.GetoptError:
         usage()
-        sys.exit(2)
-    
+        sys.exit()
+
     # Start core
-    core = Core(sources, processors, resources)
+    core = Core(processors, sources)
     core.run()
-
-
-def usage():
-    print('Core [-s sources] [-p processors] [-r resources]')

@@ -1,5 +1,6 @@
 import numpy
 
+# from Core import Core
 from Event import Event
 
 
@@ -9,6 +10,8 @@ class Processor:
 
     core = None
     
+    inputList = []
+    outputList = []
     idle = True
 
     # CLASS FUNCTIONS
@@ -16,19 +19,30 @@ class Processor:
     def __init__(self, core):
         self.core = core
         numpy.random.seed(0)
+    
+    def addInput(self, inputElement):
+        self.inputList.append(inputElement)
+    
+    def addOutput(self, outputElement):
+        self.outputList.append(outputElement)
+    
+    def removeInput(self, inputIndex):
+        self.inputList.pop(inputIndex)
+    
+    def removeOutput(self, outputIndex):
+        self.outputList.pop(outputIndex)
 
     def startSimulation(self):
-        """Implemented by all components"""
-        pass
-
-    def executeEvent(self, currentEvent):
-        """Implemented by all components"""
-        if currentEvent.eventName == self.core.END_SERVICE:
-            self.endService()
+        """Implemented by all modules"""
         pass
 
     def endSimulation(self):
-        """Implemented by all components"""
+        """Implemented by all modules"""
+        pass
+
+    def executeEvent(self, currentEvent):
+        if currentEvent.eventName == self.core.END_SERVICE:
+            self.endService()
         pass
 
     def scheduleEndService(self):

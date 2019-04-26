@@ -1,4 +1,7 @@
-﻿Eliminar arribades amb diferencia 0. (DONE)
+﻿Clase constantes / utiles
+Adaptar con referencias inputList / outputList...
+
+Eliminar arribades amb diferencia 0. (DONE)
 
 Analitzar dies i escollir un "normal"
 
