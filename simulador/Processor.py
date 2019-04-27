@@ -1,6 +1,4 @@
-import numpy
-
-# from Core import Core
+from Constants import Constants
 from Event import Event
 
 
@@ -9,28 +7,24 @@ class Processor:
     # CLASS ATTRIBUTES
 
     core = None
-    
-    inputList = []
-    outputList = []
+    random = None
+    inputModule = None
     idle = True
 
     # CLASS FUNCTIONS
 
-    def __init__(self, core):
+    def __init__(self, core, random):
         self.core = core
-        numpy.random.seed(0)
+        self.random = random
     
-    def addInput(self, inputElement):
-        self.inputList.append(inputElement)
-    
-    def addOutput(self, outputElement):
-        self.outputList.append(outputElement)
+    def addInput(self, inputModule):
+        self.inputModule = inputModule
     
     def removeInput(self, inputIndex):
-        self.inputList.pop(inputIndex)
-    
-    def removeOutput(self, outputIndex):
-        self.outputList.pop(outputIndex)
+        self.inputModule = None
+
+    def isIdle(self):
+        return self.idle
 
     def startSimulation(self):
         """Implemented by all modules"""
@@ -41,26 +35,30 @@ class Processor:
         pass
 
     def executeEvent(self, currentEvent):
-        if currentEvent.eventName == self.core.END_SERVICE:
+        """Implemented by all event creator modules"""
+        if currentEvent.eventName == Constants.END_SERVICE:
             self.endService()
         pass
+    
+    def nextArrival(self):
+        endServiceEvent = self.scheduleEndService()
+        self.core.addEvent(endServiceEvent)
 
     def scheduleEndService(self):
         self.idle = False
-        prob = 0.03660948
-        serviceIncrement = numpy.random.geometric(prob)
+        serviceIncrement = self.random.processorIncrement()
         endServiceEvent = Event(
             self,
-            self.core.END_SERVICE,
+            Constants.END_SERVICE,
             self.core.currentTime,
             self.core.currentTime + serviceIncrement
         )
         return endServiceEvent
 
     def endService(self):
-        self.core.entitiesSystem -= 1
-        if self.core.queueLength > 0:
-            self.core.queueLength -= 1
+        self.core.decreaseEntitiesSystem()
+        if self.inputModule.getQueueLength() > 0:
+            self.inputModule.decreaseQueueLength()
             endServiceEvent = self.scheduleEndService()
             self.core.addEvent(endServiceEvent)
         else:

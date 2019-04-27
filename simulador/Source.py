@@ -1,6 +1,4 @@
-import numpy
-
-# from Core import Core
+from Constants import Constants
 from Event import Event
 
 
@@ -9,27 +7,26 @@ class Source:
     # CLASS ATTRIBUTES
 
     core = None
-
-    outputList = []
+    random = None
+    outputModule = None
 
     # CLASS FUNCTIONS
 
-    def __init__(self, core):
+    def __init__(self, core, random):
         self.core = core
-        numpy.random.seed(0)
+        self.random = random
     
-    def addOutput(self, outputElement):
-        self.outputList.append(outputElement)
+    def addOutput(self, outputModule):
+        self.outputModule = outputModule
     
-    def removeOutput(self, outputIndex):
-        self.outputList.pop(outputIndex)
+    def removeOutput(self):
+        self.outputModule = None
 
     def scheduleNextArrival(self):
-        prob = 0.02450346
-        arrivalIncrement = numpy.random.geometric(prob)
+        arrivalIncrement = self.random.sourceIncrement()
         arrivalEvent = Event(
             self,
-            self.core.NEXT_ARRIVAL,
+            Constants.NEXT_ARRIVAL,
             self.core.currentTime,
             self.core.currentTime + arrivalIncrement
         )
@@ -45,22 +42,13 @@ class Source:
         pass
 
     def executeEvent(self, currentEvent):
-        if currentEvent.eventName == self.core.NEXT_ARRIVAL:
+        """Implemented by all event creator modules"""
+        if currentEvent.eventName == Constants.NEXT_ARRIVAL:
             self.nextArrival()
 
     def nextArrival(self):
-        self.core.entitiesSystem += 1
-        processed = False
-        for processor in self.core.processors:
-            if processor.idle:
-                processed = True
-                endServiceEvent = processor.scheduleEndService()
-                self.core.addEvent(endServiceEvent)
-                break
-        if not processed:
-            self.core.queueLength += 1
-            if self.core.queueLength > self.core.maxQueueLength:
-                self.core.maxQueueLength = self.core.queueLength
-        if self.core.currentTime < self.core.SIMULATION_DURATION:
+        self.core.increaseEntitiesSystem()
+        self.outputModule.nextArrival()
+        if self.core.currentTime < Constants.SIMULATION_DURATION:
             arrivalEvent = self.scheduleNextArrival()
             self.core.addEvent(arrivalEvent)

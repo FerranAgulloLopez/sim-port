@@ -3,60 +3,58 @@ import getopt
 
 from queue import PriorityQueue
 
+from Constants import Constants
 from Event import Event
 from Processor import Processor
-# from Queue import Queue
+from Queue import Queue
+from Random import Random
 from Source import Source
-# from Sink import Sink
 
 
 class Core:
 
-    # CLASS CONSTANTS
-
-    # Time constants (in seconds)
-    SIMULATION_INITIAL_TIME = 6 * 60 * 60  # 6:00:00 h = 21600 s
-    SIMULATION_DURATION = 20 * 60 * 60  # 20:00:00 h = 72000 s
-
-    # Event names
-    START_SIMULATION = 'START_SIMULATION'
-    NEXT_ARRIVAL = 'NEXT_ARRIVAL'
-    END_SERVICE = 'END_SERVICE'
-    END_SIMULATION = 'END_SIMULATION'
-
-    # TODO:
-    # MAX_QUEUE = 89  # no importa si fan cua dins o fora, es pot ignorar (?) confirmar
-    # NUM_PROCESSORS = 12  # considerem totes les grues com un unic servidor (?) confirmar
-
     # CLASS ATTRIBUTES
 
     processors = []
-    queues = []
+    queue = None
+    random = None
     sources = []
-    sinks = []
 
     eventsList = PriorityQueue(0)  # maxsize = 0 (infinite)
-    previousTime = SIMULATION_INITIAL_TIME
-    currentTime = SIMULATION_INITIAL_TIME
+    previousTime = Constants.SIMULATION_INITIAL_TIME
+    currentTime = Constants.SIMULATION_INITIAL_TIME
     idleProcessors = 0
     serviceProcessors = 0
-    queueLength = 0
-    maxQueueLength = 0
     entitiesSystem = 0
 
     # CLASS FUNCTIONS
 
     def __init__(self, processors, sources):
-        for _ in range(0, sources):
-            self.sources.append(Source(self))
+        # Instance creation
+        self.queue = Queue(self)
+        self.random = Random()
         for _ in range(0, processors):
-            self.processors.append(Processor(self))
+            self.processors.append(Processor(self, self.random))
+        for _ in range(0, sources):
+            self.sources.append(Source(self, self.random))
+        # Dependency injection
+        for source in self.sources:
+            source.addOutput(self.queue)
+        for processor in self.processors:
+            self.queue.addOutput(processor)
+            processor.addInput(self.queue)
+
+    def increaseEntitiesSystem(self):
+        self.entitiesSystem += 1
+
+    def decreaseEntitiesSystem(self):
+        self.entitiesSystem -= 1
 
     def startSimulation(self):
         """Implemented by all modules"""
         startEvent = Event(
             self,
-            self.START_SIMULATION,
+            Constants.START_SIMULATION,
             self.currentTime,
             self.currentTime
         )
@@ -70,14 +68,15 @@ class Core:
         """Implemented by all modules"""
         endEvent = Event(
             self,
-            self.END_SIMULATION,
+            Constants.END_SIMULATION,
             self.currentTime,
             self.currentTime
         )
         self.logEvent(endEvent)
 
     def executeEvent(self, currentEvent):
-        if currentEvent.eventName == self.START_SIMULATION:
+        """Implemented by all event creator modules"""
+        if currentEvent.eventName == Constants.START_SIMULATION:
             self.startSimulation()
 
     def run(self):
@@ -99,7 +98,7 @@ class Core:
         self.currentTime = event.eventTime
         timeStep = self.currentTime - self.previousTime
         for processor in self.processors:
-            if processor.idle:
+            if processor.isIdle():
                 self.idleProcessors += timeStep
             else:
                 self.serviceProcessors += timeStep
@@ -121,11 +120,11 @@ class Core:
         print(currentEvent.eventTime, end=',')
         print(self.idleProcessors, end=',')
         print(self.serviceProcessors, end=',')
-        print(self.queueLength, end=',')
+        print(self.queue.queueLength, end=',')
         print(self.entitiesSystem)
 
     def stats(self):
-        print('Max_Queue_Length', self.maxQueueLength)
+        print('Max_Queue_Length', self.queue.maxQueueLength)
 
 
 def usage():
@@ -143,7 +142,6 @@ if __name__ == "__main__":
     # Default arguments
     sources = 1
     processors = 1
-    resources = 0
 
     # Get arguments
     try:
