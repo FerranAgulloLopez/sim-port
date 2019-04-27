@@ -24,6 +24,9 @@ class Queue:
     def getQueueLength(self):
         return self.queueLength
 
+    def getMaxQueueLength(self):
+        return self.maxQueueLength
+
     def increaseQueueLength(self):
         self.queueLength += 1
 

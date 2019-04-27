@@ -120,11 +120,11 @@ class Core:
         print(currentEvent.eventTime, end=',')
         print(self.idleProcessors, end=',')
         print(self.serviceProcessors, end=',')
-        print(self.queue.queueLength, end=',')
+        print(self.queue.getQueueLength(), end=',')
         print(self.entitiesSystem)
 
     def stats(self):
-        print('Max_Queue_Length', self.queue.maxQueueLength)
+        print('Max_Queue_Length', self.queue.getMaxQueueLength())
 
 
 def usage():
