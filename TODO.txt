@@ -1,15 +1,6 @@
-﻿Clase constantes / utiles
-Adaptar con referencias inputList / outputList...
-Implementar Queue
-[Capa de presentacion]
+﻿Capa de presentacion
     - Django -> API
 Unit tests
-
-
-
-Eliminar arribades amb diferencia 0. (DONE)
-
-Analitzar dies i escollir un "normal"
 
 Max, Min, Moda -> Triangular per cada hora -> nombre de camions
 
@@ -23,10 +14,7 @@ T varis processadors:
     1 processador fa X/Y operacions per hora
     Distribució temps processament -> constant (uniforme) capacitat productiva
 
-Buscar nombre de processadors a la web de la terminal
-
-Random -> camioners compleixen amb la reserva
-    Utilitzar T entrada al port
+Nombre de processadors = 52 (13*3-HIGH + 39*4-HIGH)
 
 Info memoria
     https://www.apmterminals.com/en/barcelona/about/our-terminal
