@@ -43,11 +43,12 @@ class Queue:
     
     def nextArrival(self):
         processed = False
-        for processor in self.outputList:
-            if processor.isIdle():
-                processed = True
-                processor.nextArrival()
-                break
+        if not self.getQueueLength() > 0:
+            for processor in self.outputList:
+                if processor.isIdle():
+                    processed = True
+                    processor.nextArrival()
+                    break
         if not processed:
             self.increaseQueueLength()
             if self.queueLength > self.maxQueueLength:
