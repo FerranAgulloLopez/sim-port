@@ -11,6 +11,9 @@ Random
         1 processador fa X/Y operacions per hora
         Distribució temps processament -> constant (uniforme) capacitat productiva
 
+Core
+    - Default s=8, p=52
+
 Capa de presentacion
     - Django -> API
     
