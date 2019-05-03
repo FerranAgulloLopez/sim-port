@@ -1,20 +1,23 @@
-﻿Capa de presentacion
+TODO:
+
+Buffer
+    - Implementar
+
+Random
+    - Max, Min, Moda -> Triangular per cada hora -> nombre de camions -> dividir per N carrils (8)
+    - Distribució T entre arribades -> exponencial (1 / nombre)
+    - T varis processadors:
+        Sabent que X processadors fan Y operacions per hora
+        1 processador fa X/Y operacions per hora
+        Distribució temps processament -> constant (uniforme) capacitat productiva
+
+Capa de presentacion
     - Django -> API
+    
 Unit tests
 
-Max, Min, Moda -> Triangular per cada hora -> nombre de camions
 
-Distribució T entre arribades -> uniforme o exponencial
-
-Si exponencial, llavors:
-Exp = 1 / nombre
-
-T varis processadors:
-    Sabent que X processadors fan Y operacions per hora
-    1 processador fa X/Y operacions per hora
-    Distribució temps processament -> constant (uniforme) capacitat productiva
+INFO:
 
 Nombre de processadors = 52 (13*3-HIGH + 39*4-HIGH)
-
-Info memoria
-    https://www.apmterminals.com/en/barcelona/about/our-terminal
+https://www.apmterminals.com/en/barcelona/about/our-terminal
