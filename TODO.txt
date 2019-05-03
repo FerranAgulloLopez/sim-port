@@ -1,7 +1,13 @@
 TODO:
 
-Buffer
+Entity (?)
     - Implementar
+    - Tipus operació
+    - Adaptar resta de classes
+
+Queue (Buffer) (?)
+    - Implementar
+    - Diferencies Queue Buffer?
 
 Random
     - Max, Min, Moda -> Triangular per cada hora -> nombre de camions -> dividir per N carrils (8)
