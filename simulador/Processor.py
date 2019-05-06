@@ -8,58 +8,51 @@ class Processor:
 
     core = None
     random = None
-    inputModule = None
-    idle = True
 
     # CLASS FUNCTIONS
 
     def __init__(self, core, random):
         self.core = core
         self.random = random
-    
+        self.hostedEntity = None
+        self.inputModule = None
+
     def addInput(self, inputModule):
         self.inputModule = inputModule
-    
+
     def removeInput(self, inputIndex):
         self.inputModule = None
 
     def isIdle(self):
-        return self.idle
+        return not self.hostedEntity
 
-    def startSimulation(self):
-        """Implemented by all modules"""
-        pass
-
-    def endSimulation(self):
-        """Implemented by all modules"""
-        pass
+    def canHostEntity(self):
+        return self.isIdle()
 
     def executeEvent(self, currentEvent):
         """Implemented by all event creator modules"""
         if currentEvent.eventName == Constants.END_SERVICE:
             self.endService()
-        pass
-    
-    def nextArrival(self):
+
+    def nextArrival(self, entity):
+        self.hostedEntity = entity
         endServiceEvent = self.scheduleEndService()
         self.core.addEvent(endServiceEvent)
 
     def scheduleEndService(self):
-        self.idle = False
-        serviceIncrement = self.random.processorIncrement()
+        operationType = self.hostedEntity.getOperationType()
+        serviceIncrement = self.random.processorIncrement(operationType)
         endServiceEvent = Event(
-            self,
-            Constants.END_SERVICE,
-            self.core.currentTime,
-            self.core.currentTime + serviceIncrement
+            self,                                     # eventCreator
+            Constants.END_SERVICE,                    # eventName
+            self.core.currentTime,                    # eventScheduled
+            self.core.currentTime + serviceIncrement  # eventTime
         )
         return endServiceEvent
 
     def endService(self):
         self.core.decreaseEntitiesSystem()
         if self.inputModule.getQueueLength() > 0:
-            self.inputModule.decreaseQueueLength()
-            endServiceEvent = self.scheduleEndService()
-            self.core.addEvent(endServiceEvent)
+            self.inputModule.getEntity(self)
         else:
-            self.idle = True
+            self.hostedEntity = None

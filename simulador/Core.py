@@ -15,6 +15,7 @@ class Core:
 
     # CLASS ATTRIBUTES
 
+    buffer = None
     processors = []
     queue = None
     random = None
@@ -31,18 +32,21 @@ class Core:
 
     def __init__(self, processors, sources):
         # Instance creation
-        self.queue = Queue(self)
-        self.random = Random()
+        self.buffer = Queue(self, 0)
+        self.queue = Queue(self, 90)
+        self.random = Random(self)
         for _ in range(0, processors):
             self.processors.append(Processor(self, self.random))
         for _ in range(0, sources):
             self.sources.append(Source(self, self.random))
         # Dependency injection
         for source in self.sources:
-            source.addOutput(self.queue)
+            source.addOutput(self.buffer)    # source -> buffer
+        self.buffer.addOutput(self.queue)    # buffer -> queue
+        self.queue.addInput(self.buffer)     # queue <- buffer
         for processor in self.processors:
-            self.queue.addOutput(processor)
-            processor.addInput(self.queue)
+            self.queue.addOutput(processor)  # queue -> processor
+            processor.addInput(self.queue)   # processor <- queue
 
     def increaseEntitiesSystem(self):
         self.entitiesSystem += 1
@@ -61,16 +65,14 @@ class Core:
         self.logEvent(startEvent)
         for source in self.sources:
             source.startSimulation()
-        for processor in self.processors:
-            processor.startSimulation()
 
     def endSimulation(self):
         """Implemented by all modules"""
         endEvent = Event(
-            self,
-            Constants.END_SIMULATION,
-            self.currentTime,
-            self.currentTime
+            self,                      # eventCreator
+            Constants.END_SIMULATION,  # eventName
+            self.currentTime,          # eventScheduled
+            self.currentTime           # eventTime
         )
         self.logEvent(endEvent)
 
@@ -92,6 +94,14 @@ class Core:
 
     def addEvent(self, addedEvent):
         self.eventsList.put(addedEvent, addedEvent.eventTime)
+    
+    def getCurrentTime(self):
+        return self.currentTime
+    
+    def getCurrentShift(self):
+        # TODO: return current shift (?)
+        # ex: return Constants.RECOGIDA
+        pass
 
     def updateState(self, event):
         self.previousTime = self.currentTime
@@ -140,8 +150,8 @@ def usage():
 if __name__ == "__main__":
 
     # Default arguments
-    sources = 1
-    processors = 1
+    sources = 8
+    processors = 52
 
     # Get arguments
     try:

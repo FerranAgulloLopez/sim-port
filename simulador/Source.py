@@ -1,4 +1,5 @@
 from Constants import Constants
+from Entity import Entity
 from Event import Event
 
 
@@ -8,38 +9,34 @@ class Source:
 
     core = None
     random = None
-    outputModule = None
 
     # CLASS FUNCTIONS
 
     def __init__(self, core, random):
         self.core = core
         self.random = random
-    
+        self.outputModule = None
+
     def addOutput(self, outputModule):
         self.outputModule = outputModule
-    
+
     def removeOutput(self):
         self.outputModule = None
 
     def scheduleNextArrival(self):
-        arrivalIncrement = self.random.sourceIncrement()
+        shift = None  # TODO: set shift based o time
+        arrivalIncrement = self.random.sourceIncrement(shift)
         arrivalEvent = Event(
-            self,
-            Constants.NEXT_ARRIVAL,
-            self.core.currentTime,
-            self.core.currentTime + arrivalIncrement
+            self,                                     # eventCreator
+            Constants.NEXT_ARRIVAL,                   # eventName
+            self.core.currentTime,                    # eventSheduled
+            self.core.currentTime + arrivalIncrement  # eventTime
         )
         return arrivalEvent
 
     def startSimulation(self):
-        """Implemented by all modules"""
         arrivalEvent = self.scheduleNextArrival()
         self.core.addEvent(arrivalEvent)
-
-    def endSimulation(self):
-        """Implemented by all modules"""
-        pass
 
     def executeEvent(self, currentEvent):
         """Implemented by all event creator modules"""
@@ -48,7 +45,10 @@ class Source:
 
     def nextArrival(self):
         self.core.increaseEntitiesSystem()
-        self.outputModule.nextArrival()
+        # TODO: set entity operationType based on time
+        entity = Entity(Constants.DUAL)
+        self.outputModule.nextArrival(entity)
+        # TODO: (optional) check instead num of entities dispatched
         if self.core.currentTime < Constants.SIMULATION_DURATION:
             arrivalEvent = self.scheduleNextArrival()
             self.core.addEvent(arrivalEvent)

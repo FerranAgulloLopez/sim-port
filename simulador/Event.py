@@ -1,11 +1,5 @@
 class Event:
 
-    # CLASS ATTRIBUTES
-
-    eventName = None
-    eventScheduled = None
-    eventTime = None
-
     # CLASS FUNCTIONS
 
     def __init__(self, eventCreator, eventName, eventScheduled, eventTime):

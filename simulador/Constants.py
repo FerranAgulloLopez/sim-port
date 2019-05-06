@@ -9,3 +9,8 @@ class Constants:
     NEXT_ARRIVAL = 'NEXT_ARRIVAL'
     END_SERVICE = 'END_SERVICE'
     END_SIMULATION = 'END_SIMULATION'
+
+    # Operation / shift names
+    RECOGIDA = "RECOGIDA"
+    ENTREGA = "ENTREGA"
+    DUAL = "DUAL"
