@@ -114,24 +114,32 @@ class Core:
                 self.serviceProcessors += timeStep
 
     def logHeaders(self):
-        print('Current_Time', end=',')
-        print('Event_Name', end=',')
-        print('Event_Scheduled', end=',')
-        print('Event_Time', end=',')
-        print('Idle_Processors', end=',')
-        print('Service_Processors', end=',')
-        print('Queue_Length', end=',')
-        print('Entities_System')
+        s = 'Current_Time,'
+        s += 'Event_Name,'
+        s += 'Event_Scheduled,'
+        s += 'Event-Time,'
+        s += 'Idle_Processors,'
+        s += 'Service_Processors,'
+        s += 'Queue_Length,'
+        s += 'Entities_System'
+        print(s)
+        f = open("trace.txt", "w+")
+        f.write(s+'\n')
+        f.close()
 
     def logEvent(self, currentEvent):
-        print(self.currentTime, end=',')
-        print(currentEvent.eventName, end=',')
-        print(currentEvent.eventScheduled, end=',')
-        print(currentEvent.eventTime, end=',')
-        print(self.idleProcessors, end=',')
-        print(self.serviceProcessors, end=',')
-        print(self.queue.getQueueLength(), end=',')
-        print(self.entitiesSystem)
+        s = str(self.currentTime) + ','
+        s += currentEvent.eventName + ','
+        s += str(currentEvent.eventScheduled) + ','
+        s += str(currentEvent.eventTime) + ','
+        s += str(self.idleProcessors) + ','
+        s += str(self.serviceProcessors) + ','
+        s += str(self.queue.getQueueLength()) + ','
+        s += str(self.entitiesSystem)
+        print(s)
+        f = open("trace.txt", "a+") # abrir el fichero en otro sitio, para no tener que abrirlo por cada evento
+        f.write(s+'\n')
+        f.close()
 
     def stats(self):
         print('Max_Queue_Length', self.queue.getMaxQueueLength())
