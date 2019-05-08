@@ -123,7 +123,7 @@ class Core:
         s += 'Queue_Length,'
         s += 'Entities_System'
         print(s)
-        f = open("trace.txt", "w+")
+        f = open("trace.csv", "w+")
         f.write(s+'\n')
         f.close()
 
@@ -137,7 +137,7 @@ class Core:
         s += str(self.queue.getQueueLength()) + ','
         s += str(self.entitiesSystem)
         print(s)
-        f = open("trace.txt", "a+") # abrir el fichero en otro sitio, para no tener que abrirlo por cada evento
+        f = open("trace.csv", "a+") # abrir el fichero en otro sitio, para no tener que abrirlo por cada evento
         f.write(s+'\n')
         f.close()
 

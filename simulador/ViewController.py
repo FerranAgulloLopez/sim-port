@@ -10,6 +10,20 @@ from dash.dependencies import Input, Output
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
+# Auxiliary operations
+def parse_time(time):
+    hour = int(time/3600)
+    minutes = int((time % 3600)/60)
+    hourstr = str(hour)
+    minutesstr = str(minutes)
+    if hour < 10:
+        hourstr = '0' + hourstr
+    if minutes < 10:
+        minutesstr = '0' + minutesstr
+    return hourstr + ':' + minutesstr
+
+# Main program
+
 # load trace
 df = pd.read_csv("trace.csv")
 
@@ -19,6 +33,7 @@ mainTime = 6*3600
 # data for entries graph
 entries = deque([], 60)
 entriesTime = deque([], 60)
+entriesTimeNames = deque([], 60)
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app.layout = html.Div(
@@ -41,8 +56,11 @@ def update_graph_live(n):
     global mainTime, df, entries, entriesTime
 
     mainTime += 60
+
     entries.append(0)
     entriesTime.append(mainTime)
+    entriesTimeNames.append(parse_time(mainTime))
+    print(parse_time(mainTime))
 
     # Create the graph with subplots
     fig = plotly.tools.make_subplots(rows=2, cols=1, vertical_spacing=0.2)
@@ -53,7 +71,6 @@ def update_graph_live(n):
 
     correct = True
     size = len(df.index)
-    print(size)
     count = 0
     while correct and (count < size):
         event = df.iloc[count]
@@ -65,6 +82,12 @@ def update_graph_live(n):
             count += 1
     df = df.iloc[count:]
 
+    fig['layout']['xaxis'] = {
+        'title': 'Temps',
+        'ticktext': list(entriesTimeNames),
+        'tickvals': list(entriesTime)
+    }
+
     fig.append_trace({
         'x': list(entriesTime),
         'y': list(entries),
@@ -72,6 +95,13 @@ def update_graph_live(n):
         'mode': 'lines+markers',
         'type': 'scatter'
     }, 1, 1)
+    fig.append_trace({
+        'x': [1, 2, 3, 4, 5],
+        'y': [5, 8, 11, 14, 20],
+        'name': 'Entrades',
+        'mode': 'lines+markers',
+        'type': 'scatter'
+    }, 2, 1)
 
     return fig
 
@@ -79,8 +109,6 @@ def update_graph_live(n):
 if __name__ == '__main__':
     app.run_server(debug=True)
 
-
-# Auxiliary operations
 
 
 
