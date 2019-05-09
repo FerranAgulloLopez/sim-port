@@ -1,17 +1,9 @@
-from queue import PriorityQueue
-
-
 class Queue:
-
-    # CLASS ATTRIBUTES
-
-    core = None
 
     # CLASS FUNCTIONS
 
-    def __init__(self, core, maxCapacity):
-        self.core = core
-        self.maxCapacity = maxCapacity  # 0 = inf
+    def __init__(self, maxCapacity = 0):
+        self.maxCapacity = maxCapacity  # 0 = inf (default)
         self.entitiesList = []
         self.outputList = []
         self.maxQueueLength = 0
@@ -52,7 +44,7 @@ class Queue:
                 self.maxQueueLength = len(self.entitiesList)
 
     def canHostEntity(self):
-        return (not self.maxCapacity) or len(self.entitiesList) < self.maxCapacity
+        return (self.maxCapacity == 0) or len(self.entitiesList) < self.maxCapacity
 
     def getEntity(self, outputModule):
         entity = self.entitiesList.pop(0)

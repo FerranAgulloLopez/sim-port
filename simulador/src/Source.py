@@ -1,20 +1,18 @@
 from src.Constants import Constants
 from src.Entity import Entity
 from src.Event import Event
-
+from src.Random import Random
 
 class Source:
 
     # CLASS ATTRIBUTES
 
     core = None
-    random = None
 
     # CLASS FUNCTIONS
 
-    def __init__(self, core, random):
+    def __init__(self, core):
         self.core = core
-        self.random = random
         self.outputModule = None
 
     def addOutput(self, outputModule):
@@ -24,8 +22,9 @@ class Source:
         self.outputModule = None
 
     def scheduleNextArrival(self):
-        shift = None  # TODO: set shift based o time
-        arrivalIncrement = self.random.sourceIncrement(shift)
+        shift = self.core.getCurrentShift()
+        rand = Random()
+        arrivalIncrement = rand.sourceIncrement(shift)
         arrivalEvent = Event(
             self,                                     # eventCreator
             Constants.NEXT_ARRIVAL,                   # eventName
@@ -45,8 +44,7 @@ class Source:
 
     def nextArrival(self):
         self.core.increaseEntitiesSystem()
-        # TODO: set entity operationType based on time
-        entity = Entity(Constants.DUAL)
+        entity = Entity(self.core.getCurrentShift())
         self.outputModule.nextArrival(entity)
         # TODO: (optional) check instead num of entities dispatched
         if self.core.currentTime < Constants.SIMULATION_DURATION:

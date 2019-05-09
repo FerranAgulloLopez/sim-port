@@ -1,12 +1,17 @@
 from numpy import random
 from src.Constants import Constants
 
-class Random:
+# TODO: modificar self.numRecogida, self.numEntrega, self.numDual (dist triangular)
 
-    # CLASS FUNCTIONS
-    # TODO: modificar self.numRecogida, self.numEntrega, self.numDual (dist triangular)
-    def __init__(self):
+# Singleton Pattern
+class _Random:
+    _instance = None
+
+    def initialization(self):
         random.seed(0)
+
+    def __init__(self):
+        self.initialization()
 
     def getNumTrucks(self, operationType):
         if operationType == Constants.ENTREGA:
@@ -32,5 +37,10 @@ class Random:
             return random.uniform(Constants.MINIMUM_TIME_ENTREGA, Constants.MAXIMUM_TIME_ENTREGA)
         elif shift == Constants.RECOGIDA:
             return random.uniform(Constants.MINIMUM_TIME_RECOGIDA, Constants.MAXIMUM_TIME_RECOGIDA)
-        else: # DUAL
+        else:  # DUAL
             return random.uniform(Constants.MINIMUM_TIME_DUAL, Constants.MAXIMUM_TIME_DUAL)
+
+def Random():
+    if _Random._instance is None:
+        _Random._instance = _Random()
+    return _Random._instance

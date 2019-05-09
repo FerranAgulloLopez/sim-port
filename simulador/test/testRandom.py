@@ -65,6 +65,10 @@ class TestRandomClass(unittest.TestCase):
         self.assertLess(i, Constants.MAXIMUM_TRUCKS_DUAL,
                            "The number returned must be lower than MAXIMUM_TRUCKS_DUAL")
 
+    def test_ensure_there_s_one_instance(self):
+        rand = Random()
+        assert rand is self.randObj
+
 
 if __name__ == "main":
     unittest.main()

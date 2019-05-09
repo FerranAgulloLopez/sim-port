@@ -1,26 +1,24 @@
 from src.Constants import Constants
 from src.Event import Event
-
+from src.Random import Random
 
 class Processor:
 
     # CLASS ATTRIBUTES
 
     core = None
-    random = None
 
     # CLASS FUNCTIONS
 
-    def __init__(self, core, random):
+    def __init__(self, core):
         self.core = core
-        self.random = random
         self.hostedEntity = None
         self.inputModule = None
 
     def addInput(self, inputModule):
         self.inputModule = inputModule
 
-    def removeInput(self, inputIndex):
+    def removeInput(self):
         self.inputModule = None
 
     def isIdle(self):
@@ -41,7 +39,8 @@ class Processor:
 
     def scheduleEndService(self):
         operationType = self.hostedEntity.getOperationType()
-        serviceIncrement = self.random.processorIncrement(operationType)
+        rand = Random()
+        serviceIncrement = rand.processorIncrement(operationType)
         endServiceEvent = Event(
             self,                                     # eventCreator
             Constants.END_SERVICE,                    # eventName

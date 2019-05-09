@@ -33,13 +33,13 @@ class Core:
 
     def __init__(self, processors, sources):
         # Instance creation
-        self.buffer = Queue(self, 0)
-        self.queue = Queue(self, 90)
-        self.random = Random(self)
+        self.buffer = Queue(0)
+        self.queue = Queue(90)
+        self.random = Random()
         for _ in range(0, processors):
-            self.processors.append(Processor(self, self.random))
+            self.processors.append(Processor(self))
         for _ in range(0, sources):
-            self.sources.append(Source(self, self.random))
+            self.sources.append(Source(self))
         # Dependency injection
         for source in self.sources:
             source.addOutput(self.buffer)    # source -> buffer
