@@ -1,5 +1,5 @@
-from Constants import Constants
-from Event import Event
+from src.Constants import Constants
+from src.Event import Event
 
 
 class Processor:

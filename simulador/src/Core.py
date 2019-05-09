@@ -3,13 +3,14 @@ import getopt
 
 from queue import PriorityQueue
 
-from Constants import Constants
-from Event import Event
-from Processor import Processor
-from Queue import Queue
-from Random import Random
-from Source import Source
-
+from src.Constants import Constants
+from src.Event import Event
+from src.Processor import Processor
+from src.Queue import Queue
+from src.Random import Random
+from src.Source import Source
+from src.Parameters import Parameters
+from src.Auxiliary import Auxiliary
 
 class Core:
 
@@ -97,11 +98,17 @@ class Core:
     
     def getCurrentTime(self):
         return self.currentTime
-    
+
     def getCurrentShift(self):
-        # TODO: return current shift (?)
-        # ex: return Constants.RECOGIDA
-        pass
+        seconds_incremental = []
+        accum = 0
+        seconds_incremental.append(accum)
+        for i in Parameters.shift_duration:
+            accum += i*Parameters.shift_factor
+            seconds_incremental.append(accum)
+        aux = Auxiliary()
+        index = aux.binarySearch(seconds_incremental, 0, len(seconds_incremental), self.currentTime)
+        return Parameters.shift_type[index]
 
     def updateState(self, event):
         self.previousTime = self.currentTime
