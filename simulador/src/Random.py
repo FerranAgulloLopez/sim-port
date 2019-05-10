@@ -1,5 +1,5 @@
 from numpy import random
-from src.Constants import Constants
+from Constants import Constants
 
 # TODO: modificar self.numRecogida, self.numEntrega, self.numDual (dist triangular)
 

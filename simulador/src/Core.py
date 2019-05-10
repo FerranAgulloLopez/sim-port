@@ -3,14 +3,14 @@ import getopt
 
 from queue import PriorityQueue
 
-from src.Constants import Constants
-from src.Event import Event
-from src.Processor import Processor
-from src.Queue import Queue
-from src.Random import Random
-from src.Source import Source
-from src.Parameters import Parameters
-from src.Auxiliary import Auxiliary
+from Constants import Constants
+from Event import Event
+from Processor import Processor
+from Queue import Queue
+from Random import Random
+from Source import Source
+from Parameters import Parameters
+from Auxiliary import Auxiliary
 
 class Core:
 
