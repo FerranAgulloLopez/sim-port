@@ -32,7 +32,7 @@ class Queue:
 
     def nextArrival(self, entity):
         transfered = False
-        if (not self.maxCapacity) or len(self.entitiesList) == 0:  # buffer or empty queue
+        if (self.maxCapacity == 0) or len(self.entitiesList) == 0:  # buffer or empty queue
             for output in self.outputList:
                 if output.canHostEntity():
                     transfered = True
