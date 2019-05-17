@@ -12,10 +12,6 @@ def usage():
 # MAIN FUNCTION
 if __name__ == "__main__":
 
-    # Default arguments
-    sources = 8
-    processors = 52
-
     # Get arguments
     try:
         inputFile = sys.argv[1]
