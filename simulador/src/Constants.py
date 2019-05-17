@@ -1,6 +1,7 @@
 class Constants:
-    # Path
-    PATH_TO_CORE = 'C:/Users/andreu/dades/sim-port/simulador/src'
+    # Queue
+    SLOTS_QUEUE = 90
+    SLOTS_BUFFER = 0  # unlimited
 
     # Time constants (in seconds)
     SIMULATION_INITIAL_TIME = 6 * 60 * 60  # 6:00:00 h = 21600 s

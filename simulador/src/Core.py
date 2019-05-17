@@ -33,8 +33,8 @@ class Core:
 
     def __init__(self, processors, sources):
         # Instance creation
-        self.buffer = Queue(0)
-        self.queue = Queue(90)
+        self.buffer = Queue(Constants.SLOTS_BUFFER)
+        self.queue = Queue(Constants.SLOTS_QUEUE)
         self.random = Random()
         for _ in range(0, processors):
             self.processors.append(Processor(self))
@@ -127,6 +127,7 @@ class Core:
         s += 'Event-Time,'
         s += 'Idle_Processors,'
         s += 'Service_Processors,'
+        s += 'Buffer_Length,'
         s += 'Queue_Length,'
         s += 'Entities_System'
         print(s)
@@ -141,6 +142,7 @@ class Core:
         s += str(currentEvent.eventTime) + ','
         s += str(self.idleProcessors) + ','
         s += str(self.serviceProcessors) + ','
+        s += str(self.buffer.getQueueLength()) + ','
         s += str(self.queue.getQueueLength()) + ','
         s += str(self.entitiesSystem)
         print(s)
