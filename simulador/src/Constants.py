@@ -1,4 +1,8 @@
 class Constants:
+    # Default values
+    DEFAULT_SOURCES = 8
+    DEFAULT_PROCESSORS = 52
+
     # Queue
     SLOTS_QUEUE = 90
     SLOTS_BUFFER = 0  # unlimited

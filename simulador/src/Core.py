@@ -167,8 +167,8 @@ def usage():
 if __name__ == "__main__":
 
     # Default arguments
-    sources = 8
-    processors = 52
+    sources = Constants.DEFAULT_SOURCES
+    processors = Constants.DEFAULT_PROCESSORS
 
     # Get arguments
     try:
