@@ -11,16 +11,18 @@ class TestAuxiliaryClass(unittest.TestCase):
         self.auxObj = None
 
     def assert_with_number(self, arr, i, o):
-        tmp = self.auxObj.binarySearch(arr, 0, len(arr), i)
+        tmp = self.auxObj.binarySearch(arr, i)
         self.assertEqual(tmp, o, "The number returned must be " + str(o))
 
     def test_normal_binarySearch(self):
         arr = [0, 3, 6]
-        tmp = self.auxObj.binarySearch(arr, 0, len(arr), 0)
+        tmp = self.auxObj.binarySearch(arr, 0)
         self.assertEqual(tmp, 0, "The number returned must be " + str(0))
-        tmp = self.auxObj.binarySearch(arr, 0, len(arr), 3)
+        tmp = self.auxObj.binarySearch(arr, 3)
         self.assertEqual(tmp, 1, "The number returned must be " + str(1))
-        tmp = self.auxObj.binarySearch(arr, 0, len(arr), 6)
+        tmp = self.auxObj.binarySearch(arr, 6)
+        self.assertEqual(tmp, 2, "The number returned must be " + str(2))
+        tmp = self.auxObj.binarySearch(arr, 7)
         self.assertEqual(tmp, 2, "The number returned must be " + str(2))
 
     def test_inside_binarySearch(self):
@@ -31,7 +33,6 @@ class TestAuxiliaryClass(unittest.TestCase):
         self.assert_with_number(arr, 5, 1)
         self.assert_with_number(arr, 7, 2)
         self.assert_with_number(arr, 8, 2)
-
 
 if __name__ == "main":
     unittest.main()

@@ -4,6 +4,7 @@ class Queue:
 
     def __init__(self, maxCapacity = 0):
         self.maxCapacity = maxCapacity  # 0 = inf (default)
+        self.inputModule = []
         self.entitiesList = []
         self.outputList = []
         self.maxQueueLength = 0

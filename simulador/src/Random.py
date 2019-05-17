@@ -1,5 +1,6 @@
 from numpy import random
-from Constants import Constants
+from src.Constants import Constants
+from src.schemas import TriangularParametersSchema
 
 # TODO: modificar self.numRecogida, self.numEntrega, self.numDual (dist triangular)
 
@@ -7,11 +8,20 @@ from Constants import Constants
 class _Random:
     _instance = None
 
-    def initialization(self):
-        random.seed(0)
+    # Variable para lambda -> exponencial
 
     def __init__(self):
         self.initialization()
+
+    def initialization(self):
+        random.seed(0)
+        # se hace getNumTrucks para las tres
+        self.numTrucksEntrega = self.getNumTrucks(Constants.ENTREGA)
+        self.numTrucksRecogida = self.getNumTrucks(Constants.RECOGIDA)
+        self.numTrucksDual = self.getNumTrucks(Constants.DUAL)
+        self.LAMBDA_Entrega =
+        self.LAMBDA_Recogida =
+        self.LAMBDA_Dual =
 
     def getNumTrucks(self, operationType):
         if operationType == Constants.ENTREGA:

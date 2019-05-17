@@ -99,7 +99,7 @@ class Core:
     def getCurrentTime(self):
         return self.currentTime
 
-    def getCurrentShift(self):
+    def getCurrentShift(self):  ### HAS A BUG
         seconds_incremental = []
         accum = 0
         seconds_incremental.append(accum)
@@ -107,7 +107,10 @@ class Core:
             accum += i*Parameters.shift_factor
             seconds_incremental.append(accum)
         aux = Auxiliary()
-        index = aux.binarySearch(seconds_incremental, 0, len(seconds_incremental), self.currentTime)
+        index = aux.binarySearch(seconds_incremental, self.currentTime)
+        index = min(index, len() - 1)
+        print(index, len(Parameters.shift_type))
+        print(seconds_incremental, self.currentTime)
         return Parameters.shift_type[index]
 
     def updateState(self, event):
