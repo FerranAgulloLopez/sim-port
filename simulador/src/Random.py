@@ -5,6 +5,9 @@ from src.schemas import TriangularParametersSchema
 # TODO: modificar self.numRecogida, self.numEntrega, self.numDual (dist triangular)
 
 # Singleton Pattern
+from src.Parameters import Parameters
+
+
 class _Random:
     _instance = None
 
@@ -19,9 +22,10 @@ class _Random:
         self.numTrucksEntrega = self.getNumTrucks(Constants.ENTREGA)
         self.numTrucksRecogida = self.getNumTrucks(Constants.RECOGIDA)
         self.numTrucksDual = self.getNumTrucks(Constants.DUAL)
-        self.LAMBDA_Entrega =
-        self.LAMBDA_Recogida =
-        self.LAMBDA_Dual =
+        p = Parameters()
+        self.LAMBDA_Entrega = p.getTotalTime(Constants.ENTREGA)/self.numTrucksEntrega
+        self.LAMBDA_Recogida = p.getTotalTime(Constants.RECOGIDA)/self.numTrucksRecogida
+        self.LAMBDA_Dual = p.getTotalTime(Constants.DUAL)/self.numTrucksDual
 
     def getNumTrucks(self, operationType):
         if operationType == Constants.ENTREGA:
@@ -36,11 +40,11 @@ class _Random:
 
     def sourceIncrement(self, operationType):
         if operationType == Constants.ENTREGA:
-            return random.exponential(Constants.BETA_ENTREGA)
+            return random.exponential(1/self.LAMBDA_Entrega)
         elif operationType == Constants.RECOGIDA:
-            return random.exponential(Constants.BETA_RECOGIDA)
+            return random.exponential(1/self.LAMBDA_Recogida)
         else:  # DUAL
-            return random.exponential(Constants.BETA_DUAL)
+            return random.exponential(1/self.LAMBDA_Dual)
 
     def processorIncrement(self, shift):
         if shift == Constants.ENTREGA:

@@ -10,4 +10,13 @@ class Parameters:
 
 
     def getTotalTime(self, shift):
-        if shift == "ENTEGES"
+        duration = 0
+        idx = 0
+        for i in self.shift_type:
+            if i == shift:
+                duration += self.shift_duration[idx]
+            idx += 1
+        return duration
+
+
+#print(Parameters.getTotalTime(Constants.ENTREGA))
