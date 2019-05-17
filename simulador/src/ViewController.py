@@ -35,12 +35,25 @@ entries = deque([], 60)
 entriesTime = deque([], 60)
 entriesTimeNames = deque([], 60)
 
+# data for buffer
+buffer_max_size = 100
+buffer_slots_busy = 0
+
+# data for queue
+queue_max_size = 90
+queue_slots_busy = 0
+
+# data for processors
+processors_max_number = 52
+processors_busy = 0
+
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app.layout = html.Div(
     html.Div([
         html.H4('Arribades a la terminal (unitat de temps = minuts)'),
         html.Div(id='text'),
-        dcc.Graph(id='live-update-graph'),
+        dcc.Graph(id='pie-graph'),
+       dcc.Graph(id='live-update-graph'),
         dcc.Interval(
             id='interval-component',
             # each 250 milliseconds represents a minute
@@ -50,10 +63,11 @@ app.layout = html.Div(
     ])
 )
 
-@app.callback(Output('live-update-graph', 'figure'),
+@app.callback([Output('live-update-graph', 'figure'),
+               Output('pie-graph', 'figure')],
               [Input('interval-component', 'n_intervals')])
 def update_graph_live(n):
-    global mainTime, df, entries, entriesTime
+    global mainTime, df, entries, entriesTime, buffer_slots_busy, queue_slots_busy, buffer_max_size, queue_max_size, processors_max_number, processors_busy
 
     mainTime += 60
 
@@ -79,6 +93,9 @@ def update_graph_live(n):
         else:
             if event['Event_Name'] == 'NEXT_ARRIVAL':
                 entries[-1] += 1
+                queue_slots_busy = event['Queue_Length']
+                processors_busy = event['Service_Processors']
+                buffer_slots_busy = event['Buffer_Length']
             count += 1
     df = df.iloc[count:]
 
@@ -103,7 +120,83 @@ def update_graph_live(n):
         'type': 'scatter'
     }, 2, 1)
 
-    return fig
+    fig2 = {
+        "data": [
+            {
+                "values": [buffer_slots_busy, buffer_max_size-buffer_slots_busy],
+                "labels": [
+                    "Busy slots",
+                    "Free Slots"
+                ],
+                "domain": {"column": 0},
+                "hoverinfo": "label+value+name",
+                "hole": .4,
+                "type": "pie",
+                "title": "Buffer"
+            },
+            {
+                "values": [queue_slots_busy, queue_max_size - queue_slots_busy],
+                "labels": [
+                    "Busy slots",
+                    "Free Slots"
+                ],
+                "textposition": "inside",
+                "domain": {"column": 1},
+                "title": "Queue",
+                "hoverinfo": "label+value+name",
+                "hole": .4,
+                "type": "pie"
+            },
+            {
+                "values": [processors_busy, processors_max_number - processors_busy],
+                "labels": [
+                    "Service-Processors"
+                    "Idle-Processors",
+                ],
+                "textposition": "inside",
+                "domain": {"column": 2},
+                "title": "Processors",
+                "hoverinfo": "label+value+name",
+                "hole": .4,
+                "type": "pie"
+            }
+        ],
+        "layout": {
+            "title": "",
+            "grid": {"rows": 1, "columns": 3},
+            "annotations": [
+                {
+                    "font": {
+                        "size": 20
+                    },
+                    "text": "",
+                    "showarrow": False,
+                    "x": 0.0,
+                    "y": 0.5
+                },
+                {
+                    "font": {
+                        "size": 20
+                    },
+                    "text": "",
+                    "showarrow": False,
+                    "x": 0.30,
+                    "y": 0.5
+                },
+                {
+                    "font": {
+                        "size": 20
+                    },
+                    "text": "",
+                    "showarrow": False,
+                    "x": 0.6,
+                    "y": 0.5
+                }
+            ]
+        }
+    }
+
+    return fig2, fig
 
 
 if __name__ == '__main__':
