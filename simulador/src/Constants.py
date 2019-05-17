@@ -1,4 +1,7 @@
 class Constants:
+    # Path
+    PATH_TO_CORE = 'C:/Users/andreu/dades/sim-port/simulador/src'
+
     # Time constants (in seconds)
     SIMULATION_INITIAL_TIME = 6 * 60 * 60  # 6:00:00 h = 21600 s
     SIMULATION_DURATION = 20 * 60 * 60  # 20:00:00 h = 72000 s
