@@ -1,7 +1,7 @@
-from Constants import Constants
-from Entity import Entity
-from Event import Event
-from Random import Random
+from src.Constants import Constants
+from src.Entity import Entity
+from src.Event import Event
+from src.Random import Random
 
 class Source:
 

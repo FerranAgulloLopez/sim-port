@@ -1,8 +1,7 @@
 import sys
 import subprocess
 
-from Core import Core
-
+from src.Core import Core
 
 def usage():
     print('Experimenter.py inputFile')

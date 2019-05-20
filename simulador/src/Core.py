@@ -3,14 +3,14 @@ import getopt
 
 from queue import PriorityQueue
 
-from Constants import Constants
-from Event import Event
-from Processor import Processor
-from Queue import Queue
-from Random import Random
-from Source import Source
-from Parameters import Parameters
-from Auxiliary import Auxiliary
+from src.Constants import Constants
+from src.Event import Event
+from src.Queue import Queue
+from src.Processor import Processor
+from src.Random import Random
+from src.Source import Source
+from src.Parameters import Parameters
+from src.Auxiliary import Auxiliary
 
 class Core:
 
@@ -108,7 +108,7 @@ class Core:
             seconds_incremental.append(accum)
         aux = Auxiliary()
         index = aux.binarySearch(seconds_incremental, self.currentTime)
-        index = min(index, len() - 1)
+        index = min(index, len(Parameters.shift_type) - 1)
         print(index, len(Parameters.shift_type))
         print(seconds_incremental, self.currentTime)
         return Parameters.shift_type[index]
