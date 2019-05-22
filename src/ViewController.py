@@ -1,19 +1,19 @@
-import datetime
+from collections import deque
 
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-import plotly
 import pandas as pd
-from collections import deque
+import plotly
 from dash.dependencies import Input, Output
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
+
 # Auxiliary operations
 def parse_time(time):
-    hour = int(time/3600)
-    minutes = int((time % 3600)/60)
+    hour = int(time / 3600)
+    minutes = int((time % 3600) / 60)
     hourstr = str(hour)
     minutesstr = str(minutes)
     if hour < 10:
@@ -22,13 +22,14 @@ def parse_time(time):
         minutesstr = '0' + minutesstr
     return hourstr + ':' + minutesstr
 
+
 # Main program
 
 # load trace
 df = pd.read_csv("trace.csv")
 
 # general data
-mainTime = 6*3600
+mainTime = 6 * 3600
 
 # data for entries graph
 entries = deque([], 60)
@@ -53,15 +54,16 @@ app.layout = html.Div(
         html.H4('Arribades a la terminal (unitat de temps = minuts)'),
         html.Div(id='text'),
         dcc.Graph(id='pie-graph'),
-       dcc.Graph(id='live-update-graph'),
+        dcc.Graph(id='live-update-graph'),
         dcc.Interval(
             id='interval-component',
             # each 250 milliseconds represents a minute
-            interval=1*250, # in milliseconds
+            interval=1 * 250,  # in milliseconds
             n_intervals=0
         )
     ])
 )
+
 
 @app.callback([Output('live-update-graph', 'figure'),
                Output('pie-graph', 'figure')],
@@ -123,7 +125,7 @@ def update_graph_live(n):
     fig2 = {
         "data": [
             {
-                "values": [buffer_slots_busy, buffer_max_size-buffer_slots_busy],
+                "values": [buffer_slots_busy, buffer_max_size - buffer_slots_busy],
                 "labels": [
                     "Busy slots",
                     "Free Slots"
@@ -201,7 +203,3 @@ def update_graph_live(n):
 
 if __name__ == '__main__':
     app.run_server(debug=True)
-
-
-
-

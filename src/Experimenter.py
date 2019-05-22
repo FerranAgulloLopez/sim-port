@@ -1,7 +1,6 @@
-import sys
 import subprocess
+import sys
 
-from src.Core import Core
 
 def usage():
     print('Experimenter.py inputFile')
@@ -25,8 +24,6 @@ if __name__ == "__main__":
             if line:
                 args = line.split()
                 with open(str(args[2]), 'w+') as ofs:
-                    wd = subprocess.Popen(
-                        ["pwd"], stdout=subprocess.PIPE).stdout.read().decode('utf-8')
                     cmd = ['python3', './Core.py', '-s',
                            str(args[0]), '-p', str(args[1])]
                     subprocess.Popen(cmd, stdout=ofs)

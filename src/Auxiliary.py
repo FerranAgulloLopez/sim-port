@@ -3,7 +3,7 @@ class Auxiliary:
     def _binarySearch(self, arr, left, right, value):
         if left > right:
             return right
-        m = (left + right)//2
+        m = (left + right) // 2
         if value > arr[m]:
             return self._binarySearch(arr, m + 1, right, value)
         elif value < arr[m]:

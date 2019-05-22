@@ -34,5 +34,6 @@ class TestAuxiliaryClass(unittest.TestCase):
         self.assert_with_number(arr, 7, 2)
         self.assert_with_number(arr, 8, 2)
 
+
 if __name__ == "main":
     unittest.main()

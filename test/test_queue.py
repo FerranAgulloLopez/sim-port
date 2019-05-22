@@ -1,7 +1,7 @@
 import unittest
+from unittest.mock import MagicMock
 
 from src.Queue import Queue
-from unittest.mock import MagicMock
 
 
 class TestQueueClass(unittest.TestCase):
@@ -101,13 +101,16 @@ class TestQueueClass(unittest.TestCase):
         # The exception is risen because que mock_output queue cannot host any entity
         try:
             self.queueObj.getEntity(mock_output)
-        except: pass
+        except:
+            pass
         try:
             self.queueObj.getEntity(mock_output)
-        except: pass
+        except:
+            pass
 
         self.assertEqual(self.queueObj.getQueueLength(), 0, "The queue must be empty")
         self.assertEqual(queueObj2.getQueueLength(), 0, "The queue must be empty")
+
 
 if __name__ == "main":
     unittest.main()

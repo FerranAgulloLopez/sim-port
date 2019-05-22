@@ -1,0 +1,6 @@
+
+Tests:
+# TODO: Test de sistema + test de integración de colas + procesadores + fuentes
+
+Notas:
+    No hay tests unitarios de Source (no hacen falta, solo hacen falta los de integridad y sistema)

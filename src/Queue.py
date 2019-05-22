@@ -2,7 +2,7 @@ class Queue:
 
     # CLASS FUNCTIONS
 
-    def __init__(self, maxCapacity = 0):
+    def __init__(self, maxCapacity=0):
         self.maxCapacity = maxCapacity  # 0 = inf (default)
         self.inputModule = []
         self.entitiesList = []
@@ -15,10 +15,10 @@ class Queue:
 
     def removeOutput(self, outputIndex):
         self.outputList.pop(outputIndex)
-    
+
     def addInput(self, inputModule):
         self.inputModule = inputModule
-    
+
     def removeInput(self):
         self.inputModule = None
 
@@ -43,7 +43,8 @@ class Queue:
             self.entitiesList.append(entity)
             if len(self.entitiesList) > self.maxQueueLength:
                 self.maxQueueLength = len(self.entitiesList)
-            else: raise Exception("The queue cannot store the entity")
+            else:
+                raise Exception("The queue cannot store the entity")
 
     def canHostEntity(self):
         return (self.maxCapacity == 0) or len(self.entitiesList) < self.maxCapacity

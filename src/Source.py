@@ -3,17 +3,17 @@ from src.Entity import Entity
 from src.Event import Event
 from src.Random import Random
 
-class Source:
 
+class Source:
     # CLASS ATTRIBUTES
 
     core = None
+    outputModule = None
 
     # CLASS FUNCTIONS
 
     def __init__(self, core):
         self.core = core
-        self.outputModule = None
 
     def addOutput(self, outputModule):
         self.outputModule = outputModule
@@ -26,9 +26,9 @@ class Source:
         rand = Random()
         arrivalIncrement = rand.sourceIncrement(shift)
         arrivalEvent = Event(
-            self,                                     # eventCreator
-            Constants.NEXT_ARRIVAL,                   # eventName
-            self.core.currentTime,                    # eventSheduled
+            self,  # eventCreator
+            Constants.NEXT_ARRIVAL,  # eventName
+            self.core.currentTime,  # eventSheduled
             self.core.currentTime + arrivalIncrement  # eventTime
         )
         return arrivalEvent

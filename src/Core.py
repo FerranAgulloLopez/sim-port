@@ -1,19 +1,18 @@
-import sys
 import getopt
-
+import sys
 from queue import PriorityQueue
 
+from src.Auxiliary import Auxiliary
 from src.Constants import Constants
 from src.Event import Event
-from src.Queue import Queue
+from src.Parameters import Parameters
 from src.Processor import Processor
+from src.Queue import Queue
 from src.Random import Random
 from src.Source import Source
-from src.Parameters import Parameters
-from src.Auxiliary import Auxiliary
+
 
 class Core:
-
     # CLASS ATTRIBUTES
 
     buffer = None
@@ -31,23 +30,25 @@ class Core:
 
     # CLASS FUNCTIONS
 
-    def __init__(self, processors, sources):
+    def __init__(self, processors=None, sources=None):
         # Instance creation
         self.buffer = Queue(Constants.SLOTS_BUFFER)
         self.queue = Queue(Constants.SLOTS_QUEUE)
         self.random = Random()
-        for _ in range(0, processors):
-            self.processors.append(Processor(self))
-        for _ in range(0, sources):
-            self.sources.append(Source(self))
+        if processors is not None:
+            for _ in range(0, processors):
+                self.processors.append(Processor(self))
+        if sources is not None:
+            for _ in range(0, sources):
+                self.sources.append(Source(self))
         # Dependency injection
         for source in self.sources:
-            source.addOutput(self.buffer)    # source -> buffer
-        self.buffer.addOutput(self.queue)    # buffer -> queue
-        self.queue.addInput(self.buffer)     # queue <- buffer
+            source.addOutput(self.buffer)  # source -> buffer
+        self.buffer.addOutput(self.queue)  # buffer -> queue
+        self.queue.addInput(self.buffer)  # queue <- buffer
         for processor in self.processors:
             self.queue.addOutput(processor)  # queue -> processor
-            processor.addInput(self.queue)   # processor <- queue
+            processor.addInput(self.queue)  # processor <- queue
 
     def increaseEntitiesSystem(self):
         self.entitiesSystem += 1
@@ -70,10 +71,10 @@ class Core:
     def endSimulation(self):
         """Implemented by all modules"""
         endEvent = Event(
-            self,                      # eventCreator
+            self,  # eventCreator
             Constants.END_SIMULATION,  # eventName
-            self.currentTime,          # eventScheduled
-            self.currentTime           # eventTime
+            self.currentTime,  # eventScheduled
+            self.currentTime  # eventTime
         )
         self.logEvent(endEvent)
 
@@ -95,7 +96,7 @@ class Core:
 
     def addEvent(self, addedEvent):
         self.eventsList.put(addedEvent, addedEvent.eventTime)
-    
+
     def getCurrentTime(self):
         return self.currentTime
 
@@ -104,7 +105,7 @@ class Core:
         accum = 0
         seconds_incremental.append(accum)
         for i in Parameters.shift_duration:
-            accum += i*Parameters.shift_factor
+            accum += i * Parameters.shift_factor
             seconds_incremental.append(accum)
         aux = Auxiliary()
         index = aux.binarySearch(seconds_incremental, self.currentTime)
@@ -135,7 +136,7 @@ class Core:
         s += 'Entities_System'
         print(s)
         f = open("trace.csv", "w+")
-        f.write(s+'\n')
+        f.write(s + '\n')
         f.close()
 
     def logEvent(self, currentEvent):
@@ -149,8 +150,8 @@ class Core:
         s += str(self.queue.getQueueLength()) + ','
         s += str(self.entitiesSystem)
         print(s)
-        f = open("trace.csv", "a+") # abrir el fichero en otro sitio, para no tener que abrirlo por cada evento
-        f.write(s+'\n')
+        f = open("trace.csv", "a+")  # abrir el fichero en otro sitio, para no tener que abrirlo por cada evento
+        f.write(s + '\n')
         f.close()
 
     def stats(self):
@@ -176,7 +177,7 @@ if __name__ == "__main__":
     # Get arguments
     try:
         opts, args = getopt.getopt(sys.argv[1:], 'hp:s:', [
-                                   'help', 'processors=', 'sources='])
+            'help', 'processors=', 'sources='])
         for opt, arg in opts:
             if opt in ('-h, --help'):
                 usage()
