@@ -2,7 +2,7 @@ class Event:
 
     # CLASS FUNCTIONS
 
-    def __init__(self, eventCreator, eventName, eventScheduled, eventTime):
+    def __init__(self, eventCreator=None, eventName=None, eventScheduled=None, eventTime=0):
         self.eventCreator = eventCreator
         self.eventName = eventName
         self.eventScheduled = eventScheduled
