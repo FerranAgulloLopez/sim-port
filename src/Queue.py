@@ -32,17 +32,18 @@ class Queue:
         return self.timeAtMaxCapacity
 
     def nextArrival(self, entity):
-        transfered = False
+        transferred = False
         if (self.maxCapacity == 0) or len(self.entitiesList) == 0:  # buffer or empty queue
             for output in self.outputList:
                 if output.canHostEntity():
-                    transfered = True
+                    transferred = True
                     output.nextArrival(entity)
                     break
-        if not transfered:
+        if not transferred:
             self.entitiesList.append(entity)
             if len(self.entitiesList) > self.maxQueueLength:
                 self.maxQueueLength = len(self.entitiesList)
+            else: raise Exception("The queue cannot store the entity")
 
     def canHostEntity(self):
         return (self.maxCapacity == 0) or len(self.entitiesList) < self.maxCapacity
@@ -50,5 +51,6 @@ class Queue:
     def getEntity(self, outputModule):
         entity = self.entitiesList.pop(0)
         outputModule.nextArrival(entity)
+        # if self.inputModule != None
         if self.inputModule and self.inputModule.getQueueLength() > 0 and self.canHostEntity():
             self.inputModule.getEntity(self)

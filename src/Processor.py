@@ -1,6 +1,6 @@
-from Constants import Constants
-from Event import Event
-from Random import Random
+from src.Constants import Constants
+from src.Event import Event
+from src.Random import Random
 
 class Processor:
 

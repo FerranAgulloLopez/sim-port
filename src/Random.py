@@ -1,8 +1,5 @@
 from numpy import random
 from src.Constants import Constants
-from src.schemas import TriangularParametersSchema
-
-# TODO: modificar self.numRecogida, self.numEntrega, self.numDual (dist triangular)
 
 # Singleton Pattern
 from src.Parameters import Parameters

@@ -58,7 +58,7 @@ class TestRandomClass(unittest.TestCase):
         self.assertLess(i, Constants.MAXIMUM_TRUCKS_RECOGIDA,
                            "The number returned must be lower than MAXIMUM_TRUCKS_RECOGIDA")
 
-    def test_test_get_num_trucks__DUALES(self):
+    def test_test_get_num_trucks_DUALES(self):
         i = self.randObj.getNumTrucks(Constants.DUAL)
         self.assertGreater(i, Constants.MINIMUM_TRUCKS_DUAL,
                         "The number returned must be greater than MINIMUM_TRUCKS_DUAL")
