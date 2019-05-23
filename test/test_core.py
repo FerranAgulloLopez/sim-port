@@ -1,6 +1,8 @@
 from unittest import TestCase
+from unittest.mock import MagicMock
 
 from src.Core import Core
+from src.Event import Event
 
 
 class TestCore(TestCase):
@@ -22,17 +24,15 @@ class TestCore(TestCase):
         self.coreObj.decreaseEntitiesSystem()
         self.assertEquals(self.coreObj.entitiesSystem, 0, "The core should not have any entity")
 
-    def test_startSimulation(self):
-        self.fail()
-
-    def test_endSimulation(self):
-        self.fail()
-
     def test_executeEvent(self):
         self.fail()
 
     def test_run(self):
-        self.fail()
+        mock_event = Event()
+        mock_event.executeEvent = MagicMock()
+        # eventsList is a Priority Queue
+        self.coreObj.eventsList.append(1)
+        self.coreObj.run()
 
     def test_addEvent(self):
         self.fail()
