@@ -4,16 +4,12 @@ from src.Random import Random
 
 
 class Processor:
-    # CLASS ATTRIBUTES
-
-    core = None
-    hostedEntity = None
-    inputModule = None
-
     # CLASS FUNCTIONS
 
     def __init__(self, core=None):
         self.core = core
+        self.hostedEntity = None
+        self.inputModule = None
 
     def setCore(self, core):
         self.core = core

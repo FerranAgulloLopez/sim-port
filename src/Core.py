@@ -13,34 +13,30 @@ from src.Source import Source
 
 
 class Core:
-    # CLASS ATTRIBUTES
-
-    buffer = None
-    processors = []
-    queue = None
-    random = None
-    sources = []
-
-    eventsList = PriorityQueue(0)  # maxsize = 0 (infinite)
-    previousTime = Constants.SIMULATION_INITIAL_TIME
-    currentTime = Constants.SIMULATION_INITIAL_TIME
-    idleProcessors = 0
-    serviceProcessors = 0
-    entitiesSystem = 0
-
     # CLASS FUNCTIONS
 
-    def __init__(self, processors=None, sources=None):
+    def __init__(self, processors=0, sources=0):
+        # Attributes initialization
+        self.buffer = None
+        self.processors = []
+        self.queue = None
+        self.random = None
+        self.sources = []
+        self.eventsList = PriorityQueue(0)  # maxsize = 0 (infinite)
+        self.previousTime = Constants.SIMULATION_INITIAL_TIME
+        self.currentTime = Constants.SIMULATION_INITIAL_TIME
+        self.idleProcessors = 0
+        self.serviceProcessors = 0
+        self.entitiesSystem = 0
+
         # Instance creation
         self.buffer = Queue(Constants.SLOTS_BUFFER)
         self.queue = Queue(Constants.SLOTS_QUEUE)
         self.random = Random()
-        if processors is not None:
-            for _ in range(0, processors):
-                self.processors.append(Processor(self))
-        if sources is not None:
-            for _ in range(0, sources):
-                self.sources.append(Source(self))
+        for _ in range(0, processors):
+            self.processors.append(Processor(self))
+        for _ in range(0, sources):
+            self.sources.append(Source(self))
         # Dependency injection
         for source in self.sources:
             source.addOutput(self.buffer)  # source -> buffer
@@ -100,20 +96,6 @@ class Core:
     def getCurrentTime(self):
         return self.currentTime
 
-    def getCurrentShift(self):  ### HAS A BUG
-        seconds_incremental = []
-        accum = 0
-        seconds_incremental.append(accum)
-        for i in Parameters.shift_duration:
-            accum += i * Parameters.shift_factor
-            seconds_incremental.append(accum)
-        aux = Auxiliary()
-        index = aux.binarySearch(seconds_incremental, self.currentTime)
-        index = min(index, len(Parameters.shift_type) - 1)
-        print(index, len(Parameters.shift_type))
-        print(seconds_incremental, self.currentTime)
-        return Parameters.shift_type[index]
-
     def updateState(self, event):
         self.previousTime = self.currentTime
         self.currentTime = event.eventTime
@@ -123,6 +105,9 @@ class Core:
                 self.idleProcessors += timeStep
             else:
                 self.serviceProcessors += timeStep
+
+    def getCurrentShift(self):
+        return Parameters.getCurrentShift(self.currentTime)
 
     def logHeaders(self):
         s = 'Current_Time,'

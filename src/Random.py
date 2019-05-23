@@ -1,7 +1,6 @@
 from numpy import random
 
 from src.Constants import Constants
-# Singleton Pattern
 from src.Parameters import Parameters
 
 

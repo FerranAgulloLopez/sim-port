@@ -5,15 +5,11 @@ from src.Random import Random
 
 
 class Source:
-    # CLASS ATTRIBUTES
-
-    core = None
-    outputModule = None
-
     # CLASS FUNCTIONS
 
-    def __init__(self, core):
+    def __init__(self, core=None):
         self.core = core
+        self.outputModule = None
 
     def addOutput(self, outputModule):
         self.outputModule = outputModule
