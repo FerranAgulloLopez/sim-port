@@ -2,7 +2,6 @@ import getopt
 import sys
 from queue import PriorityQueue
 
-from src.Auxiliary import Auxiliary
 from src.Constants import Constants
 from src.Event import Event
 from src.Parameters import Parameters

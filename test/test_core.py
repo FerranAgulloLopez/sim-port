@@ -4,7 +4,6 @@ from unittest.mock import MagicMock
 from src.Constants import Constants
 from src.Core import Core
 from src.Event import Event
-from src.Processor import Processor
 
 
 class TestCore(TestCase):
@@ -70,7 +69,7 @@ class TestCore(TestCase):
         print(self.coreObj.eventsList)
         self.coreObj = Core(processors=2)
         print(self.coreObj.eventsList)
-        print("LONGITUD",len(self.coreObj.processors))
+        print("LONGITUD", len(self.coreObj.processors))
 
         for mock_processor in self.coreObj.processors:
             mock_processor.isIdle = MagicMock(return_value=False)
@@ -86,4 +85,3 @@ class TestCore(TestCase):
         self.assertEquals(self.coreObj.serviceProcessors, 123 * 2,
                           "The service processors time should be 123 * 2 (2 service processors)")
         self.assertEquals(self.coreObj.idleProcessors, 0, "The idle time should be 0")
-

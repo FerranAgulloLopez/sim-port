@@ -30,10 +30,13 @@ class TestParameters(TestCase):
         shift_factor = 3600  # hours
         self.parametersObj.setParameters(shift_duration, shift_type, shift_factor)
 
-        self.assertEquals(self.parametersObj.getCurrentShift(Constants.SIMULATION_INITIAL_TIME + 2 * 3600), Constants.ENTREGA, "The shift should be ENTREGA")
-        self.assertEquals(self.parametersObj.getCurrentShift(Constants.SIMULATION_INITIAL_TIME + 7 * 3600), Constants.ENTREGA,
+        self.assertEquals(self.parametersObj.getCurrentShift(Constants.SIMULATION_INITIAL_TIME + 2 * 3600),
+                          Constants.ENTREGA, "The shift should be ENTREGA")
+        self.assertEquals(self.parametersObj.getCurrentShift(Constants.SIMULATION_INITIAL_TIME + 7 * 3600),
+                          Constants.ENTREGA,
                           "The shift should be ENTREGA")
-        self.assertEquals(self.parametersObj.getCurrentShift(Constants.SIMULATION_INITIAL_TIME + 15 * 3600), Constants.RECOGIDA,
+        self.assertEquals(self.parametersObj.getCurrentShift(Constants.SIMULATION_INITIAL_TIME + 15 * 3600),
+                          Constants.RECOGIDA,
                           "The shift should be RECOGIDA")
         self.assertEquals(self.parametersObj.getCurrentShift(Constants.SIMULATION_INITIAL_TIME + 17 * 3600),
                           Constants.DUAL,
