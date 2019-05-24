@@ -15,6 +15,8 @@ class Core:
     # CLASS FUNCTIONS
 
     def __init__(self, processors=0, sources=0):
+        parameters = Parameters()
+        parameters.setNumProcessors(processors)
         # Attributes initialization
         self.processors = []
         self.sources = []

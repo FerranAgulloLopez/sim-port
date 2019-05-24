@@ -9,21 +9,18 @@ class TestIntegrationCoreQueue(TestCase):
 
     def setUp(self):
         self.coreObj = Core()
-        self.queueObj = Queue()
 
     def tearDown(self):
         self.coreObj = None
-        self.queueObj = None
 
     def test_can_host_entity_unlimited_not_busy_output(self):
-        output_queue = Queue(0)
+        queueObj2 = Queue(0)
+        queueObj = Queue(0)
+        queueObj.addOutput(queueObj2)
 
-        self.queueObj.addOutput(output_queue)
+        queueObj.nextArrival(0)
 
-        self.queueObj.nextArrival(0)
-
-        self.assertEqual(self.queueObj.getQueueLength(), 0, "The queue must be empty")
-        self.assertEqual(self.queueObj.getMaxQueueLength(), 0, "The queue must be empty")
+        self.assertEqual(queueObj.getQueueLength(), 0, "The queue must be empty")
 
     def test_can_host_entity_unlimited_busy_output(self):
         output_queue = Queue(1)

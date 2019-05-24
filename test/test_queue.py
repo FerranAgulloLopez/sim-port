@@ -21,7 +21,6 @@ class TestQueueClass(unittest.TestCase):
         self.queueObj.nextArrival(0)
 
         self.assertEqual(self.queueObj.getQueueLength(), 0, "The queue must be empty")
-        self.assertEqual(self.queueObj.getMaxQueueLength(), 0, "The queue must be empty")
 
     def test_can_host_entity_unlimited_busy_output(self):
         mock_output = Queue()
@@ -33,7 +32,6 @@ class TestQueueClass(unittest.TestCase):
         self.queueObj.nextArrival(0)
 
         self.assertEqual(self.queueObj.getQueueLength(), 1, "The queue mustn't be empty")
-        self.assertEqual(self.queueObj.getMaxQueueLength(), 1, "The queue mustn't be empty")
 
     def test_can_host_entity_limited_not_busy_output(self):
         self.queueObj = Queue(1)
@@ -48,7 +46,6 @@ class TestQueueClass(unittest.TestCase):
         self.queueObj.nextArrival(0)
 
         self.assertEqual(self.queueObj.getQueueLength(), 0, "The queue must be empty")
-        self.assertEqual(self.queueObj.getMaxQueueLength(), 0, "The queue must be empty")
 
     def test_can_host_entity_limited_busy_output(self):
         self.queueObj = Queue(1)
@@ -61,7 +58,6 @@ class TestQueueClass(unittest.TestCase):
         self.queueObj.nextArrival(0)
 
         self.assertEqual(self.queueObj.getQueueLength(), 1, "The queue mustn't be empty")
-        self.assertEqual(self.queueObj.getMaxQueueLength(), 1, "The queue mustn't be empty")
         try:
             self.queueObj.nextArrival(0)
             self.fail()

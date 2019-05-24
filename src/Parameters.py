@@ -2,11 +2,16 @@ from src.Auxiliary import Auxiliary
 from src.Constants import *
 
 
-class Parameters:
+class _Parameters:
     # Simulator parameters
-    shift_duration = [5, 5, 2, 1]
-    shift_type = [Constants.ENTREGA, Constants.ENTREGA, Constants.RECOGIDA, Constants.DUAL]
-    shift_factor = 3600  # hours
+    def __init__(self):
+        self.shift_duration = [5, 5, 2, 1]
+        self.shift_type = [Constants.ENTREGA, Constants.ENTREGA, Constants.RECOGIDA, Constants.DUAL]
+        self.shift_factor = 3600  # hours
+        self.num_processors = Constants.DEFAULT_PROCESSORS
+
+    def setNumProcessors(self, num_processors):
+        self.num_processors = num_processors
 
     def setParameters(self, shift_duration, shift_type, shift_factor):
         self.shift_duration = shift_duration
@@ -36,3 +41,8 @@ class Parameters:
         # print(index, len(self.shift_type))
         # print(seconds_incremental, currentTime)
         return self.shift_type[index]
+
+def Parameters():
+    if _Parameters._instance is None:
+        _Parameters._instance = _Parameters()
+    return _Parameters._instance

@@ -44,11 +44,11 @@ class _Random:
 
     def processorIncrement(self, shift):
         if shift == Constants.ENTREGA:
-            return random.uniform(Constants.MINIMUM_TIME_ENTREGA, Constants.MAXIMUM_TIME_ENTREGA)
+            return random.uniform(Constants.MINIMUM_TIME_ENTREGA, Constants.MAXIMUM_TIME_ENTREGA) * Constants.DEFAULT_PROCESSORS
         elif shift == Constants.RECOGIDA:
-            return random.uniform(Constants.MINIMUM_TIME_RECOGIDA, Constants.MAXIMUM_TIME_RECOGIDA)
+            return random.uniform(Constants.MINIMUM_TIME_RECOGIDA, Constants.MAXIMUM_TIME_RECOGIDA) * Constants.DEFAULT_PROCESSORS
         else:  # DUAL
-            return random.uniform(Constants.MINIMUM_TIME_DUAL, Constants.MAXIMUM_TIME_DUAL)
+            return random.uniform(Constants.MINIMUM_TIME_DUAL, Constants.MAXIMUM_TIME_DUAL) * Constants.DEFAULT_PROCESSORS
 
 
 def Random():
