@@ -149,7 +149,7 @@ class Core:
 
 def usage():
     print('Core.py [options]')
-    print('Model: source -> parking -> parking -> processor(s) -> sink')
+    print('Model: source -> queue -> parking -> processor(s) -> sink')
     print('Options:')
     print('-h, --help\t\tShows the program usage help.')
     print('-p, --processors=...\tSets the number of processors.')
