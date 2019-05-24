@@ -7,7 +7,7 @@ class Queue:
         self.inputModule = []
         self.entitiesList = []
         self.outputList = []
-        self.maxQueueLength = 0
+        self.maxQueueLength = 0 # Estadistico
         self.timeAtMaxCapacity = 0  # TODO: update (stat for capacity-limited queue)
 
     def addOutput(self, outputElement):
@@ -43,7 +43,8 @@ class Queue:
             self.entitiesList.append(entity)
             if len(self.entitiesList) > self.maxQueueLength:
                 self.maxQueueLength = len(self.entitiesList)
-            else:
+
+            if self.maxCapacity != 0 and len(self.entitiesList) > self.maxCapacity:
                 raise Exception("The queue cannot store the entity")
 
     def canHostEntity(self):

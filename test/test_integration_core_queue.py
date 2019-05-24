@@ -5,7 +5,7 @@ from src.Queue import Queue
 from src.Source import Source
 
 
-# Testing Source functions Integration
+# Testing Queue functions Integration
 class TestIntegrationCoreQueue(TestCase):
 
     def setUp(self):

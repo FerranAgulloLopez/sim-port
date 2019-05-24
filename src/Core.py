@@ -16,10 +16,7 @@ class Core:
 
     def __init__(self, processors=0, sources=0):
         # Attributes initialization
-        self.buffer = None
         self.processors = []
-        self.queue = None
-        self.random = None
         self.sources = []
         self.eventsList = PriorityQueue(0)  # maxsize = 0 (infinite)
         self.previousTime = Constants.SIMULATION_INITIAL_TIME
