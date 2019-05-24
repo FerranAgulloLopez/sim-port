@@ -19,4 +19,4 @@ class TestEvent(TestCase):
 
     def test_gt(self):
         eventObj2 = Event(eventTime=10)
-        self.assertTrue(eventObj2 >= self.eventObj, "The value should be greater")
+        self.assertTrue(eventObj2 > self.eventObj, "The value should be greater")

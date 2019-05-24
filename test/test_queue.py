@@ -62,7 +62,11 @@ class TestQueueClass(unittest.TestCase):
 
         self.assertEqual(self.queueObj.getQueueLength(), 1, "The queue mustn't be empty")
         self.assertEqual(self.queueObj.getMaxQueueLength(), 1, "The queue mustn't be empty")
-        self.assertRaises(Exception, self.queueObj.nextArrival(0))
+        try:
+            self.queueObj.nextArrival(0)
+            self.fail()
+        except:
+            pass
 
     def test_canHostEntity_unlimited_queue(self):
         self.queueObj.nextArrival(0)

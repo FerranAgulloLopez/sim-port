@@ -2,5 +2,15 @@
 Tests:
 # TODO: Test de sistema + test de integración de colas + procesadores + fuentes
 
+# Unit Tests: Done
+# Integration Tests:
+    Core,
+    Event,
+    Experimenter,
+    Processor,
+    Queue,
+    Source: Done
+    ViewController?
+
 Notas:
     No hay tests unitarios de Source (no hacen falta, solo hacen falta los de integridad y sistema)

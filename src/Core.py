@@ -106,7 +106,8 @@ class Core:
                 self.serviceProcessors += timeStep
 
     def getCurrentShift(self):
-        return Parameters.getCurrentShift(self.currentTime)
+        param = Parameters()
+        return param.getCurrentShift(self.currentTime)
 
     def logHeaders(self):
         s = 'Current_Time,'
@@ -119,7 +120,7 @@ class Core:
         s += 'Queue_Length,'
         s += 'Entities_System'
         print(s)
-        f = open("trace.csv", "w+")
+        f = open("../output/trace.csv", "w+")
         f.write(s + '\n')
         f.close()
 
@@ -134,7 +135,8 @@ class Core:
         s += str(self.queue.getQueueLength()) + ','
         s += str(self.entitiesSystem)
         print(s)
-        f = open("trace.csv", "a+")  # abrir el fichero en otro sitio, para no tener que abrirlo por cada evento
+        f = open("../output/trace.csv",
+                 "a+")  # abrir el fichero en otro sitio, para no tener que abrirlo por cada evento
         f.write(s + '\n')
         f.close()
 
