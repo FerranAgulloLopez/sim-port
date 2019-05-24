@@ -42,6 +42,8 @@ class Core:
             self.queue.addOutput(processor)  # queue -> processor
             processor.addInput(self.queue)  # processor <- queue
 
+        self.numberOfIdleProcessors = len(processors)
+
     def increaseEntitiesSystem(self):
         self.entitiesSystem += 1
 
@@ -96,9 +98,11 @@ class Core:
         self.previousTime = self.currentTime
         self.currentTime = event.eventTime
         timeStep = self.currentTime - self.previousTime
+        self.numberOfIdleProcessors = 0
         for processor in self.processors:
             if processor.isIdle():
                 self.idleProcessors += timeStep
+                self.numberOfIdleProcessors += 1
             else:
                 self.serviceProcessors += timeStep
 
@@ -113,6 +117,7 @@ class Core:
         s += 'Event-Time,'
         s += 'Idle_Processors,'
         s += 'Service_Processors,'
+        s += 'Number_Idle_Processors,'
         s += 'Buffer_Length,'
         s += 'Queue_Length,'
         s += 'Entities_System'
@@ -128,6 +133,7 @@ class Core:
         s += str(currentEvent.eventTime) + ','
         s += str(self.idleProcessors) + ','
         s += str(self.serviceProcessors) + ','
+        s += str(self.numberOfIdleProcessors) + ','
         s += str(self.buffer.getQueueLength()) + ','
         s += str(self.queue.getQueueLength()) + ','
         s += str(self.entitiesSystem)
