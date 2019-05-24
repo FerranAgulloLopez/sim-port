@@ -1,19 +1,19 @@
-from collections import deque
+import datetime
 
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-import pandas as pd
 import plotly
+import pandas as pd
+from collections import deque
 from dash.dependencies import Input, Output
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
-
 # Auxiliary operations
 def parse_time(time):
-    hour = int(time / 3600)
-    minutes = int((time % 3600) / 60)
+    hour = int(time/3600)
+    minutes = int((time % 3600)/60)
     hourstr = str(hour)
     minutesstr = str(minutes)
     if hour < 10:
@@ -22,14 +22,14 @@ def parse_time(time):
         minutesstr = '0' + minutesstr
     return hourstr + ':' + minutesstr
 
-
 # Main program
 
 # load trace
-df = pd.read_csv("trace.csv")
+df = pd.read_csv("../output/trace.csv")
 
 # general data
-mainTime = 6 * 3600
+mainTime = 6*3600
+old_event_time = mainTime
 
 # data for entries graph
 entries = deque([], 60)
@@ -45,8 +45,8 @@ queue_max_size = 90
 queue_slots_busy = 0
 
 # data for processors
-processors_max_number = 52
-processors_busy = 0
+processors_max_number = 4
+processors_free = 0
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app.layout = html.Div(
@@ -55,21 +55,21 @@ app.layout = html.Div(
         html.Div(id='text'),
         dcc.Graph(id='pie-graph'),
         dcc.Graph(id='live-update-graph'),
+        dcc.Graph(id='bar-graph'),
         dcc.Interval(
             id='interval-component',
             # each 250 milliseconds represents a minute
-            interval=1 * 250,  # in milliseconds
+            interval=1*250, # in milliseconds
             n_intervals=0
         )
     ])
 )
 
-
 @app.callback([Output('live-update-graph', 'figure'),
                Output('pie-graph', 'figure')],
               [Input('interval-component', 'n_intervals')])
 def update_graph_live(n):
-    global mainTime, df, entries, entriesTime, buffer_slots_busy, queue_slots_busy, buffer_max_size, queue_max_size, processors_max_number, processors_busy
+    global mainTime, df, entries, entriesTime, buffer_slots_busy, queue_slots_busy, buffer_max_size, queue_max_size, processors_max_number, processors_free, old_event_time
 
     mainTime += 60
 
@@ -79,7 +79,7 @@ def update_graph_live(n):
     print(parse_time(mainTime))
 
     # Create the graph with subplots
-    fig = plotly.tools.make_subplots(rows=2, cols=1, vertical_spacing=0.2)
+    fig = plotly.tools.make_subplots(rows=1, cols=1, vertical_spacing=0.2)
     fig['layout']['margin'] = {
         'l': 30, 'r': 10, 'b': 30, 't': 10
     }
@@ -90,13 +90,14 @@ def update_graph_live(n):
     count = 0
     while correct and (count < size):
         event = df.iloc[count]
-        if event['Current_Time'] > mainTime:
+        event_time = event['Current_Time']
+        if event_time > mainTime:
             correct = False
         else:
             if event['Event_Name'] == 'NEXT_ARRIVAL':
                 entries[-1] += 1
                 queue_slots_busy = event['Queue_Length']
-                processors_busy = event['Service_Processors']
+                processors_free = event['Number_Idle_Processors']
                 buffer_slots_busy = event['Buffer_Length']
             count += 1
     df = df.iloc[count:]
@@ -114,27 +115,25 @@ def update_graph_live(n):
         'mode': 'lines+markers',
         'type': 'scatter'
     }, 1, 1)
-    fig.append_trace({
-        'x': [1, 2, 3, 4, 5],
-        'y': [5, 8, 11, 14, 20],
-        'name': 'Entrades',
-        'mode': 'lines+markers',
-        'type': 'scatter'
-    }, 2, 1)
 
     fig2 = {
         "data": [
             {
-                "values": [buffer_slots_busy, buffer_max_size - buffer_slots_busy],
+                "values": [buffer_slots_busy, buffer_max_size-buffer_slots_busy],
                 "labels": [
                     "Busy slots",
                     "Free Slots"
                 ],
+                'marker': {'colors': ['rgb(255, 140, 0)',
+                                      'rgb(65, 105, 225)']},
                 "domain": {"column": 0},
                 "hoverinfo": "label+value+name",
                 "hole": .4,
                 "type": "pie",
-                "title": "Buffer"
+                "title": "Buffer",
+                'textinfo': 'label+text+value+percent',
+                'direction': 'clockwise',
+                'sort': False
             },
             {
                 "values": [queue_slots_busy, queue_max_size - queue_slots_busy],
@@ -142,25 +141,35 @@ def update_graph_live(n):
                     "Busy slots",
                     "Free Slots"
                 ],
+                'marker': {'colors': ['rgb(255, 140, 0)',
+                                      'rgb(65, 105, 225)']},
                 "textposition": "inside",
                 "domain": {"column": 1},
                 "title": "Queue",
                 "hoverinfo": "label+value+name",
                 "hole": .4,
-                "type": "pie"
+                "type": "pie",
+                'textinfo': 'label+text+value+percent',
+                'direction': 'clockwise',
+                'sort': False
             },
             {
-                "values": [processors_busy, processors_max_number - processors_busy],
+                "values": [processors_max_number - processors_free, processors_free],
                 "labels": [
-                    "Service-Processors"
-                    "Idle-Processors",
+                    "Service-Processors",
+                    "Idle-Processors"
                 ],
+                'marker': {'colors': ['rgb(255, 140, 0)',
+                                      'rgb(65, 105, 225)']},
                 "textposition": "inside",
                 "domain": {"column": 2},
                 "title": "Processors",
                 "hoverinfo": "label+value+name",
                 "hole": .4,
-                "type": "pie"
+                "type": "pie",
+                'textinfo': 'label+text+value+percent',
+                'direction': 'clockwise',
+                'sort': False
             }
         ],
         "layout": {
