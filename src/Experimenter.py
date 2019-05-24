@@ -4,7 +4,7 @@ import sys
 
 def usage():
     print('Experimenter.py inputFile')
-    print('inputFile format: <sources> <processors> <outputFile>')
+    print('inputFile format: <processors> <outputFile>')
 
 
 # MAIN FUNCTION
@@ -24,6 +24,5 @@ if __name__ == "__main__":
             if line:
                 args = line.split()
                 with open(str(args[2]), 'w+') as ofs:
-                    cmd = ['python3', './Core.py', '-s',
-                           str(args[0]), '-p', str(args[1])]
+                    cmd = ['python3', './Core.py', '-p', str(args[1])]
                     subprocess.Popen(cmd, stdout=ofs)

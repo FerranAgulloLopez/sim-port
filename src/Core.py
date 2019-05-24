@@ -26,8 +26,8 @@ class Core:
         self.entitiesSystem = 0
 
         # Instance creation
-        self.buffer = Queue(Constants.SLOTS_BUFFER)
-        self.queue = Queue(Constants.SLOTS_QUEUE)
+        self.queue = Queue(Constants.SLOTS_BUFFER)
+        self.parking = Queue(Constants.SLOTS_QUEUE)
         self.random = Random()
         for _ in range(0, processors):
             self.processors.append(Processor(self))
@@ -35,14 +35,14 @@ class Core:
             self.sources.append(Source(self))
         # Dependency injection
         for source in self.sources:
-            source.addOutput(self.buffer)  # source -> buffer
-        self.buffer.addOutput(self.queue)  # buffer -> queue
-        self.queue.addInput(self.buffer)  # queue <- buffer
+            source.addOutput(self.queue)  # source -> queue
+        self.queue.addOutput(self.parking)  # queue -> parking
+        self.parking.addInput(self.queue)  # parking <- queue
         for processor in self.processors:
-            self.queue.addOutput(processor)  # queue -> processor
-            processor.addInput(self.queue)  # processor <- queue
+            self.parking.addOutput(processor)  # parking -> processor
+            processor.addInput(self.parking)  # processor <- parking
 
-        self.numberOfIdleProcessors = len(processors)
+        self.numberOfIdleProcessors = processors
 
     def increaseEntitiesSystem(self):
         self.entitiesSystem += 1
@@ -134,8 +134,8 @@ class Core:
         s += str(self.idleProcessors) + ','
         s += str(self.serviceProcessors) + ','
         s += str(self.numberOfIdleProcessors) + ','
-        s += str(self.buffer.getQueueLength()) + ','
         s += str(self.queue.getQueueLength()) + ','
+        s += str(self.parking.getQueueLength()) + ','
         s += str(self.entitiesSystem)
         print(s)
         f = open("../output/trace.csv",
@@ -144,16 +144,15 @@ class Core:
         f.close()
 
     def stats(self):
-        print('Max_Queue_Length', self.queue.getMaxQueueLength())
+        print('Max_Queue_Length', self.parking.getMaxQueueLength())
 
 
 def usage():
     print('Core.py [options]')
-    print('Model: source(s) -> queue -> processor(s) -> sink')
+    print('Model: source -> parking -> parking -> processor(s) -> sink')
     print('Options:')
     print('-h, --help\t\tShows the program usage help.')
     print('-p, --processors=...\tSets the number of processors.')
-    print('-s, --sources=...\tSets the number of sources.')
 
 
 # MAIN FUNCTION
@@ -165,16 +164,14 @@ if __name__ == "__main__":
 
     # Get arguments
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'hp:s:', [
-            'help', 'processors=', 'sources='])
+        opts, args = getopt.getopt(sys.argv[1:], 'hp:', [
+            'help', 'processors='])
         for opt, arg in opts:
-            if opt in ('-h, --help'):
+            if opt in ('-h', '--help'):
                 usage()
                 sys.exit()
             if opt in ('-p', '--processors'):
                 processors = int(arg)
-            if opt in ('-s', '--sources'):
-                sources = int(arg)
     except getopt.GetoptError:
         usage()
         sys.exit()
