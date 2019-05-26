@@ -59,22 +59,40 @@ app.layout = html.Div(
                 className="row header"
         ),
         html.Div([
-            dcc.Graph(id='pie-graph'),
-            dcc.Graph(id='live-update-graph'),
-            dcc.Interval(
-                id='interval-component',
-                # each 250 milliseconds represents a minute
-                interval=1*250, # in milliseconds
-                n_intervals=0
+            dcc.Tabs(
+                id="tabs",
+                style={"height":"20","verticalAlign":"middle"},
+                children=[
+                    dcc.Tab(label="Real-time simulation", value="real_time_tab", children=[
+                        html.Div([
+                                    dcc.Graph(id='pie-graph'),
+                                    dcc.Graph(id='live-update-graph'),
+                                    dcc.Interval(
+                                        id='interval-component',
+                                        # each 250 milliseconds represents a minute
+                                        interval=1*250, # in milliseconds
+                                        n_intervals=0
+                                    )
+                        ]),
+                    ]),
+                    dcc.Tab(label="Simulation summary", value="summary_tab"),
+                ],
+                value="real_time_tab",
             )
-        ]),
+
+            ],
+            className="row tabs_div"
+            ),
+
         html.Link(href="https://use.fontawesome.com/releases/v5.2.0/css/all.css",rel="stylesheet"),
         html.Link(href="https://cdn.rawgit.com/plotly/dash-app-stylesheets/2d266c578d2a6e8850ebce48fdb52759b2aef506/stylesheet-oil-and-gas.css",rel="stylesheet"),
         html.Link(href="https://fonts.googleapis.com/css?family=Dosis", rel="stylesheet"),
         html.Link(href="https://fonts.googleapis.com/css?family=Open+Sans", rel="stylesheet"),
         html.Link(href="https://fonts.googleapis.com/css?family=Ubuntu", rel="stylesheet"),
         html.Link(href="https://cdn.rawgit.com/amadoukane96/8a8cfdac5d2cecad866952c52a70a50e/raw/cd5a9bf0b30856f4fc7e3812162c74bfc0ebe011/dash_crm.css", rel="stylesheet")
-    ])
+    ]),
+    className="row",
+    style={"margin": "0%"},
 )
 
 
