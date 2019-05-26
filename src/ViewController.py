@@ -7,6 +7,7 @@ import plotly
 import pandas as pd
 from collections import deque
 from dash.dependencies import Input, Output
+import plotly.graph_objs as go
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -32,6 +33,7 @@ mainTime = 6*3600
 old_event_time = mainTime
 
 # data for entries graph
+totalEntities = deque([], 60)
 entries = deque([], 60)
 entriesTime = deque([], 60)
 entriesTimeNames = deque([], 60)
@@ -45,45 +47,50 @@ queue_max_size = 90
 queue_slots_busy = 0
 
 # data for processors
-processors_max_number = 4
+processors_max_number = 52
 processors_free = 0
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app.layout = html.Div(
     html.Div([
-        html.H4('Arribades a la terminal (unitat de temps = minuts)'),
-        html.Div(id='text'),
-        dcc.Graph(id='pie-graph'),
-        dcc.Graph(id='live-update-graph'),
-        dcc.Graph(id='bar-graph'),
-        dcc.Interval(
-            id='interval-component',
-            # each 250 milliseconds represents a minute
-            interval=1*250, # in milliseconds
-            n_intervals=0
-        )
+        html.Div([
+                html.Span("Simulació del port de Barcelona", className='app-title'),
+            ],
+                className="row header"
+        ),
+        html.Div([
+            dcc.Graph(id='pie-graph'),
+            dcc.Graph(id='live-update-graph'),
+            dcc.Interval(
+                id='interval-component',
+                # each 250 milliseconds represents a minute
+                interval=1*250, # in milliseconds
+                n_intervals=0
+            )
+        ]),
+        html.Link(href="https://use.fontawesome.com/releases/v5.2.0/css/all.css",rel="stylesheet"),
+        html.Link(href="https://cdn.rawgit.com/plotly/dash-app-stylesheets/2d266c578d2a6e8850ebce48fdb52759b2aef506/stylesheet-oil-and-gas.css",rel="stylesheet"),
+        html.Link(href="https://fonts.googleapis.com/css?family=Dosis", rel="stylesheet"),
+        html.Link(href="https://fonts.googleapis.com/css?family=Open+Sans", rel="stylesheet"),
+        html.Link(href="https://fonts.googleapis.com/css?family=Ubuntu", rel="stylesheet"),
+        html.Link(href="https://cdn.rawgit.com/amadoukane96/8a8cfdac5d2cecad866952c52a70a50e/raw/cd5a9bf0b30856f4fc7e3812162c74bfc0ebe011/dash_crm.css", rel="stylesheet")
     ])
 )
+
 
 @app.callback([Output('live-update-graph', 'figure'),
                Output('pie-graph', 'figure')],
               [Input('interval-component', 'n_intervals')])
 def update_graph_live(n):
-    global mainTime, df, entries, entriesTime, buffer_slots_busy, queue_slots_busy, buffer_max_size, queue_max_size, processors_max_number, processors_free, old_event_time
+    global mainTime, df, entries, entriesTime, buffer_slots_busy, queue_slots_busy, buffer_max_size, queue_max_size, processors_max_number, processors_free, old_event_time, totalEntities
 
     mainTime += 60
 
     entries.append(0)
+    totalEntities.append(0)
     entriesTime.append(mainTime)
     entriesTimeNames.append(parse_time(mainTime))
-    print(parse_time(mainTime))
-
-    # Create the graph with subplots
-    fig = plotly.tools.make_subplots(rows=1, cols=1, vertical_spacing=0.2)
-    fig['layout']['margin'] = {
-        'l': 30, 'r': 10, 'b': 30, 't': 10
-    }
-    fig['layout']['legend'] = {'x': 0, 'y': 1, 'xanchor': 'left'}
+    #print(parse_time(mainTime))
 
     correct = True
     size = len(df.index)
@@ -99,22 +106,38 @@ def update_graph_live(n):
                 queue_slots_busy = event['Queue_Length']
                 processors_free = event['Number_Idle_Processors']
                 buffer_slots_busy = event['Buffer_Length']
+                totalEntities[-1] = event['Entities_System']
             count += 1
     df = df.iloc[count:]
 
-    fig['layout']['xaxis'] = {
-        'title': 'Temps',
-        'ticktext': list(entriesTimeNames),
-        'tickvals': list(entriesTime)
-    }
+    traces = []
+    traces.append(go.Scatter(
+        x=list(entriesTime),
+        y=list(entries),
+        name='Entrades',
+        mode='lines+markers',
+        type='scatter'
+    ))
+    traces.append(go.Scatter(
+        x=list(entriesTime),
+        y=list(totalEntities),
+        name='Total entitats',
+        mode='lines+markers',
+        type='scatter'
+    ))
 
-    fig.append_trace({
-        'x': list(entriesTime),
-        'y': list(entries),
-        'name': 'Entrades',
-        'mode': 'lines+markers',
-        'type': 'scatter'
-    }, 1, 1)
+    layout = go.Layout(
+        xaxis={'type': 'log', 'title': 'Temps', 'ticktext': list(entriesTimeNames), 'tickvals': list(entriesTime)},
+        yaxis={'title': 'Camions', 'range': [-10, 20]},
+        #margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
+        legend={'x': 0, 'y': 1},
+        hovermode='closest'
+    )
+
+    fig1 = {
+        'data': traces,
+        'layout': layout
+    }
 
     fig2 = {
         "data": [
@@ -207,7 +230,7 @@ def update_graph_live(n):
         }
     }
 
-    return fig2, fig
+    return fig2, fig1
 
 
 if __name__ == '__main__':
