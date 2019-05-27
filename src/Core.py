@@ -166,6 +166,7 @@ if __name__ == "__main__":
 
     # Get arguments
     try:
+        # TODO: get shift duration by parameter (at least 2)
         opts, args = getopt.getopt(sys.argv[1:], 'hp:', [
             'help', 'processors='])
         for opt, arg in opts:
