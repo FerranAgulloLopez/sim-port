@@ -28,6 +28,49 @@ def parse_time(time):
 # load trace
 df = pd.read_csv("../output/trace.csv")
 
+
+######################################################### static graphs
+
+finish_phase_1_time = 38400
+finish_phase_1_last = False
+finish_phase_2_time = 55200
+finish_phase_2_last = False
+finish_phase_3_time = 72000
+
+idle_1 = 0
+service_1 = 0
+idle_2 = 0
+service_2 = 0
+idle_3 = 0
+service_3 = 0
+
+size = len(df.index)
+count = 0
+
+while (count < size):
+    event = df.iloc[count]
+    event_time = event['Current_Time']
+    if ((not finish_phase_1_last) and (event_time > finish_phase_1_time)):
+        finish_phase_1_last = True
+        idle_1 = event['Idle_Processors']
+        service_1 = event['Service_Processors']
+    if ((not finish_phase_2_last) and (event_time > finish_phase_2_time)):
+        finish_phase_2_last = True
+        idle_2 = event['Idle_Processors']
+        service_2 = event['Service_Processors']
+    count += 1
+
+event = df.iloc[count-1]
+idle_3 = event['Idle_Processors']
+service_3 = event['Service_Processors']
+
+
+#########################################################
+
+
+
+
+######################################################### dynamic graphs
 # general data
 mainTime = 6*3600
 old_event_time = mainTime
@@ -49,6 +92,8 @@ queue_slots_busy = 0
 # data for processors
 processors_max_number = 52
 processors_free = 0
+
+#########################################################
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app.layout = html.Div(
@@ -75,7 +120,103 @@ app.layout = html.Div(
                                     )
                         ]),
                     ]),
-                    dcc.Tab(label="Simulation summary", value="summary_tab"),
+                    dcc.Tab(label="Simulation summary", value="summary_tab", children=[
+                        html.Div([
+                            dcc.Graph(
+                                id='example-graph',
+                                figure={
+                                    'data': [
+                                        {
+                                            "values": [idle_1, service_1],
+                                            "labels": [
+                                                "Idle Processors",
+                                                "Service Processors"
+                                            ],
+                                            'marker': {'colors': ['rgb(255, 140, 0)',
+                                                                  'rgb(65, 105, 225)']},
+                                            "domain": {"column": 0},
+                                            "hoverinfo": "label+value+name",
+                                            "hole": .4,
+                                            "type": "pie",
+                                            "title": "Etapa1",
+                                            'textinfo': 'label+text+percent',
+                                            'direction': 'clockwise',
+                                            'sort': False
+                                        },
+                                        {
+                                            "values": [idle_2, service_2],
+                                            "labels": [
+                                                "Idle Processors",
+                                                "Service Processors"
+                                            ],
+                                            'marker': {'colors': ['rgb(255, 140, 0)',
+                                                                  'rgb(65, 105, 225)']},
+                                            "textposition": "inside",
+                                            "domain": {"column": 1},
+                                            "title": "Etapa2",
+                                            "hoverinfo": "label+value+name",
+                                            "hole": .4,
+                                            "type": "pie",
+                                            'textinfo': 'label+text+percent',
+                                            'direction': 'clockwise',
+                                            'sort': False
+                                        },
+                                        {
+                                            "values": [idle_3, service_3],
+                                            "labels": [
+                                                "Idle Processors",
+                                                "Service Processors"
+                                            ],
+                                            'marker': {'colors': ['rgb(255, 140, 0)',
+                                                                  'rgb(65, 105, 225)']},
+                                            "textposition": "inside",
+                                            "domain": {"column": 2},
+                                            "title": "Etapa3",
+                                            "hoverinfo": "label+value+name",
+                                            "hole": .4,
+                                            "type": "pie",
+                                            'textinfo': 'label+text+percent',
+                                            'direction': 'clockwise',
+                                            'sort': False
+                                        }
+                                    ],
+                                    'layout': {
+                                        "title": "",
+                                        "grid": {"rows": 1, "columns": 3},
+                                        "annotations": [
+                                            {
+                                                "font": {
+                                                    "size": 20
+                                                },
+                                                "text": "",
+                                                "showarrow": False,
+                                                "x": 0.0,
+                                                "y": 0.5
+                                            },
+                                            {
+                                                "font": {
+                                                    "size": 20
+                                                },
+                                                "text": "",
+                                                "showarrow": False,
+                                                "x": 0.30,
+                                                "y": 0.5
+                                            },
+                                            {
+                                                "font": {
+                                                    "size": 20
+                                                },
+                                                "text": "",
+                                                "showarrow": False,
+                                                "x": 0.6,
+                                                "y": 0.5
+                                            }
+                                        ]
+                                    }
+                                }
+                            )
+                        ]),
+                    ]),
                 ],
                 value="real_time_tab",
             )
