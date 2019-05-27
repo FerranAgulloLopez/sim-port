@@ -26,3 +26,9 @@ if __name__ == "__main__":
                 with open(str(args[2]), 'w+') as ofs:
                     cmd = ['python3', './Core.py', '-p', str(args[1])]
                     subprocess.Popen(cmd, stdout=ofs)
+                # TODO: analyze trace
+                with open(str(args[2]), 'r') as ofs:
+                    # TODO: read idle times by shift, more idle time = better (less workers needed)
+                    # TODO: update best configuration
+                    pass
+        # TODO: print best configuration

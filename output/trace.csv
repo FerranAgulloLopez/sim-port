@@ -1,1 +1,1 @@
-Current_Time,Event_Name,Event_Scheduled,Event-Time,Idle_Processors,Service_Processors,Buffer_Length,Queue_Length,Entities_System
+Current_Time,Event_Name,Event_Scheduled,Event-Time,Idle_Processors,Service_Processors,Number_Idle_Processors,Buffer_Length,Queue_Length,Entities_System

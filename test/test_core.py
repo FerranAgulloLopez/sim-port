@@ -29,12 +29,13 @@ class TestCore(TestCase):
         mock_event = Event()
         mock_event.executeEvent = MagicMock()
         mock_event.eventName = MagicMock(return_value="Test")
+        mock_event.eventScheduled = Constants.SIMULATION_INITIAL_TIME
         mock_event.eventTime = Constants.SIMULATION_INITIAL_TIME + 123
 
         # eventsList is a Priority Queue
         self.coreObj.logEvent = MagicMock()
         self.coreObj.eventsList.put(mock_event)
-        self.coreObj.run()
+        self.coreObj.updateState(mock_event)
 
         self.assertEqual(self.coreObj.currentTime, Constants.SIMULATION_INITIAL_TIME + 123,
                          "The current time should be updated to SIMULATION_INITIAL_TIME + 123")
@@ -50,7 +51,7 @@ class TestCore(TestCase):
                          "The current time should be updated to SIMULATION_INITIAL_TIME + 123")
 
     def test_updateState_With_2Idle_Processors(self):
-        self.coreObj = Core(processors=2)
+        self.coreObj = Core(num_processors=2)
         for mock_processor in self.coreObj.processors:
             mock_processor.isIdle = MagicMock(return_value=True)
 
@@ -67,7 +68,7 @@ class TestCore(TestCase):
 
     def test_updateState_With_2Service_Processors(self):
         print(self.coreObj.eventsList)
-        self.coreObj = Core(processors=2)
+        self.coreObj = Core(num_processors=2)
         print(self.coreObj.eventsList)
         print("LONGITUD", len(self.coreObj.processors))
 

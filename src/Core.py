@@ -14,9 +14,10 @@ from src.Source import Source
 class Core:
     # CLASS FUNCTIONS
 
-    def __init__(self, processors=0, sources=0):
+    def __init__(self, num_processors=Constants.DEFAULT_PROCESSORS):
+        num_sources = Constants.DEFAULT_SOURCES
         parameters = Parameters()
-        parameters.setNumProcessors(processors)
+        parameters.setNumProcessors(num_processors)
         # Attributes initialization
         self.processors = []
         self.sources = []
@@ -31,9 +32,9 @@ class Core:
         self.queue = Queue(Constants.SLOTS_BUFFER)
         self.parking = Queue(Constants.SLOTS_QUEUE)
         self.random = Random()
-        for _ in range(0, processors):
+        for _ in range(0, num_processors):
             self.processors.append(Processor(self))
-        for _ in range(0, sources):
+        for _ in range(0, num_sources):
             self.sources.append(Source(self))
         # Dependency injection
         for source in self.sources:
@@ -44,7 +45,7 @@ class Core:
             self.parking.addOutput(processor)  # parking -> processor
             processor.addInput(self.parking)  # processor <- parking
 
-        self.numberOfIdleProcessors = processors
+        self.numberOfIdleProcessors = num_processors
 
     def increaseEntitiesSystem(self):
         self.entitiesSystem += 1
@@ -161,7 +162,6 @@ def usage():
 if __name__ == "__main__":
 
     # Default arguments
-    sources = Constants.DEFAULT_SOURCES
     processors = Constants.DEFAULT_PROCESSORS
 
     # Get arguments
@@ -179,5 +179,5 @@ if __name__ == "__main__":
         sys.exit()
 
     # Start core
-    core = Core(processors, sources)
+    core = Core(processors)
     core.run()
