@@ -111,6 +111,68 @@ class TestQueueClass(unittest.TestCase):
         self.assertEqual(self.queueObj.getQueueLength(), 0, "The queue must be empty")
         self.assertEqual(queueObj2.getQueueLength(), 0, "The queue must be empty")
 
+    def test_nextArrival_unlimited_capacity_no_output(self):
+        self.queueObj = Queue(0)
+        self.queueObj.nextArrival(1)
+        self.assertEqual(self.queueObj.getQueueLength(), 1, "The queue cannot transmit the entity")
+
+    def test_nextArrival_unlimited_capacity_busy_output(self):
+        self.queueObj = Queue(0)
+
+        mock_output = Queue()
+        mock_output.canHostEntity = MagicMock(return_value=False)
+        mock_output.nextArrival = MagicMock()
+
+        self.queueObj.addOutput(mock_output)
+
+        self.queueObj.nextArrival(1)
+
+        self.assertEqual(self.queueObj.getQueueLength(), 1, "The queue cannot transmit the entity")
+
+    def test_nextArrival_unlimited_capacity_idle_output(self):
+        self.queueObj = Queue(0)
+
+        mock_output = Queue()
+        mock_output.canHostEntity = MagicMock(return_value=True)
+        mock_output.nextArrival = MagicMock()
+
+        self.queueObj.addOutput(mock_output)
+
+        self.queueObj.nextArrival(1)
+
+        self.assertEqual(self.queueObj.getQueueLength(), 0, "The queue can transmit the entity")
+
+    def test_nextArrival_unlimited_capacity_busy_output_has_already_an_entity(self):
+        self.queueObj = Queue(0)
+
+        mock_output = Queue()
+        mock_output.canHostEntity = MagicMock(return_value=False)
+        mock_output.nextArrival = MagicMock()
+
+        self.queueObj.addOutput(mock_output)
+
+        self.queueObj.nextArrival(1)
+        self.queueObj.nextArrival(1)
+
+        self.assertEqual(self.queueObj.getQueueLength(), 2, "The queue cannot transmit the entity")
+
+    def test_nextArrival_limited_capacity_busy_output_has_no_elements_above_limit(self):
+        self.queueObj = Queue(1)
+
+        mock_output = Queue()
+        mock_output.canHostEntity = MagicMock(return_value=False)
+        mock_output.nextArrival = MagicMock()
+
+        self.queueObj.addOutput(mock_output)
+
+        self.queueObj.nextArrival(1)
+
+        try:
+            self.queueObj.nextArrival(1)
+            self.fail()
+        except:
+            pass
+
 
 if __name__ == "main":
     unittest.main()

@@ -90,3 +90,55 @@ class TestIntegrationCoreQueue(TestCase):
 
         self.assertEqual(queueObj.getQueueLength(), 0, "The queue must be empty")
         self.assertEqual(queueObj2.getQueueLength(), 0, "The queue must be empty")
+
+    def test_nextArrival_unlimited_capacity_busy_output(self):
+        self.queueObj = Queue(0)
+
+        output_queue = Queue(1)
+        output_queue.nextArrival(1)
+
+        self.queueObj.addOutput(output_queue)
+
+        self.queueObj.nextArrival(1)
+
+        self.assertEqual(self.queueObj.getQueueLength(), 1, "The queue cannot transmit the entity")
+
+    def test_nextArrival_unlimited_capacity_idle_output(self):
+        self.queueObj = Queue(0)
+
+        output_queue = Queue(0)
+
+        self.queueObj.addOutput(output_queue)
+
+        self.queueObj.nextArrival(1)
+
+        self.assertEqual(self.queueObj.getQueueLength(), 0, "The queue can transmit the entity")
+
+    def test_nextArrival_unlimited_capacity_busy_output_has_already_an_entity(self):
+        self.queueObj = Queue(0)
+
+        output_queue = Queue(1)
+        output_queue.nextArrival(1)
+
+        self.queueObj.addOutput(output_queue)
+
+        self.queueObj.nextArrival(1)
+        self.queueObj.nextArrival(1)
+
+        self.assertEqual(self.queueObj.getQueueLength(), 2, "The queue cannot transmit the entity")
+
+    def test_nextArrival_limited_capacity_busy_output_has_no_elements_above_limit(self):
+        self.queueObj = Queue(1)
+
+        output_queue = Queue(1)
+        output_queue.nextArrival(1)
+
+        self.queueObj.addOutput(output_queue)
+
+        self.queueObj.nextArrival(1)
+
+        try:
+            self.queueObj.nextArrival(1)
+            self.fail()
+        except:
+            pass
