@@ -11,6 +11,7 @@ class _Parameters:
         self.shift_type = [Constants.ENTREGA, Constants.ENTREGA, Constants.RECOGIDA, Constants.DUAL]
         self.shift_factor = 3600  # hours
         self.num_processors = Constants.DEFAULT_PROCESSORS
+        self.output_file = "../output/trace.csv"
 
     def setNumProcessors(self, num_processors):
         self.num_processors = num_processors

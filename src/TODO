@@ -1,8 +1,13 @@
-Tests:
-# TODO: Test de sistema + test de integración de colas + procesadores + fuentes
+# Implementacion
+    * Core: while free_time: ask input -> shift type, shift duration. Exception last shift exceeds time.
+    * Experimenter: adapt to new Core.
+    * testInput: change format.
 
-# Unit Tests: Done
-# Integration Tests:
+# Tests:
+## TODO: Test de sistema + test de integración de colas + procesadores + fuentes
+
+## Unit Tests: Done
+## Integration Tests:
     Core,
     Event,
     Experimenter,

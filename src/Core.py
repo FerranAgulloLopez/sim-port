@@ -14,14 +14,12 @@ from src.Source import Source
 class Core:
     # CLASS FUNCTIONS
 
-    def __init__(self, num_processors=Constants.DEFAULT_PROCESSORS, shift_duration_1=6, shift_duration_2=7,
-                 shift_duration_3=6):
+    def __init__(self):
 
         # TODO: set instance Parameters shift duration
 
         num_sources = Constants.DEFAULT_SOURCES
-        parameters = Parameters()
-        parameters.setNumProcessors(num_processors)
+        num_processors = parameters.num_processors
         # Attributes initialization
         self.processors = []
         self.sources = []
@@ -129,7 +127,7 @@ class Core:
         s += 'Queue_Length,'
         s += 'Entities_System'
         print(s)
-        f = open("../output/trace.csv", "w+")
+        f = open(parameters.output_file, "w+")
         f.write(s + '\n')
         f.close()
 
@@ -145,8 +143,8 @@ class Core:
         s += str(self.parking.getQueueLength()) + ','
         s += str(self.entitiesSystem)
         print(s)
-        f = open("../output/trace.csv",
-                 "a+")  # abrir el fichero en otro sitio, para no tener que abrirlo por cada evento
+        f = open(parameters.output_file, "a+")
+        # TODO: abrir el fichero en otro sitio, para no tener que abrirlo por cada evento
         f.write(s + '\n')
         f.close()
 
@@ -161,7 +159,7 @@ def usage():
     print('-h, --help\t\t\t\tShows the program usage help.')
     print('-p, --processors=...\tSets the number of processors.')
     print('-sX, --shiftX=...\t\tSets shift duration in hours for shift X, where X = {1, 2, 3}. Minimum 2 required. '
-          'Must add up to', int(Constants.SIMULATION_DURATION/3600))
+          'Must add up to', int(Constants.SIMULATION_DURATION / 3600))
 
 
 # MAIN FUNCTION
@@ -169,58 +167,53 @@ if __name__ == "__main__":
 
     # Default arguments
     processors = Constants.DEFAULT_PROCESSORS
-    shift_duration_1 = 0
-    shift_duration_2 = 0
-    shift_duration_3 = 0
-    num_shifts_defined = 0
+    flag_experimenter = False
+    shift_duration = []
+    shift_type = []
+    shift_factor = 0
+
+    parameters = Parameters()
 
     # Get arguments
     try:
-        # TODO: Cambiar nombres (?) ex: -1 -> -e, --shift1= -> --entregas= ...
-        opts, args = getopt.getopt(sys.argv[1:], 'hp:1:2:3:', [
-            'help', 'processors=', 'shift1=', 'shift2=', 'shift3='])
+        opts, args = getopt.getopt(sys.argv[1:], 'hp:e', [
+            'help', 'processors=', 'experimenter'])
         for opt, arg in opts:
             if opt in ('-h', '--help'):
                 usage()
                 sys.exit()
             if opt in ('-p', '--processors'):
-                processors = int(arg)
-            if opt in ('-1', '--shift1'):
-                shift_duration_1 = int(arg)
-                num_shifts_defined += 1
-            if opt in ('-2', '--shift2'):
-                shift_duration_2 = int(arg)
-                num_shifts_defined += 1
-            if opt in ('-3', '--shift3'):
-                shift_duration_3 = int(arg)
-                num_shifts_defined += 1
+                num_processors = int(arg)
+                parameters.setNumProcessors(num_processors)
+            if opt in ('-e', '--experimenter'):
+                flag_experimenter = True
     except getopt.GetoptError:
         usage()
         sys.exit()
 
-    if num_shifts_defined < 2 or (num_shifts_defined == 3 and
-                                  shift_duration_1 + shift_duration_2 + shift_duration_3 !=
-                                  Constants.SIMULATION_DURATION/3600):
-        # DEBUG BEGIN
-        print('p = ', processors, 'num_shifts_defined =', num_shifts_defined)
-        print('s1 =', shift_duration_1, 's2 =', shift_duration_2, 's3 =', shift_duration_3)
-        # DEBUG END
-        usage()
-        sys.exit()
-    else:
-        if not shift_duration_3:
-            shift_duration_3 = int(Constants.SIMULATION_DURATION / 3600 - (shift_duration_1 + shift_duration_2))
-        if not shift_duration_2:
-            shift_duration_2 = int(Constants.SIMULATION_DURATION / 3600 - (shift_duration_1 + shift_duration_3))
-        if not shift_duration_1:
-            shift_duration_1 = int(Constants.SIMULATION_DURATION / 3600 - (shift_duration_2 + shift_duration_3))
+    duration_total = 0
+    if not flag_experimenter:
+        while duration_total < Constants.SIMULATION_DURATION/3600:
+            in_shift_type = str(input('Enter shift type:'))
+            in_shift_duration = int(input('Enter shift duration in hours:'))
+            if duration_total + in_shift_duration <= Constants.SIMULATION_DURATION/3600 and \
+                    in_shift_type in (Constants.ENTREGA, Constants.RECOGIDA, Constants.DUAL):
+                duration_total += in_shift_duration
+                shift_duration.append(in_shift_duration)
+                shift_type.append(in_shift_type)
+            else:
+                print('Not enough time. Remaining time is', Constants.SIMULATION_DURATION/3600 - duration_total)
+        # Still inside if not flag_experimenter
+        parameters.setParameters(shift_duration, shift_type, shift_factor)
+    # else, set by Experimenter
 
     # DEBUG BEGIN
-    print('DONE')
-    print('s1 =', shift_duration_1, 's2 =', shift_duration_2, 's3 =', shift_duration_3)
-    sys.exit()
+    with open("debug_info.txt", "w+") as dbg:
+        dbg.write(str(parameters.shift_type) + '\n')
+        dbg.write(str(parameters.shift_duration) + '\n')
+        dbg.write(str(parameters.shift_factor) + '\n')
     # DEBUG END
 
     # Start core
-    core = Core(processors, shift_duration_1, shift_duration_2, shift_duration_3)
+    core = Core()
     core.run()
