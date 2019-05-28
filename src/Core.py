@@ -201,7 +201,6 @@ if __name__ == "__main__":
     if num_shifts_defined < 2 or (num_shifts_defined == 3 and
                                   shift_duration_1 + shift_duration_2 + shift_duration_3 !=
                                   Constants.SIMULATION_DURATION/3600):
-        # TODO: Remove DEBUG
         # DEBUG BEGIN
         print('p = ', processors, 'num_shifts_defined =', num_shifts_defined)
         print('s1 =', shift_duration_1, 's2 =', shift_duration_2, 's3 =', shift_duration_3)
@@ -216,7 +215,6 @@ if __name__ == "__main__":
         if not shift_duration_1:
             shift_duration_1 = int(Constants.SIMULATION_DURATION / 3600 - (shift_duration_2 + shift_duration_3))
 
-    # TODO: Remove DEBUG
     # DEBUG BEGIN
     print('DONE')
     print('s1 =', shift_duration_1, 's2 =', shift_duration_2, 's3 =', shift_duration_3)
