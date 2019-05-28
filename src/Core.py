@@ -14,7 +14,11 @@ from src.Source import Source
 class Core:
     # CLASS FUNCTIONS
 
-    def __init__(self, num_processors=Constants.DEFAULT_PROCESSORS):
+    def __init__(self, num_processors=Constants.DEFAULT_PROCESSORS, shift_duration_1=6, shift_duration_2=7,
+                 shift_duration_3=6):
+
+        # TODO: set instance Parameters shift duration
+
         num_sources = Constants.DEFAULT_SOURCES
         parameters = Parameters()
         parameters.setNumProcessors(num_processors)
@@ -154,8 +158,10 @@ def usage():
     print('Core.py [options]')
     print('Model: source -> queue -> parking -> processor(s) -> sink')
     print('Options:')
-    print('-h, --help\t\tShows the program usage help.')
+    print('-h, --help\t\t\t\tShows the program usage help.')
     print('-p, --processors=...\tSets the number of processors.')
+    print('-sX, --shiftX=...\t\tSets shift duration in hours for shift X, where X = {1, 2, 3}. Minimum 2 required. '
+          'Must add up to', int(Constants.SIMULATION_DURATION/3600))
 
 
 # MAIN FUNCTION
@@ -163,22 +169,58 @@ if __name__ == "__main__":
 
     # Default arguments
     processors = Constants.DEFAULT_PROCESSORS
+    shift_duration_1 = 0
+    shift_duration_2 = 0
+    shift_duration_3 = 0
+    num_shifts_defined = 0
 
     # Get arguments
     try:
-        # TODO: get shift duration by parameter (at least 2)
-        opts, args = getopt.getopt(sys.argv[1:], 'hp:', [
-            'help', 'processors='])
+        # TODO: Cambiar nombres (?) ex: -1 -> -e, --shift1= -> --entregas= ...
+        opts, args = getopt.getopt(sys.argv[1:], 'hp:1:2:3:', [
+            'help', 'processors=', 'shift1=', 'shift2=', 'shift3='])
         for opt, arg in opts:
             if opt in ('-h', '--help'):
                 usage()
                 sys.exit()
             if opt in ('-p', '--processors'):
                 processors = int(arg)
+            if opt in ('-1', '--shift1'):
+                shift_duration_1 = int(arg)
+                num_shifts_defined += 1
+            if opt in ('-2', '--shift2'):
+                shift_duration_2 = int(arg)
+                num_shifts_defined += 1
+            if opt in ('-3', '--shift3'):
+                shift_duration_3 = int(arg)
+                num_shifts_defined += 1
     except getopt.GetoptError:
         usage()
         sys.exit()
 
+    if num_shifts_defined < 2 or (num_shifts_defined == 3 and
+                                  shift_duration_1 + shift_duration_2 + shift_duration_3 !=
+                                  Constants.SIMULATION_DURATION/3600):
+        # DEBUG BEGIN
+        print('p = ', processors, 'num_shifts_defined =', num_shifts_defined)
+        print('s1 =', shift_duration_1, 's2 =', shift_duration_2, 's3 =', shift_duration_3)
+        # DEBUG END
+        usage()
+        sys.exit()
+    else:
+        if not shift_duration_3:
+            shift_duration_3 = int(Constants.SIMULATION_DURATION / 3600 - (shift_duration_1 + shift_duration_2))
+        if not shift_duration_2:
+            shift_duration_2 = int(Constants.SIMULATION_DURATION / 3600 - (shift_duration_1 + shift_duration_3))
+        if not shift_duration_1:
+            shift_duration_1 = int(Constants.SIMULATION_DURATION / 3600 - (shift_duration_2 + shift_duration_3))
+
+    # DEBUG BEGIN
+    print('DONE')
+    print('s1 =', shift_duration_1, 's2 =', shift_duration_2, 's3 =', shift_duration_3)
+    sys.exit()
+    # DEBUG END
+
     # Start core
-    core = Core(processors)
+    core = Core(processors, shift_duration_1, shift_duration_2, shift_duration_3)
     core.run()
