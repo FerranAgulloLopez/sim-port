@@ -1,4 +1,5 @@
 from numpy import random
+from math import ceil
 
 from src.Constants import Constants
 from src.Parameters import Parameters
@@ -25,30 +26,30 @@ class _Random:
 
     def getNumTrucks(self, operationType):
         if operationType == Constants.ENTREGA:
-            return random.triangular(Constants.MINIMUM_TRUCKS_ENTREGA, Constants.MEDIAN_TRUCKS_ENTREGA,
-                                     Constants.MAXIMUM_TRUCKS_ENTREGA)
+            return ceil(random.triangular(Constants.MINIMUM_TRUCKS_ENTREGA, Constants.MEDIAN_TRUCKS_ENTREGA,
+                                          Constants.MAXIMUM_TRUCKS_ENTREGA))
         elif operationType == Constants.RECOGIDA:
-            return random.triangular(Constants.MINIMUM_TRUCKS_RECOGIDA, Constants.MEDIAN_TRUCKS_RECOGIDA,
-                                     Constants.MAXIMUM_TRUCKS_RECOGIDA)
+            return ceil(random.triangular(Constants.MINIMUM_TRUCKS_RECOGIDA, Constants.MEDIAN_TRUCKS_RECOGIDA,
+                                          Constants.MAXIMUM_TRUCKS_RECOGIDA))
         else:  # DUAL
-            return random.triangular(Constants.MINIMUM_TRUCKS_DUAL, Constants.MEDIAN_TRUCKS_DUAL,
-                                     Constants.MAXIMUM_TRUCKS_DUAL)
+            return ceil(random.triangular(Constants.MINIMUM_TRUCKS_DUAL, Constants.MEDIAN_TRUCKS_DUAL,
+                                          Constants.MAXIMUM_TRUCKS_DUAL))
 
     def sourceIncrement(self, operationType):
         if operationType == Constants.ENTREGA:
-            return random.exponential(1 / self.LAMBDA_Entrega)
+            return ceil(random.exponential(1 / self.LAMBDA_Entrega))
         elif operationType == Constants.RECOGIDA:
-            return random.exponential(1 / self.LAMBDA_Recogida)
+            return ceil(random.exponential(1 / self.LAMBDA_Recogida))
         else:  # DUAL
-            return random.exponential(1 / self.LAMBDA_Dual)
+            return ceil(random.exponential(1 / self.LAMBDA_Dual))
 
     def processorIncrement(self, shift):
         if shift == Constants.ENTREGA:
-            return random.uniform(Constants.MINIMUM_TIME_ENTREGA, Constants.MAXIMUM_TIME_ENTREGA)
+            return ceil(random.uniform(Constants.MINIMUM_TIME_ENTREGA, Constants.MAXIMUM_TIME_ENTREGA))
         elif shift == Constants.RECOGIDA:
-            return random.uniform(Constants.MINIMUM_TIME_RECOGIDA, Constants.MAXIMUM_TIME_RECOGIDA)
+            return ceil(random.uniform(Constants.MINIMUM_TIME_RECOGIDA, Constants.MAXIMUM_TIME_RECOGIDA))
         else:  # DUAL
-            return random.uniform(Constants.MINIMUM_TIME_DUAL, Constants.MAXIMUM_TIME_DUAL)
+            return ceil(random.uniform(Constants.MINIMUM_TIME_DUAL, Constants.MAXIMUM_TIME_DUAL))
 
 
 def Random():
