@@ -81,6 +81,7 @@ class Core:
             self.startSimulation()
 
     def run(self):
+        print('Core running...')
         self.logHeaders()
         self.startSimulation()
         while not self.eventsList.empty():
@@ -191,18 +192,22 @@ if __name__ == "__main__":
 
     duration_total = 0
     if not flag_experimenter:
-        while duration_total < Constants.SIMULATION_DURATION/3600:
+        while duration_total < int(Constants.SIMULATION_DURATION / 3600):
             in_shift_type = str(input('Enter shift type:'))
-            in_shift_duration = int(input('Enter shift duration in hours:'))
-            if duration_total + in_shift_duration <= Constants.SIMULATION_DURATION/3600 and \
-                    in_shift_type in (Constants.ENTREGA, Constants.RECOGIDA, Constants.DUAL):
-                duration_total += in_shift_duration
-                shift_duration.append(in_shift_duration)
-                shift_type.append(in_shift_type)
+            if in_shift_type not in (Constants.ENTREGA, Constants.RECOGIDA, Constants.DUAL):
+                print('Shift type not recognized. Shifts are:', Constants.ENTREGA, Constants.RECOGIDA, Constants.DUAL)
             else:
-                print('Not enough time. Remaining time is', Constants.SIMULATION_DURATION/3600 - duration_total)
+                in_shift_duration = int(input('Enter shift duration in hours:'))
+                if duration_total + in_shift_duration <= int(Constants.SIMULATION_DURATION / 3600):
+                    duration_total += in_shift_duration
+                    shift_duration.append(in_shift_duration)
+                    shift_type.append(in_shift_type)
+                else:
+                    print('Not enough time. Remaining time is:',
+                          int(Constants.SIMULATION_DURATION / 3600) - duration_total), 'h.'
         # Still inside if not flag_experimenter
         parameters.setParameters(shift_duration, shift_type, shift_factor)
+        print('Parameters set.')
     # else, set by Experimenter
 
     # DEBUG BEGIN
