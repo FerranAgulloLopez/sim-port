@@ -126,9 +126,9 @@ class Core:
         s += 'Queue_Length,'
         s += 'Entities_System'
         # print(s)
-        f = open(self.parameters.output_file, "w+")
-        f.write(s + '\n')
-        f.close()
+        with open(self.parameters.output_file, "w+") as output_file:
+            # TODO: abrir el fichero en otro sitio, para no tener que abrirlo por cada evento
+            output_file.write(s + '\n')
 
     def logEvent(self, currentEvent):
         s = str(self.currentTime) + ','
@@ -142,10 +142,9 @@ class Core:
         s += str(self.parking.getQueueLength()) + ','
         s += str(self.entitiesSystem)
         # print(s)
-        f = open(self.parameters.output_file, "a+")
-        # TODO: abrir el fichero en otro sitio, para no tener que abrirlo por cada evento
-        f.write(s + '\n')
-        f.close()
+        with open(self.parameters.output_file, "a+") as output_file:
+            # TODO: abrir el fichero en otro sitio, para no tener que abrirlo por cada evento
+            output_file.write(s + '\n')
 
     def stats(self):
         print('Max_Queue_Length', self.parking.getMaxQueueLength())
