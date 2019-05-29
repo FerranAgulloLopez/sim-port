@@ -9,6 +9,9 @@ from collections import deque
 from dash.dependencies import Input, Output
 import plotly.graph_objs as go
 
+from src.Parameters import Parameters
+from src.Charts import Charts
+
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 # Auxiliary operations
@@ -27,9 +30,33 @@ def parse_time(time):
 
 # load trace
 df = pd.read_csv("../output/trace.csv")
+parameters = Parameters()
+charts = Charts()
 
 
-######################################################### static graphs
+######################################################### timeline chart
+
+timeline_cargas = [None]*26
+timeline_descargas = [None]*26
+timeline_duo = [None]*26
+aux_time = 6
+while (aux_time <= 20):
+    phase = parameters.getCurrentShift(aux_time*3600)
+    if (phase == 'ENTREGA'):
+        timeline_descargas[aux_time] = aux_time
+        timeline_descargas[aux_time+1] = aux_time+1
+    if (phase == 'RECOGIDA'):
+        timeline_cargas[aux_time] = aux_time
+        timeline_cargas[aux_time+1] = aux_time+1
+    if (phase == 'DUAL'):
+        timeline_duo[aux_time] = aux_time
+        timeline_duo[aux_time + 1] = aux_time + 1
+    aux_time += 1
+timeline_cargas = timeline_cargas[6:21]
+timeline_descargas = timeline_descargas[6:21]
+timeline_duo = timeline_duo[6:21]
+
+######################################################### summary graphs
 
 finish_phase_1_time = 38400
 finish_phase_1_last = False
@@ -110,6 +137,7 @@ app.layout = html.Div(
                 children=[
                     dcc.Tab(label="Real-time simulation", value="real_time_tab", children=[
                         html.Div([
+                                    dcc.Graph(id='time-graph'),
                                     dcc.Graph(id='pie-graph'),
                                     dcc.Graph(id='live-update-graph'),
                                     dcc.Interval(
@@ -124,96 +152,7 @@ app.layout = html.Div(
                         html.Div([
                             dcc.Graph(
                                 id='example-graph',
-                                figure={
-                                    'data': [
-                                        {
-                                            "values": [idle_1, service_1],
-                                            "labels": [
-                                                "Idle Processors",
-                                                "Service Processors"
-                                            ],
-                                            'marker': {'colors': ['rgb(255, 140, 0)',
-                                                                  'rgb(65, 105, 225)']},
-                                            "domain": {"column": 0},
-                                            "hoverinfo": "label+value+name",
-                                            "hole": .4,
-                                            "type": "pie",
-                                            "title": "Etapa1",
-                                            'textinfo': 'label+text+percent',
-                                            'direction': 'clockwise',
-                                            'sort': False
-                                        },
-                                        {
-                                            "values": [idle_2, service_2],
-                                            "labels": [
-                                                "Idle Processors",
-                                                "Service Processors"
-                                            ],
-                                            'marker': {'colors': ['rgb(255, 140, 0)',
-                                                                  'rgb(65, 105, 225)']},
-                                            "textposition": "inside",
-                                            "domain": {"column": 1},
-                                            "title": "Etapa2",
-                                            "hoverinfo": "label+value+name",
-                                            "hole": .4,
-                                            "type": "pie",
-                                            'textinfo': 'label+text+percent',
-                                            'direction': 'clockwise',
-                                            'sort': False
-                                        },
-                                        {
-                                            "values": [idle_3, service_3],
-                                            "labels": [
-                                                "Idle Processors",
-                                                "Service Processors"
-                                            ],
-                                            'marker': {'colors': ['rgb(255, 140, 0)',
-                                                                  'rgb(65, 105, 225)']},
-                                            "textposition": "inside",
-                                            "domain": {"column": 2},
-                                            "title": "Etapa3",
-                                            "hoverinfo": "label+value+name",
-                                            "hole": .4,
-                                            "type": "pie",
-                                            'textinfo': 'label+text+percent',
-                                            'direction': 'clockwise',
-                                            'sort': False
-                                        }
-                                    ],
-                                    'layout': {
-                                        "title": "",
-                                        "grid": {"rows": 1, "columns": 3},
-                                        "annotations": [
-                                            {
-                                                "font": {
-                                                    "size": 20
-                                                },
-                                                "text": "",
-                                                "showarrow": False,
-                                                "x": 0.0,
-                                                "y": 0.5
-                                            },
-                                            {
-                                                "font": {
-                                                    "size": 20
-                                                },
-                                                "text": "",
-                                                "showarrow": False,
-                                                "x": 0.30,
-                                                "y": 0.5
-                                            },
-                                            {
-                                                "font": {
-                                                    "size": 20
-                                                },
-                                                "text": "",
-                                                "showarrow": False,
-                                                "x": 0.6,
-                                                "y": 0.5
-                                            }
-                                        ]
-                                    }
-                                }
+                                figure=charts.build_static_charts(idle_1, service_1, idle_2, service_2, idle_3, service_3)
                             )
                         ]),
                     ]),
@@ -237,11 +176,13 @@ app.layout = html.Div(
 )
 
 
-@app.callback([Output('live-update-graph', 'figure'),
+@app.callback([Output('time-graph', 'figure'),
+               Output('live-update-graph', 'figure'),
                Output('pie-graph', 'figure')],
               [Input('interval-component', 'n_intervals')])
 def update_graph_live(n):
-    global mainTime, df, entries, entriesTime, buffer_slots_busy, queue_slots_busy, buffer_max_size, queue_max_size, processors_max_number, processors_free, old_event_time, totalEntities
+    global mainTime, df, entries, entriesTime, buffer_slots_busy, queue_slots_busy, buffer_max_size, queue_max_size, processors_max_number, processors_free, old_event_time, totalEntities, charts
+    global timeline_cargas, timeline_descargas, timeline_duo
 
     mainTime += 60
 
@@ -286,6 +227,7 @@ def update_graph_live(n):
     ))
 
     layout = go.Layout(
+        title="Entrades de camions i número d'entitas dintre del port",
         xaxis={'type': 'log', 'title': 'Temps', 'ticktext': list(entriesTimeNames), 'tickvals': list(entriesTime)},
         yaxis={'title': 'Camions', 'range': [-10, 20]},
         #margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
@@ -298,98 +240,10 @@ def update_graph_live(n):
         'layout': layout
     }
 
-    fig2 = {
-        "data": [
-            {
-                "values": [buffer_slots_busy, buffer_max_size-buffer_slots_busy],
-                "labels": [
-                    "Busy slots",
-                    "Free Slots"
-                ],
-                'marker': {'colors': ['rgb(255, 140, 0)',
-                                      'rgb(65, 105, 225)']},
-                "domain": {"column": 0},
-                "hoverinfo": "label+value+name",
-                "hole": .4,
-                "type": "pie",
-                "title": "Buffer",
-                'textinfo': 'label+text+value+percent',
-                'direction': 'clockwise',
-                'sort': False
-            },
-            {
-                "values": [queue_slots_busy, queue_max_size - queue_slots_busy],
-                "labels": [
-                    "Busy slots",
-                    "Free Slots"
-                ],
-                'marker': {'colors': ['rgb(255, 140, 0)',
-                                      'rgb(65, 105, 225)']},
-                "textposition": "inside",
-                "domain": {"column": 1},
-                "title": "Queue",
-                "hoverinfo": "label+value+name",
-                "hole": .4,
-                "type": "pie",
-                'textinfo': 'label+text+value+percent',
-                'direction': 'clockwise',
-                'sort': False
-            },
-            {
-                "values": [processors_max_number - processors_free, processors_free],
-                "labels": [
-                    "Service-Processors",
-                    "Idle-Processors"
-                ],
-                'marker': {'colors': ['rgb(255, 140, 0)',
-                                      'rgb(65, 105, 225)']},
-                "textposition": "inside",
-                "domain": {"column": 2},
-                "title": "Processors",
-                "hoverinfo": "label+value+name",
-                "hole": .4,
-                "type": "pie",
-                'textinfo': 'label+text+value+percent',
-                'direction': 'clockwise',
-                'sort': False
-            }
-        ],
-        "layout": {
-            "title": "",
-            "grid": {"rows": 1, "columns": 3},
-            "annotations": [
-                {
-                    "font": {
-                        "size": 20
-                    },
-                    "text": "",
-                    "showarrow": False,
-                    "x": 0.0,
-                    "y": 0.5
-                },
-                {
-                    "font": {
-                        "size": 20
-                    },
-                    "text": "",
-                    "showarrow": False,
-                    "x": 0.30,
-                    "y": 0.5
-                },
-                {
-                    "font": {
-                        "size": 20
-                    },
-                    "text": "",
-                    "showarrow": False,
-                    "x": 0.6,
-                    "y": 0.5
-                }
-            ]
-        }
-    }
+    fig2 = charts.build_queue_pies(buffer_slots_busy, queue_slots_busy, processors_free, buffer_max_size, queue_max_size, processors_max_number)
+    fig3 = charts.build_timeline(mainTime, timeline_cargas, timeline_descargas, timeline_duo)
 
-    return fig2, fig1
+    return fig3, fig2, fig1
 
 
 if __name__ == '__main__':
