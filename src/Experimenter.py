@@ -3,6 +3,7 @@ import subprocess
 import sys
 
 from src.Constants import Constants
+from src.Core import Core
 from src.Parameters import Parameters
 
 
@@ -56,11 +57,14 @@ if __name__ == "__main__":
                 # print(output_file)
                 parameters.output_file = output_file
 
-                with open(output_file, 'w+') as ofs:
-                    # NOTE: switch as needed between python3, py
-                    # cmd = ['python3', './Core.py', '-e', '-p', str(args[1])]
-                    cmd = ['py', './Core.py', '-e', '-p', str(args[1])]
-                    subprocess.Popen(cmd)
+                # RUN CORE
+                # NOTE: switch as needed between python3, py
+                # cmd = ['python3', './Core.py', '-e', '-p', str(args[1])]
+                # cmd = ['py', './Core.py', '-e', '-p', str(args[1])]
+                # subprocess.Popen(cmd)
+                core = Core(parameters)
+                core.run()
+
                 # TODO: analyze trace
                 with open(output_file, 'r') as ofs:
                     # TODO: read idle times by shift, more idle time = better (less workers needed)

@@ -14,10 +14,8 @@ from src.Source import Source
 class Core:
     # CLASS FUNCTIONS
 
-    def __init__(self):
-
-        # TODO: set instance Parameters shift duration
-
+    def __init__(self, parameters):
+        self.parameters = parameters
         num_sources = Constants.DEFAULT_SOURCES
         num_processors = parameters.num_processors
         # Attributes initialization
@@ -126,8 +124,8 @@ class Core:
         s += 'Buffer_Length,'
         s += 'Queue_Length,'
         s += 'Entities_System'
-        print(s)
-        f = open(parameters.output_file, "w+")
+        # print(s)
+        f = open(self.parameters.output_file, "w+")
         f.write(s + '\n')
         f.close()
 
@@ -142,8 +140,8 @@ class Core:
         s += str(self.queue.getQueueLength()) + ','
         s += str(self.parking.getQueueLength()) + ','
         s += str(self.entitiesSystem)
-        print(s)
-        f = open(parameters.output_file, "a+")
+        # print(s)
+        f = open(self.parameters.output_file, "a+")
         # TODO: abrir el fichero en otro sitio, para no tener que abrirlo por cada evento
         f.write(s + '\n')
         f.close()
@@ -215,5 +213,5 @@ if __name__ == "__main__":
     # DEBUG END
 
     # Start core
-    core = Core()
+    core = Core(parameters)
     core.run()
