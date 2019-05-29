@@ -14,9 +14,10 @@ from src.Source import Source
 class Core:
     # CLASS FUNCTIONS
 
-    def __init__(self, processors=0, sources=0):
-        parameters = Parameters()
-        parameters.setNumProcessors(processors)
+    def __init__(self, parameters):
+        self.parameters = parameters
+        num_sources = Constants.DEFAULT_SOURCES
+        num_processors = parameters.num_processors
         # Attributes initialization
         self.processors = []
         self.sources = []
@@ -31,9 +32,9 @@ class Core:
         self.queue = Queue(Constants.SLOTS_BUFFER)
         self.parking = Queue(Constants.SLOTS_QUEUE)
         self.random = Random()
-        for _ in range(0, processors):
+        for _ in range(0, num_processors):
             self.processors.append(Processor(self))
-        for _ in range(0, sources):
+        for _ in range(0, num_sources):
             self.sources.append(Source(self))
         # Dependency injection
         for source in self.sources:
@@ -44,7 +45,7 @@ class Core:
             self.parking.addOutput(processor)  # parking -> processor
             processor.addInput(self.parking)  # processor <- parking
 
-        self.numberOfIdleProcessors = processors
+        self.numberOfIdleProcessors = num_processors
 
     def increaseEntitiesSystem(self):
         self.entitiesSystem += 1
@@ -80,6 +81,7 @@ class Core:
             self.startSimulation()
 
     def run(self):
+        print('Core running...')
         self.logHeaders()
         self.startSimulation()
         while not self.eventsList.empty():
@@ -123,10 +125,10 @@ class Core:
         s += 'Buffer_Length,'
         s += 'Queue_Length,'
         s += 'Entities_System'
-        print(s)
-        f = open("../output/trace.csv", "w+")
-        f.write(s + '\n')
-        f.close()
+        # print(s)
+        with open(self.parameters.output_file, "w+") as output_file:
+            # TODO: abrir el fichero en otro sitio, para no tener que abrirlo por cada evento
+            output_file.write(s + '\n')
 
     def logEvent(self, currentEvent):
         s = str(self.currentTime) + ','
@@ -139,11 +141,10 @@ class Core:
         s += str(self.queue.getQueueLength()) + ','
         s += str(self.parking.getQueueLength()) + ','
         s += str(self.entitiesSystem)
-        print(s)
-        f = open("../output/trace.csv",
-                 "a+")  # abrir el fichero en otro sitio, para no tener que abrirlo por cada evento
-        f.write(s + '\n')
-        f.close()
+        # print(s)
+        with open(self.parameters.output_file, "a+") as output_file:
+            # TODO: abrir el fichero en otro sitio, para no tener que abrirlo por cada evento
+            output_file.write(s + '\n')
 
     def stats(self):
         print('Max_Queue_Length', self.parking.getMaxQueueLength())
@@ -153,31 +154,68 @@ def usage():
     print('Core.py [options]')
     print('Model: source -> queue -> parking -> processor(s) -> sink')
     print('Options:')
-    print('-h, --help\t\tShows the program usage help.')
+    print('-h, --help\t\t\t\tShows the program usage help.')
     print('-p, --processors=...\tSets the number of processors.')
+    print('-sX, --shiftX=...\t\tSets shift duration in hours for shift X, where X = {1, 2, 3}. Minimum 2 required. '
+          'Must add up to', int(Constants.SIMULATION_DURATION / 3600))
 
 
 # MAIN FUNCTION
 if __name__ == "__main__":
 
     # Default arguments
-    sources = Constants.DEFAULT_SOURCES
     processors = Constants.DEFAULT_PROCESSORS
+    flag_experimenter = False
+    shift_duration = []
+    shift_type = []
+    shift_factor = 0
+
+    parameters = Parameters()
 
     # Get arguments
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'hp:', [
-            'help', 'processors='])
+        opts, args = getopt.getopt(sys.argv[1:], 'hp:e', [
+            'help', 'processors=', 'experimenter'])
         for opt, arg in opts:
             if opt in ('-h', '--help'):
                 usage()
                 sys.exit()
             if opt in ('-p', '--processors'):
-                processors = int(arg)
+                num_processors = int(arg)
+                parameters.setNumProcessors(num_processors)
+            if opt in ('-e', '--experimenter'):
+                flag_experimenter = True
     except getopt.GetoptError:
         usage()
         sys.exit()
 
+    duration_total = 0
+    if not flag_experimenter:
+        while duration_total < int(Constants.SIMULATION_DURATION / 3600):
+            in_shift_type = str(input('Enter shift type:'))
+            if in_shift_type not in (Constants.ENTREGA, Constants.RECOGIDA, Constants.DUAL):
+                print('Shift type not recognized. Shifts are:', Constants.ENTREGA, Constants.RECOGIDA, Constants.DUAL)
+            else:
+                in_shift_duration = int(input('Enter shift duration in hours:'))
+                if duration_total + in_shift_duration <= int(Constants.SIMULATION_DURATION / 3600):
+                    duration_total += in_shift_duration
+                    shift_duration.append(in_shift_duration)
+                    shift_type.append(in_shift_type)
+                else:
+                    print('Not enough time. Remaining time is:',
+                          int(Constants.SIMULATION_DURATION / 3600) - duration_total), 'h.'
+        # Still inside if not flag_experimenter
+        parameters.setParameters(shift_duration, shift_type, shift_factor)
+        print('Parameters set.')
+    # else, set by Experimenter
+
+    # DEBUG BEGIN
+    with open("debug_info.txt", "w+") as dbg:
+        dbg.write(str(parameters.shift_type) + '\n')
+        dbg.write(str(parameters.shift_duration) + '\n')
+        dbg.write(str(parameters.shift_factor) + '\n')
+    # DEBUG END
+
     # Start core
-    core = Core(processors, sources)
+    core = Core(parameters)
     core.run()
