@@ -44,7 +44,7 @@ class Core:
         for processor in self.processors:
             self.parking.addOutput(processor)  # parking -> processor
             processor.addInput(self.parking)  # processor <- parking
-
+        self.output_file = None
         self.numberOfIdleProcessors = num_processors
 
     def increaseEntitiesSystem(self):
