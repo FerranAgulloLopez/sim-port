@@ -1,0 +1,3 @@
+['ENTREGA', 'RECOGIDA', 'DUAL']
+[7, 6, 7]
+0

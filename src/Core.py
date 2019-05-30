@@ -82,15 +82,16 @@ class Core:
 
     def run(self):
         print('Core running...')
-        self.logHeaders()
-        self.startSimulation()
-        while not self.eventsList.empty():
-            currentEvent = self.eventsList.get()
-            self.updateState(currentEvent)
-            self.logEvent(currentEvent)
-            currentEvent.executeEvent()
-        self.endSimulation()
-        self.stats()  # DEBUG
+        self.logHeaders()  # creates output file with flag w+
+        with open(self.parameters.output_file, "a+") as self.output_file:
+            self.startSimulation()
+            while not self.eventsList.empty():
+                currentEvent = self.eventsList.get()
+                self.updateState(currentEvent)
+                self.logEvent(currentEvent)
+                currentEvent.executeEvent()
+            self.endSimulation()
+            self.stats()  # DEBUG
 
     def addEvent(self, addedEvent):
         self.eventsList.put(addedEvent, addedEvent.eventTime)
@@ -127,7 +128,6 @@ class Core:
         s += 'Entities_System'
         # print(s)
         with open(self.parameters.output_file, "w+") as output_file:
-            # TODO: abrir el fichero en otro sitio, para no tener que abrirlo por cada evento
             output_file.write(s + '\n')
 
     def logEvent(self, currentEvent):
@@ -142,9 +142,7 @@ class Core:
         s += str(self.parking.getQueueLength()) + ','
         s += str(self.entitiesSystem)
         # print(s)
-        with open(self.parameters.output_file, "a+") as output_file:
-            # TODO: abrir el fichero en otro sitio, para no tener que abrirlo por cada evento
-            output_file.write(s + '\n')
+        self.output_file.write(s + '\n')
 
     def stats(self):
         print('Max_Queue_Length', self.parking.getMaxQueueLength())
