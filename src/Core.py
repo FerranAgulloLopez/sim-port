@@ -203,7 +203,7 @@ if __name__ == "__main__":
                     shift_type.append(in_shift_type)
                 else:
                     print('Not enough time. Remaining time is:',
-                          int(Constants.SIMULATION_DURATION / 3600) - duration_total), 'h.'
+                          int(Constants.SIMULATION_DURATION / 3600) - duration_total, 'h.')
         # Still inside if not flag_experimenter
         parameters.setParameters(shift_duration, shift_type, shift_factor)
         print('Parameters set.')
