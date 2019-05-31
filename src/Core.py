@@ -145,12 +145,6 @@ class Core:
         # print(s)
         self.output_file.write(s + '\n')
 
-    def two_decimal_precision_percentage(self, part, total):
-        over_one = part / total
-        over_ten_thousand = 100 * 100 * over_one
-        cap_decimals = int(over_ten_thousand)
-        return float(cap_decimals / 100)
-
     def stats(self):
         s = 'Max_Queue_Length,'
         s += 'Processors_Capacity_Used'
@@ -158,8 +152,8 @@ class Core:
         for idx in range(len(shift_type)):
             s += ',Shift_' + shift_type[idx] + '_Duration_' + str(shift_duration[idx])
         r = str(self.parking.getMaxQueueLength()) + ','
-        r += str(self.two_decimal_precision_percentage(self.serviceProcessors,
-                 (self.parameters.num_processors * Constants.SIMULATION_DURATION)))  # in %
+        r += str(round(100 * self.serviceProcessors /
+                       (self.parameters.num_processors * Constants.SIMULATION_DURATION), 2))  # in %
         for idx in range(len(shift_type)):
             # TODO: add values to Processors capacity used per shift (may need new attributes in Core)
             r += ',0'
