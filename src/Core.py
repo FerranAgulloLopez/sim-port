@@ -44,7 +44,7 @@ class Core:
         for processor in self.processors:
             self.parking.addOutput(processor)  # parking -> processor
             processor.addInput(self.parking)  # processor <- parking
-
+        self.output_file = None
         self.numberOfIdleProcessors = num_processors
 
     def increaseEntitiesSystem(self):
@@ -74,6 +74,7 @@ class Core:
             self.currentTime  # eventTime
         )
         self.logEvent(endEvent)
+        print('    Simulation finished.')
 
     def executeEvent(self, currentEvent):
         """Implemented by all event creator modules"""
@@ -81,16 +82,17 @@ class Core:
             self.startSimulation()
 
     def run(self):
-        print('Core running...')
-        self.logHeaders()
-        self.startSimulation()
-        while not self.eventsList.empty():
-            currentEvent = self.eventsList.get()
-            self.updateState(currentEvent)
-            self.logEvent(currentEvent)
-            currentEvent.executeEvent()
-        self.endSimulation()
-        self.stats()  # DEBUG
+        print('    Core running...')
+        self.logHeaders()  # creates output file with flag w+
+        with open(self.parameters.output_file + '.csv', "a+") as self.output_file:
+            self.startSimulation()
+            while not self.eventsList.empty():
+                currentEvent = self.eventsList.get()
+                self.updateState(currentEvent)
+                self.logEvent(currentEvent)
+                currentEvent.executeEvent()
+            self.endSimulation()
+            self.stats()  # DEBUG
 
     def addEvent(self, addedEvent):
         self.eventsList.put(addedEvent, addedEvent.eventTime)
@@ -126,8 +128,7 @@ class Core:
         s += 'Queue_Length,'
         s += 'Entities_System'
         # print(s)
-        with open(self.parameters.output_file, "w+") as output_file:
-            # TODO: abrir el fichero en otro sitio, para no tener que abrirlo por cada evento
+        with open(self.parameters.output_file + '.csv', "w+") as output_file:
             output_file.write(s + '\n')
 
     def logEvent(self, currentEvent):
@@ -142,12 +143,30 @@ class Core:
         s += str(self.parking.getQueueLength()) + ','
         s += str(self.entitiesSystem)
         # print(s)
-        with open(self.parameters.output_file, "a+") as output_file:
-            # TODO: abrir el fichero en otro sitio, para no tener que abrirlo por cada evento
-            output_file.write(s + '\n')
+        self.output_file.write(s + '\n')
+
+    def two_decimal_precision_percentage(self, part, total):
+        over_one = part / total
+        over_ten_thousand = 100 * 100 * over_one
+        cap_decimals = int(over_ten_thousand)
+        return float(cap_decimals / 100)
 
     def stats(self):
-        print('Max_Queue_Length', self.parking.getMaxQueueLength())
+        s = 'Max_Queue_Length,'
+        s += 'Processors_Capacity_Used'
+        shift_type, shift_duration = self.parameters.getParameters()
+        for idx in range(len(shift_type)):
+            s += ',Shift_' + shift_type[idx] + '_Duration_' + str(shift_duration[idx])
+        r = str(self.parking.getMaxQueueLength()) + ','
+        r += str(self.two_decimal_precision_percentage(self.serviceProcessors,
+                 (self.parameters.num_processors * Constants.SIMULATION_DURATION)))  # in %
+        for idx in range(len(shift_type)):
+            # TODO: add values to Processors capacity used per shift (may need new attributes in Core)
+            r += ',0'
+            pass
+        with open(self.parameters.output_file + '.stats.csv', "w+") as output_file:
+            output_file.write(s + '\n')
+            output_file.write(r + '\n')
 
 
 def usage():
@@ -203,17 +222,17 @@ if __name__ == "__main__":
                     shift_type.append(in_shift_type)
                 else:
                     print('Not enough time. Remaining time is:',
-                          int(Constants.SIMULATION_DURATION / 3600) - duration_total), 'h.'
+                          int(Constants.SIMULATION_DURATION / 3600) - duration_total, 'h.')
         # Still inside if not flag_experimenter
         parameters.setParameters(shift_duration, shift_type, shift_factor)
-        print('Parameters set.')
+        print('    Parameters set.')
     # else, set by Experimenter
 
     # DEBUG BEGIN
-    with open("debug_info.txt", "w+") as dbg:
-        dbg.write(str(parameters.shift_type) + '\n')
-        dbg.write(str(parameters.shift_duration) + '\n')
-        dbg.write(str(parameters.shift_factor) + '\n')
+    # with open("debug_info.txt", "w+") as dbg:
+    #     dbg.write(str(parameters.shift_type) + '\n')
+    #     dbg.write(str(parameters.shift_duration) + '\n')
+    #     dbg.write(str(parameters.shift_factor) + '\n')
     # DEBUG END
 
     # Start core

@@ -58,15 +58,16 @@ if __name__ == "__main__":
                 parameters.output_file = output_file
 
                 # RUN CORE
-                # NOTE: switch as needed between python3, py
-                # cmd = ['python3', './Core.py', '-e', '-p', str(args[1])]
-                # cmd = ['py', './Core.py', '-e', '-p', str(args[1])]
-                # subprocess.Popen(cmd)
+                path_list = output_file.split('/')
+                filename = str(path_list[len(path_list)-1:][0])
+                s = '[Configuration: ' + filename + ']\n'
+                s += '    Parameters set.'
+                print(s)
                 core = Core(parameters)
                 core.run()
 
                 # TODO: analyze trace
-                with open(output_file, 'r') as ofs:
+                with open(output_file + '.stats.csv', 'r') as ifs2:
                     # TODO: read idle times by shift, more idle time = better (less workers needed)
                     # TODO: update best configuration
                     pass
