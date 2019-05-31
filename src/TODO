@@ -3,13 +3,15 @@ Tests:
 
 # Unit Tests: Done
 # Integration Tests:
+    Experimenter,
     Core,
     Event,
-    Experimenter,
-    Processor,
+    Processor: In process
     Queue: Done
     Source: Done
     ViewController?
+
+
 
 Notas:
     No hay tests unitarios de Source (no hacen falta, solo hacen falta los de integridad y sistema)
