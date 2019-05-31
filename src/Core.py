@@ -94,7 +94,7 @@ class Core:
     def run(self):
         print('    Core running...')
         self.logHeaders()  # creates output file with flag w+
-        with open(self.parameters.output_file + '.csv', "a+") as self.output_file:
+        with open('../output/' + self.parameters.output_file + '.csv', "a+") as self.output_file:
             self.startSimulation()
             while not self.eventsList.empty():
                 currentEvent = self.eventsList.get()
@@ -149,7 +149,7 @@ class Core:
         s += 'Queue_Length,'
         s += 'Entities_System'
         # print(s)
-        with open(self.parameters.output_file + '.csv', "w+") as output_file:
+        with open('../output/' + self.parameters.output_file + '.csv', "w+") as output_file:
             output_file.write(s + '\n')
 
     def logEvent(self, currentEvent):

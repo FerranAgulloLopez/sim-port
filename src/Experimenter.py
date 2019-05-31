@@ -27,7 +27,7 @@ if __name__ == "__main__":
     # DEBUG END
 
     # Start core
-    with open(inputFile, 'r') as ifs:
+    with open('../input/' + inputFile, 'r') as ifs:
         content = ifs.readlines()
         for line in content:
             if line:
@@ -67,7 +67,13 @@ if __name__ == "__main__":
                 core.run()
 
                 # TODO: analyze trace
-                with open(output_file + '.stats.csv', 'r') as ifs2:
+                with open('../output/' + output_file + '.stats.csv', 'r') as ifs2:
+                    headers = ifs2.readline()[:-1].split(',')
+                    data = ifs2.readline()[:-1].split(',')
+                    print(headers)
+                    print(data)
+                    for header in headers:
+                        pass
                     # TODO: read idle times by shift, more idle time = better (less workers needed)
                     # TODO: update best configuration
                     pass
