@@ -123,9 +123,10 @@ class Core:
                 self.serviceProcessors += timeStep
 
         if self.currentTime > self.shift_next_time * 3600:
-            # print(self.currentTime, self.shift_next_time * 3600, self.shift_next_index)
-            self.shift_next_time += self.shift_durations[self.shift_next_index]
-            self.shift_next_index += 1
+            print(self.currentTime, self.shift_next_time * 3600, self.shift_next_index)
+            if self.shift_next_index < len(self.shift_durations):
+                self.shift_next_time += self.shift_durations[self.shift_next_index]
+                self.shift_next_index += 1
             if not self.service_per_shift:  # first shift - empty list
                 self.service_per_shift.append(self.serviceProcessors)
             else:
