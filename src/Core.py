@@ -187,7 +187,7 @@ class Core:
             s += ',Shift_Capacity_Usage'
             r += ',' + str(round(100 * self.service_per_shift[idx] /
                                  (self.parameters.num_processors * Constants.SIMULATION_DURATION),2))
-        with open(self.parameters.output_file + '.stats.csv', "w+") as output_file:
+        with open('../output/' + self.parameters.output_file + '.stats.csv', "w+") as output_file:
             output_file.write(s + '\n')
             output_file.write(r + '\n')
 
