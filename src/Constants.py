@@ -9,7 +9,8 @@ class Constants:
 
     # Time constants (in seconds)
     SIMULATION_INITIAL_TIME = 6 * 60 * 60  # 6:00:00 h = 21600 s
-    SIMULATION_DURATION = 20 * 60 * 60  # 20:00:00 h = 72000 s
+    SIMULATION_FINAL_TIME = 20 * 60 * 60  # 20:00:00 h = 72000 s
+    SIMULATION_DURATION = SIMULATION_FINAL_TIME - SIMULATION_INITIAL_TIME
 
     # Event names
     START_SIMULATION = 'START_SIMULATION'
