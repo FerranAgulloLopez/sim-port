@@ -58,39 +58,68 @@ timeline_duo = timeline_duo[6:21]
 
 ######################################################### summary graphs
 
-finish_phase_1_time = 38400
-finish_phase_1_last = False
-finish_phase_2_time = 55200
-finish_phase_2_last = False
-finish_phase_3_time = 72000
-
 idle_1 = 0
 service_1 = 0
 idle_2 = 0
 service_2 = 0
 idle_3 = 0
 service_3 = 0
+entries_carregues = 0
+entries_descarregues = 0
+entries_duo = 0
+
+max_queue_carregues = 0
+max_queue_descarregues = 0
+max_queue_duo = 0
+max_par_carregues = 0
+max_par_descarregues = 0
+max_par_duo = 0
 
 size = len(df.index)
 count = 0
+last_service = 0
+last_idle = 0
 
 while (count < size):
     event = df.iloc[count]
     event_time = event['Current_Time']
-    if ((not finish_phase_1_last) and (event_time > finish_phase_1_time)):
-        finish_phase_1_last = True
-        idle_1 = event['Idle_Processors']
-        service_1 = event['Service_Processors']
-    if ((not finish_phase_2_last) and (event_time > finish_phase_2_time)):
-        finish_phase_2_last = True
-        idle_2 = event['Idle_Processors']
-        service_2 = event['Service_Processors']
+    idle = event['Idle_Processors']
+    service = event['Service_Processors']
+    aux_num_queue = event['Buffer_Length']
+    aux_num_par = event['Queue_Length']
+    aux_idle = idle - last_idle
+    aux_service = service - last_service
+    phase = parameters.getCurrentShift(event_time)
+    if (phase == 'ENTREGA'):
+        idle_1 += aux_idle
+        service_1 += aux_service
+        if event['Event_Name'] == 'NEXT_ARRIVAL':
+            entries_descarregues += 1
+        if aux_num_queue > max_queue_descarregues:
+            max_queue_descarregues = aux_num_queue
+        if aux_num_par > max_par_descarregues:
+            max_par_descarregues = aux_num_par
+    if (phase == 'RECOGIDA'):
+        idle_2 += aux_idle
+        service_2 += aux_service
+        if event['Event_Name'] == 'NEXT_ARRIVAL':
+            entries_carregues += 1
+        if aux_num_queue > max_queue_carregues:
+            max_queue_carregues = aux_num_queue
+        if aux_num_par > max_par_carregues:
+            max_par_carregues = aux_num_par
+    if (phase == 'DUAL'):
+        idle_3 += aux_idle
+        service_3 += aux_service
+        if event['Event_Name'] == 'NEXT_ARRIVAL':
+            entries_duo += 1
+        if aux_num_queue > max_queue_duo:
+            max_queue_duo = aux_num_queue
+        if aux_num_par > max_par_duo:
+            max_par_duo = aux_num_par
+    last_idle = idle
+    last_service = service
     count += 1
-
-event = df.iloc[count-1]
-idle_3 = event['Idle_Processors']
-service_3 = event['Service_Processors']
-
 
 #########################################################
 
@@ -151,8 +180,20 @@ app.layout = html.Div(
                     dcc.Tab(label="Simulation summary", value="summary_tab", children=[
                         html.Div([
                             dcc.Graph(
-                                id='example-graph',
+                                id='services-graph',
                                 figure=charts.build_static_charts(idle_1, service_1, idle_2, service_2, idle_3, service_3)
+                            ),
+                            dcc.Graph(
+                                id='entries-graph',
+                                figure=charts.build_static_entries(entries_carregues, entries_descarregues, entries_duo)
+                            ),
+                            dcc.Graph(
+                                id='queue-graph',
+                                figure=charts.build_static_queue(max_queue_carregues,max_queue_descarregues,max_queue_duo)
+                            ),
+                            dcc.Graph(
+                                id='parking-graph',
+                                figure=charts.build_static_parquink(max_par_carregues,max_par_descarregues,max_par_duo)
                             )
                         ]),
                     ]),

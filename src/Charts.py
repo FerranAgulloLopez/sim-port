@@ -8,8 +8,8 @@ class Charts:
                 {
                     "values": [idle_1, service_1],
                     "labels": [
-                        "Idle Processors",
-                        "Service Processors"
+                        "Grues en repòs",
+                        "Grues en servei"
                     ],
                     'marker': {'colors': ['rgb(255, 140, 0)',
                                           'rgb(65, 105, 225)']},
@@ -17,7 +17,7 @@ class Charts:
                     "hoverinfo": "label+value+name",
                     "hole": .4,
                     "type": "pie",
-                    "title": "Etapa1",
+                    "title": "Descàrregues",
                     'textinfo': 'label+text+percent',
                     'direction': 'clockwise',
                     'sort': False
@@ -25,14 +25,14 @@ class Charts:
                 {
                     "values": [idle_2, service_2],
                     "labels": [
-                        "Idle Processors",
-                        "Service Processors"
+                        "Grues en repòs",
+                        "Grues en servei"
                     ],
                     'marker': {'colors': ['rgb(255, 140, 0)',
                                           'rgb(65, 105, 225)']},
                     "textposition": "inside",
                     "domain": {"column": 1},
-                    "title": "Etapa2",
+                    "title": "Càrregues",
                     "hoverinfo": "label+value+name",
                     "hole": .4,
                     "type": "pie",
@@ -43,14 +43,14 @@ class Charts:
                 {
                     "values": [idle_3, service_3],
                     "labels": [
-                        "Idle Processors",
-                        "Service Processors"
+                        "Grues en repòs",
+                        "Grues en servei"
                     ],
                     'marker': {'colors': ['rgb(255, 140, 0)',
                                           'rgb(65, 105, 225)']},
                     "textposition": "inside",
                     "domain": {"column": 2},
-                    "title": "Etapa3",
+                    "title": "Càrregues+Descàrregues",
                     "hoverinfo": "label+value+name",
                     "hole": .4,
                     "type": "pie",
@@ -60,7 +60,7 @@ class Charts:
                 }
             ],
             'layout': {
-                "title": "",
+                "title": "Estat de les grues durant tota l'execució segons el tipus d'operació",
                 "grid": {"rows": 1, "columns": 3},
                 "annotations": [
                     {
@@ -97,6 +97,8 @@ class Charts:
 
     def build_timeline(self, time, timeline_cargas, timeline_descargas, timeline_duo):
         hour = time/3600
+        if hour > 20 :
+            hour = 20
         figure = {
             "data": [
                 {
@@ -206,7 +208,7 @@ class Charts:
                                           'rgb(65, 105, 225)']},
                     "textposition": "inside",
                     "domain": {"column": 1},
-                    "title": "Pàrquink",
+                    "title": "Pàrquing",
                     "hoverinfo": "label+value+name",
                     "hole": .4,
                     "type": "pie",
@@ -224,7 +226,7 @@ class Charts:
                                           'rgb(65, 105, 225)']},
                     "textposition": "inside",
                     "domain": {"column": 2},
-                    "title": "Processors",
+                    "title": "Grues",
                     "hoverinfo": "label+value+name",
                     "hole": .4,
                     "type": "pie",
@@ -268,6 +270,85 @@ class Charts:
             }
         }
         return figure
+
+    def build_static_entries(self, entries_carregues, entries_descarregues, entries_duo):
+        x = ['Càrregues', 'Descàrregues', 'Càrregues+Descàrregues']
+        figure = {
+            "data": [
+                {
+                    "type": "bar",
+                    'x': x,
+                    'y': [entries_carregues,entries_descarregues,entries_duo],
+                    'text': x,
+                    'textposition': 'auto',
+                    'marker': {
+                        'color': 'rgb(158,202,225)',
+                        'line': {
+                            'color': 'rgb(8,48,107)',
+                            'width': 1.5
+                        },
+                    },
+                    'opacity': 0.6
+                }
+            ],
+            "layout": {
+                "title": "Entrades a la terminal segons el tipus d'operació"
+            }
+        }
+        return figure
+
+    def build_static_queue(self, max_queue_carregues, max_queue_descarregues, max_queue_entries_duo):
+        x = ['Càrregues', 'Descàrregues', 'Càrregues+Descàrregues']
+        figure = {
+            "data": [
+                {
+                    "type": "bar",
+                    'x': x,
+                    'y': [max_queue_carregues,max_queue_descarregues,max_queue_entries_duo],
+                    'text': x,
+                    'textposition': 'auto',
+                    'marker': {
+                        'color': 'rgb(158,202,225)',
+                        'line': {
+                            'color': 'rgb(8,48,107)',
+                            'width': 1.5
+                        },
+                    },
+                    'opacity': 0.6
+                }
+            ],
+            "layout": {
+                "title": "Número màxim de camions a la cua segons el tipus d'operació"
+            }
+        }
+        return figure
+
+    def build_static_parquink(self, max_par_carregues, max_par_descarregues, max_par_duo):
+        x = ['Càrregues', 'Descàrregues', 'Càrregues+Descàrregues']
+        figure = {
+            "data": [
+                {
+                    "type": "bar",
+                    'x': x,
+                    'y': [max_par_carregues,max_par_descarregues,max_par_duo],
+                    'text': x,
+                    'textposition': 'auto',
+                    'marker': {
+                        'color': 'rgb(158,202,225)',
+                        'line': {
+                            'color': 'rgb(8,48,107)',
+                            'width': 1.5
+                        },
+                    },
+                    'opacity': 0.6
+                }
+            ],
+            "layout": {
+                "title": "Número màxim de camions al pàrking segons el tipus d'operació"
+            }
+        }
+        return figure
+
 
 
 
