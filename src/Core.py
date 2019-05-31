@@ -27,6 +27,16 @@ class Core:
         self.idleProcessors = 0
         self.serviceProcessors = 0
         self.entitiesSystem = 0
+        self.service_per_shift = []
+        self.service_per_total = []
+        self.shift_next_index = 0
+        self.shift_durations = self.parameters.getParameters()[1]
+        self.shift_next_time = self.shift_durations[self.shift_next_index]
+
+        # DEBUG BEGIN
+        # print(str(self.shift_durations))
+        # print(str(self.shift_next_time))
+        #DEBUG END
 
         # Instance creation
         self.queue = Queue(Constants.SLOTS_BUFFER)
@@ -112,6 +122,17 @@ class Core:
             else:
                 self.serviceProcessors += timeStep
 
+        if self.currentTime > self.shift_next_time * 3600:
+            # print(self.currentTime, self.shift_next_time * 3600, self.shift_next_index)
+            self.shift_next_time += self.shift_durations[self.shift_next_index]
+            self.shift_next_index += 1
+            if not self.service_per_shift:  # first shift - empty list
+                self.service_per_shift.append(self.serviceProcessors)
+            else:
+                self.service_per_shift.append(
+                    self.serviceProcessors - self.service_per_total[len(self.service_per_total)-1])
+            self.service_per_total.append(self.serviceProcessors)
+
     def getCurrentShift(self):
         param = Parameters()
         return param.getCurrentShift(self.currentTime)
@@ -146,18 +167,25 @@ class Core:
         self.output_file.write(s + '\n')
 
     def stats(self):
-        s = 'Max_Queue_Length,'
-        s += 'Processors_Capacity_Used'
+        # DEBUG BEGIN
+        # print()
+        # print(str(self.service_per_shift))
+        # print()
+        # DEBUG END
+        s = 'Max_Queue_Length'
+        r = str(self.parking.getMaxQueueLength())
+        s += ',Processors_Capacity_Used'
+        r += ',' + str(round(100 * self.serviceProcessors /
+                       (self.parameters.num_processors * Constants.SIMULATION_DURATION), 2))  # in %
         shift_type, shift_duration = self.parameters.getParameters()
         for idx in range(len(shift_type)):
-            s += ',Shift_' + shift_type[idx] + '_Duration_' + str(shift_duration[idx])
-        r = str(self.parking.getMaxQueueLength()) + ','
-        r += str(round(100 * self.serviceProcessors /
-                       (self.parameters.num_processors * Constants.SIMULATION_DURATION), 2))  # in %
-        for idx in range(len(shift_type)):
-            # TODO: add values to Processors capacity used per shift (may need new attributes in Core)
-            r += ',0'
-            pass
+            s += ',Shift_Type'
+            r += ',' + shift_type[idx]
+            s += ',Shift_Duration'
+            r += ',' + str(shift_duration[idx])
+            s += ',Shift_Capacity_Usage'
+            r += ',' + str(round(100 * self.service_per_shift[idx] /
+                                 (self.parameters.num_processors * Constants.SIMULATION_DURATION),2))
         with open(self.parameters.output_file + '.stats.csv', "w+") as output_file:
             output_file.write(s + '\n')
             output_file.write(r + '\n')
