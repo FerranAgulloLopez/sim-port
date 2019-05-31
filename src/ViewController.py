@@ -137,6 +137,11 @@ entries = deque([], 60)
 entriesTime = deque([], 60)
 entriesTimeNames = deque([], 60)
 
+totalEntities.append(0)
+entries.append(0)
+entriesTime.append(0)
+entriesTimeNames.append(0)
+
 # data for buffer
 buffer_max_size = 100
 buffer_slots_busy = 0
@@ -228,7 +233,7 @@ def update_graph_live(n):
     mainTime += 60
 
     entries.append(0)
-    totalEntities.append(0)
+    totalEntities.append(totalEntities[-1])
     entriesTime.append(mainTime)
     entriesTimeNames.append(parse_time(mainTime))
     #print(parse_time(mainTime))
@@ -270,7 +275,7 @@ def update_graph_live(n):
     layout = go.Layout(
         title="Entrades de camions i número d'entitas dintre del port",
         xaxis={'type': 'log', 'title': 'Temps', 'ticktext': list(entriesTimeNames), 'tickvals': list(entriesTime)},
-        yaxis={'title': 'Camions', 'range': [-10, 20]},
+        yaxis={'title': 'Camions'}, #, 'range': [-10, 20]},
         #margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
         legend={'x': 0, 'y': 1},
         hovermode='closest'
