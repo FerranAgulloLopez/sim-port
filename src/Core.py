@@ -175,8 +175,6 @@ def usage():
     print('Options:')
     print('-h, --help\t\t\t\tShows the program usage help.')
     print('-p, --processors=...\tSets the number of processors.')
-    print('-sX, --shiftX=...\t\tSets shift duration in hours for shift X, where X = {1, 2, 3}. Minimum 2 required. '
-          'Must add up to', int(Constants.SIMULATION_DURATION / 3600))
 
 
 # MAIN FUNCTION
