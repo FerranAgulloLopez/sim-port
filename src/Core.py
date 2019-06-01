@@ -29,7 +29,7 @@ class Core:
         self.entitiesSystem = 0
         self.service_per_shift = []
         self.service_per_total = []
-        self.shift_next_index = 0
+        self.shift_next_index = 1
         self.shift_durations = self.parameters.getParameters()[1]
         self.shift_next_time = self.shift_durations[self.shift_next_index]
 
@@ -118,17 +118,19 @@ class Core:
             else:
                 self.serviceProcessors += timeStep
 
-        if self.currentTime > self.shift_next_time * 3600 or event.eventName == Constants.END_SIMULATION:
+        if self.currentTime > self.shift_next_time * 3600:
             if self.shift_next_index < len(self.shift_durations):
-                # print(self.currentTime, self.shift_next_time * 3600, self.shift_next_index)
                 self.shift_next_time += self.shift_durations[self.shift_next_index]
                 self.shift_next_index += 1
-            if not self.service_per_shift:  # first shift - empty list
-                self.service_per_shift.append(self.serviceProcessors)
-            else:
+                if not self.service_per_shift:  # first shift - empty list
+                    self.service_per_shift.append(self.serviceProcessors)
+                else:
+                    self.service_per_shift.append(
+                        self.serviceProcessors - self.service_per_total[len(self.service_per_total)-1])
+                self.service_per_total.append(self.serviceProcessors)
+            elif event.eventName == Constants.END_SIMULATION:
                 self.service_per_shift.append(
-                    self.serviceProcessors - self.service_per_total[len(self.service_per_total)-1])
-            self.service_per_total.append(self.serviceProcessors)
+                    self.serviceProcessors - self.service_per_total[len(self.service_per_total) - 1])
 
     def getCurrentShift(self):
         param = Parameters()

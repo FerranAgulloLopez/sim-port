@@ -21,19 +21,19 @@ OPTIMIZER
 """
 
 
-def first_shift_is_valid(individual):
+def first_shift_is_valid(cur_individual):
     """ checks if the first shift is not an extension """
-    return individual[:2] != '00'
+    return cur_individual[:2] != '00'
 
 
-def at_least_one_shift_each(individual):
+def at_least_one_shift_each(cur_individual):
     """ checks if there is at least one of each shift: 01, 10, 11 """
     num_entrega = 0
     num_recogida = 0
     num_dual = 0
-    while individual:
-        shift = individual[:2]
-        individual = individual[2:]
+    while cur_individual:
+        shift = cur_individual[:2]
+        cur_individual = cur_individual[2:]
         if shift == '01':
             num_entrega += 1
         elif shift == '10':
@@ -50,7 +50,7 @@ def get_new_individual():
     checks first shift
     checks at least one shift each """
     new_individual = ''
-    while len(new_individual) < 2 * Constants.SIMULATION_DURATION / 3600:
+    while len(new_individual) < 2 * int(Constants.SIMULATION_DURATION / 3600):
         new_individual += str(randint(0, 1))
     while not first_shift_is_valid(new_individual) or not at_least_one_shift_each(new_individual):
         new_individual = (new_individual + str(randint(0, 1)))[1:]
@@ -63,13 +63,21 @@ def operator_crossover(first_individual, second_individual):
     checks at least one shift each """
     new_individual = ''
     while new_individual == '':
-        for idx in range(int(len(first_individual)/2)):
+        for idx in range(int(len(first_individual) / 2)):
             if randint(0, 1) > 0:
                 new_individual += first_individual[2*idx:2*idx+2]
             else:
                 new_individual += second_individual[2*idx:2*idx+2]
         if not at_least_one_shift_each(new_individual):
             new_individual = ''
+    # DEBUG
+    if len(new_individual) > 2 * int(Constants.SIMULATION_DURATION / 3600):
+        print('operator_crossover')
+        print(first_individual)
+        print(second_individual)
+        print(new_individual)
+        exit(-1)
+    #
     return new_individual
 
 
@@ -80,34 +88,41 @@ def operator_mutation(old_individual):
     new_individual = old_individual
     while new_individual == old_individual or not first_shift_is_valid(
             new_individual) or not at_least_one_shift_each(new_individual):
-        idx = int(randint(0, len(old_individual)) / 2)
+        idx = randint(0, int(len(old_individual)) / 2 - 1)
         old_shift = old_individual[2*idx:2*idx+2]
         new_shift = old_shift
         while new_shift == old_shift:
             new_shift = str(randint(0, 1)) + str(randint(0, 1))
             new_individual = old_individual[:2*idx] + new_shift + old_individual[2*idx+2:]
+    # DEBUG
+    if len(new_individual) > 2 * int(Constants.SIMULATION_DURATION / 3600):
+        print('operator_mutation')
+        print(old_individual)
+        print(new_individual)
+        exit(-1)
+    #
     return new_individual
 
 
-def individual_to_parameters(individual):
+def individual_to_parameters(cur_individual):
     """ transforms an individual to a valid parameter configuration """
-    shift_duration = []
-    shift_type = []
-    while individual:
-        shift = individual[:2]
-        individual = individual[2:]
+    new_shift_duration = []
+    new_shift_type = []
+    while cur_individual:
+        shift = cur_individual[:2]
+        cur_individual = cur_individual[2:]
         if shift == '00':
-            shift_duration[-1] += 1
+            new_shift_duration[-1] += 1
         elif shift == '01':
-            shift_type.append(Constants.ENTREGA)
-            shift_duration.append(1)
+            new_shift_type.append(Constants.ENTREGA)
+            new_shift_duration.append(1)
         elif shift == '10':
-            shift_type.append(Constants.RECOGIDA)
-            shift_duration.append(1)
+            new_shift_type.append(Constants.RECOGIDA)
+            new_shift_duration.append(1)
         else:  # shift == '11'
-            shift_type.append(Constants.DUAL)
-            shift_duration.append(1)
-    return shift_type, shift_duration
+            new_shift_type.append(Constants.DUAL)
+            new_shift_duration.append(1)
+    return new_shift_type, new_shift_duration
 
 
 def get_fitness():
@@ -172,8 +187,8 @@ while NUM_KEEP_BEST < 0 or NUM_OFFSPRING < 0 or NUM_KEEP_BEST + NUM_OFFSPRING > 
 
 # GEN 0
 for _ in range(NUM_INDIVIDUALS):
-    new_individual = get_new_individual()
-    population.append(new_individual)
+    gen_individual = get_new_individual()
+    population.append(gen_individual)
 
 # Begin selection
 fitness = {}
@@ -186,7 +201,7 @@ for generation in range(NUM_GENERATIONS):
             core = Core()
             core.run()
             fitness[individual] = get_fitness()
-    population = sorted(population, key=lambda individual: fitness[individual])
+    population = sorted(population, key=lambda idv: fitness[idv])
     if generation < NUM_GENERATIONS - 1:
         fittest = population[:NUM_KEEP_BEST]
         unfit = population[NUM_KEEP_BEST:]
@@ -199,9 +214,9 @@ for generation in range(NUM_GENERATIONS):
                 population.append(unfit[NUM_INDIVIDUALS - len(population) - 1])
             else:
                 population.append(get_new_individual())
-            for idx in range(len(population)):
+            for ind in range(len(population)):
                 if random() < CHANCE_MUTATION:
-                    population[idx] = operator_mutation(population[idx])
+                    population[ind] = operator_mutation(population[ind])
 
 # Select first (best)
 print('\nBest configuration:')
