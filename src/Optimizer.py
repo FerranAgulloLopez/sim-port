@@ -157,6 +157,7 @@ print(str(shift_duration))
 NUM_GENERATIONS = 10
 NUM_INDIVIDUALS = 10
 NUM_KEEP_BEST = 4
+NUM_OFFSPRING = 4
 CHANCE_KEEP_BAD = 0.05
 CHANCE_MUTATION = 0.05
 
@@ -166,9 +167,10 @@ parameters = Parameters()
 population = []
 
 # Check consistency
-while NUM_KEEP_BEST < 0 or NUM_KEEP_BEST > int(NUM_INDIVIDUALS / 2):
-    print('NUM_INDIVIDUALS cannot be higher than', int(NUM_INDIVIDUALS / 2))
-    NUM_INDIVIDUALS = int(input('Enter new value:'))
+while NUM_KEEP_BEST < 0 or NUM_OFFSPRING < 0 or NUM_KEEP_BEST + NUM_OFFSPRING > NUM_INDIVIDUALS:
+    print('NUM_KEEP_BEST + NUM_OFFSPRING cannot be higher than', NUM_INDIVIDUALS)
+    NUM_KEEP_BEST = int(input('Enter new value for NUM_KEEP_BEST:'))
+    NUM_OFFSPRING = int(input('Enter new value for NUM_OFFSPRING:'))
 
 # GEN 0
 for _ in range(NUM_INDIVIDUALS):
@@ -189,7 +191,7 @@ for generation in range(NUM_GENERATIONS):
         fittest = population[:NUM_KEEP_BEST]
         unfit = population[NUM_KEEP_BEST:]
         population = fittest
-        while len(population) < 2 * NUM_KEEP_BEST:
+        while len(population) < NUM_KEEP_BEST + NUM_OFFSPRING:
             individual1, individual2 = sample(fittest, 2)
             population.append(operator_crossover(individual1, individual2))
         while len(population) < NUM_INDIVIDUALS:
