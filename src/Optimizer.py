@@ -202,7 +202,7 @@ for generation in range(NUM_GENERATIONS):
             core = Core()
             core.run()
             fitness[individual] = get_fitness()
-    population = sorted(population, key=lambda idv: fitness[idv])
+    population = sorted(population, key=lambda idv: fitness[idv], reverse=True)
     if generation < NUM_GENERATIONS - 1:
         fittest = population[:NUM_KEEP_BEST]
         unfit = population[NUM_KEEP_BEST:]
