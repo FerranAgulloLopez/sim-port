@@ -193,11 +193,12 @@ for _ in range(NUM_INDIVIDUALS):
 # Begin selection
 fitness = {}
 for generation in range(NUM_GENERATIONS):
+    print('Generation', generation)
     for individual in population:
         if individual not in fitness:
             shift_type, shift_duration = individual_to_parameters(individual)
             parameters.setParameters(shift_duration, shift_type, 3600)
-            print('    Parameters set.')
+            print('    Testing ' + individual + '...')
             core = Core()
             core.run()
             fitness[individual] = get_fitness()

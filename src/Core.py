@@ -80,7 +80,7 @@ class Core:
         )
         self.logEvent(endEvent)
         self.updateState(endEvent)
-        print('    Simulation finished.')
+        # print('    Simulation finished.')
 
     def executeEvent(self, currentEvent):
         """Implemented by all event creator modules"""
@@ -88,7 +88,7 @@ class Core:
             self.startSimulation()
 
     def run(self):
-        print('    Core running...')
+        # print('    Core running...')
         self.logHeaders()  # creates output file with flag w+
         with open('../output/' + self.parameters.output_file + '.csv', "a+") as self.output_file:
             self.startSimulation()

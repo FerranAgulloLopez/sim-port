@@ -62,8 +62,8 @@ if __name__ == "__main__":
                 # RUN CORE
                 path_list = output_file.split('/')
                 filename = str(path_list[len(path_list)-1:][0])
-                s = '[Configuration: ' + filename + ']\n'
-                s += '    Parameters set.'
+                s = '    Testing ' + filename + '...'
+                # s += '    Parameters set.'
                 print(s)
                 core = Core()
                 core.run()
