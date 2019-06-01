@@ -33,11 +33,6 @@ class Core:
         self.shift_durations = self.parameters.getParameters()[1]
         self.shift_next_time = self.shift_durations[self.shift_next_index]
 
-        # DEBUG BEGIN
-        # print(str(self.shift_durations))
-        # print(str(self.shift_next_time))
-        #DEBUG END
-
         # Instance creation
         self.queue = Queue(Constants.SLOTS_BUFFER)
         self.parking = Queue(Constants.SLOTS_QUEUE)
@@ -84,6 +79,7 @@ class Core:
             self.currentTime  # eventTime
         )
         self.logEvent(endEvent)
+        self.updateState(endEvent)
         print('    Simulation finished.')
 
     def executeEvent(self, currentEvent):
@@ -102,7 +98,7 @@ class Core:
                 self.logEvent(currentEvent)
                 currentEvent.executeEvent()
             self.endSimulation()
-            self.stats()  # DEBUG
+            self.stats()
 
     def addEvent(self, addedEvent):
         self.eventsList.put(addedEvent, addedEvent.eventTime)
@@ -122,17 +118,17 @@ class Core:
             else:
                 self.serviceProcessors += timeStep
 
-        if self.currentTime > self.shift_next_time * 3600:
+        if self.currentTime > self.shift_next_time * 3600 or event.eventName == Constants.END_SIMULATION:
             if self.shift_next_index < len(self.shift_durations):
                 # print(self.currentTime, self.shift_next_time * 3600, self.shift_next_index)
                 self.shift_next_time += self.shift_durations[self.shift_next_index]
                 self.shift_next_index += 1
-                if not self.service_per_shift:  # first shift - empty list
-                    self.service_per_shift.append(self.serviceProcessors)
-                else:
-                    self.service_per_shift.append(
-                        self.serviceProcessors - self.service_per_total[len(self.service_per_total)-1])
-                self.service_per_total.append(self.serviceProcessors)
+            if not self.service_per_shift:  # first shift - empty list
+                self.service_per_shift.append(self.serviceProcessors)
+            else:
+                self.service_per_shift.append(
+                    self.serviceProcessors - self.service_per_total[len(self.service_per_total)-1])
+            self.service_per_total.append(self.serviceProcessors)
 
     def getCurrentShift(self):
         param = Parameters()
@@ -168,11 +164,6 @@ class Core:
         self.output_file.write(s + '\n')
 
     def stats(self):
-        # DEBUG BEGIN
-        # print()
-        # print(str(self.service_per_shift))
-        # print()
-        # DEBUG END
         s = 'Max_Queue_Length'
         r = str(self.parking.getMaxQueueLength())
         s += ',Processors_Capacity_Used'
@@ -186,7 +177,7 @@ class Core:
             r += ',' + str(shift_duration[idx])
             s += ',Shift_Capacity_Usage'
             r += ',' + str(round(100 * self.service_per_shift[idx] /
-                                 (self.parameters.num_processors * Constants.SIMULATION_DURATION),2))
+                                 (self.parameters.num_processors * Constants.SIMULATION_DURATION), 2))
         with open('../output/' + self.parameters.output_file + '.stats.csv', "w+") as output_file:
             output_file.write(s + '\n')
             output_file.write(r + '\n')
@@ -248,13 +239,6 @@ if __name__ == "__main__":
         parameters.setParameters(shift_duration, shift_type, shift_factor)
         print('    Parameters set.')
     # else, set by Experimenter
-
-    # DEBUG BEGIN
-    # with open("debug_info.txt", "w+") as dbg:
-    #     dbg.write(str(parameters.shift_type) + '\n')
-    #     dbg.write(str(parameters.shift_duration) + '\n')
-    #     dbg.write(str(parameters.shift_factor) + '\n')
-    # DEBUG END
 
     # Start core
     core = Core()

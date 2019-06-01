@@ -110,28 +110,26 @@ def individual_to_parameters(individual):
     return shift_type, shift_duration
 
 
-def get_fitness(individual, fitness):
+def get_fitness():
     """ reads stats from the default output_file and determines the viability and benefits """
-    if individual not in fitness:
-        total_service = 0
-        total_idle = Constants.SIMULATION_DURATION * parameters.num_processors
-        with open('../output/' + parameters.output_file + '.stats.csv', 'r') as ifs:
-            exceeds_capacity = False
-            headers = ifs.readline()[:-1].split(',')
-            data = ifs.readline()[:-1].split(',')
-            for idx in range(len(headers)):
-                if headers[idx] == 'Shift_Type':
-                    duration = float(data[idx + 1])
-                    capacity_usage = float(data[idx + 2])
-                    if capacity_usage > 70.0:
-                        exceeds_capacity = True
-                    total_service += capacity_usage * duration * parameters.num_processors
-        total_idle -= total_service
-        if exceeds_capacity:
-            fitness[individual] = 0
-        else:
-            fitness[individual] = total_idle
-    return fitness
+    total_service = 0
+    total_idle = Constants.SIMULATION_DURATION * parameters.num_processors
+    with open('../output/' + parameters.output_file + '.stats.csv', 'r') as ifs:
+        exceeds_capacity = False
+        headers = ifs.readline()[:-1].split(',')
+        data = ifs.readline()[:-1].split(',')
+        for idx in range(len(headers)):
+            if headers[idx] == 'Shift_Type':
+                duration = float(data[idx + 1])
+                capacity_usage = float(data[idx + 2])
+                if capacity_usage > 70.0:
+                    exceeds_capacity = True
+                total_service += capacity_usage * duration * parameters.num_processors
+    total_idle -= total_service
+    if exceeds_capacity:
+        return 0
+    else:
+        return total_idle
 
 
 # DEBUG
@@ -154,10 +152,10 @@ print(str(shift_duration))
 
 
 # MAIN
-NUM_GENERATIONS = 10
-NUM_INDIVIDUALS = 10
-NUM_KEEP_BEST = 4
-NUM_OFFSPRING = 4
+NUM_GENERATIONS = 50
+NUM_INDIVIDUALS = 50
+NUM_KEEP_BEST = int(2 * NUM_INDIVIDUALS / 5)  # 2/5
+NUM_OFFSPRING = int(2 * NUM_INDIVIDUALS / 5)  # 2/5
 CHANCE_KEEP_BAD = 0.05
 CHANCE_MUTATION = 0.05
 
@@ -178,14 +176,16 @@ for _ in range(NUM_INDIVIDUALS):
     population.append(new_individual)
 
 # Begin selection
+fitness = {}
 for generation in range(NUM_GENERATIONS):
-    fitness = {}
     for individual in population:
-        shift_type, shift_duration = individual_to_parameters(individual)
-        parameters.setParameters(shift_duration, shift_type, 3600)
-        core = Core()
-        core.run()
-        fitness = get_fitness(individual, fitness)
+        if individual not in fitness:
+            shift_type, shift_duration = individual_to_parameters(individual)
+            parameters.setParameters(shift_duration, shift_type, 3600)
+            print('    Parameters set.')
+            core = Core()
+            core.run()
+            fitness[individual] = get_fitness()
     population = sorted(population, key=lambda individual: fitness[individual])
     if generation < NUM_GENERATIONS - 1:
         fittest = population[:NUM_KEEP_BEST]
@@ -204,6 +204,7 @@ for generation in range(NUM_GENERATIONS):
                     population[idx] = operator_mutation(population[idx])
 
 # Select first (best)
+print('\nBest configuration:')
 best = population[0]
 print(best)
 best_type, best_duration = individual_to_parameters(best)
