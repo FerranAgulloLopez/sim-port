@@ -20,17 +20,19 @@ OPTIMIZER
 """
 
 
-def first_shift_is_valid(new_individual):
-    return new_individual[:2] != '00'
+def first_shift_is_valid(individual):
+    """ checks if the first shift is not an extension """
+    return individual[:2] != '00'
 
 
-def at_least_one_shift_each(new_individual):
+def at_least_one_shift_each(individual):
+    """ checks if there is at least one of each shift: 01, 10, 11 """
     num_entrega = 0
     num_recogida = 0
     num_dual = 0
-    while new_individual:
-        shift = new_individual[:2]
-        new_individual = new_individual[2:]
+    while individual:
+        shift = individual[:2]
+        individual = individual[2:]
         if shift == '01':
             num_entrega += 1
         elif shift == '10':
@@ -86,7 +88,35 @@ def operator_mutation(old_individual):
     return new_individual
 
 
+def individual_to_parameters(individual):
+    """ transforms an individual to a valid parameter configuration """
+    shift_duration = []
+    shift_type = []
+    while individual:
+        shift = individual[:2]
+        individual = individual[2:]
+        if shift == '00':
+            shift_duration[-1] += 1
+        elif shift == '01':
+            shift_type.append(Constants.ENTREGA)
+            shift_duration.append(1)
+        elif shift == '10':
+            shift_type.append(Constants.RECOGIDA)
+            shift_duration.append(1)
+        else:  # shift == '11'
+            shift_type.append(Constants.DUAL)
+            shift_duration.append(1)
+    return shift_type, shift_duration
+
+
+def fitness(_):  # unused param needed
+    """ reads stats from the default output_file and determines the viability and benefits """
+    with open('../output/' + parameters.output_file + '.stats.csv', 'r') as ifs:
+        pass
+
+
 # DEBUG
+# NOTE: these are random, seed is fixed below
 individual1 = get_new_individual()
 individual2 = get_new_individual()
 print('Crossover:')
@@ -96,6 +126,11 @@ print(operator_crossover(individual1, individual2))
 print('Mutation:')
 print(individual1)
 print(operator_mutation(individual1))
+print('Parameters:')
+print(individual1)
+shift_type, shift_duration = individual_to_parameters(individual1)
+print(str(shift_type))
+print(str(shift_duration))
 #
 
 
@@ -113,22 +148,24 @@ population = []
 
 # GEN 0
 for _ in range(NUM_INDIVIDUALS):
-    individual = get_new_individual()
-    population.append(individual)
+    new_individual = get_new_individual()
+    population.append(new_individual)
 
 # Begin selection
 for generation in range(NUM_GENERATIONS):
     for individual in population:
+        shift_type, shift_duration = individual_to_parameters(individual)
         # TODO: set parameters
         #  run core
         #  get fitness
-        #  sort
+        #  population = sorted(population, key = fitness)
         #  if generation < NUM_GENERATIONS - 1:
+        #  unfit = population[NUM_KEEP_BEST:]
         #  population = population[:NUM_KEEP_BEST]
         #  apply crossover
         #  while len(population) < NUM_INDIVIDUALS:
         #  if random() < CHANCE_KEEP_BAD:
-        #  population.append(bad)
+        #  population.append(unfit[len(population)])
         #  else
         #  population.append(get_new_individual())
         #  for idx in range(len(population)):
@@ -137,3 +174,8 @@ for generation in range(NUM_GENERATIONS):
         pass
 
 # Select first (best)
+best = population[0]
+print(best)
+best_type, best_duration = individual_to_parameters(best)
+print(str(best_type))
+print(str(best_duration))
