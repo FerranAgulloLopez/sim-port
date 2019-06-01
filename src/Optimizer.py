@@ -109,10 +109,14 @@ def individual_to_parameters(individual):
     return shift_type, shift_duration
 
 
-def fitness(_):  # unused param needed
+def get_fitness(individual, fitness):
     """ reads stats from the default output_file and determines the viability and benefits """
-    with open('../output/' + parameters.output_file + '.stats.csv', 'r') as ifs:
-        pass
+    if individual not in fitness:
+        with open('../output/' + parameters.output_file + '.stats.csv', 'r') as ifs:
+            pass
+        # Placeholder
+        fitness[individual] = 0
+    return fitness
 
 
 # DEBUG
@@ -153,25 +157,25 @@ for _ in range(NUM_INDIVIDUALS):
 
 # Begin selection
 for generation in range(NUM_GENERATIONS):
+    fitness = {}
     for individual in population:
         shift_type, shift_duration = individual_to_parameters(individual)
         # TODO: set parameters
         #  run core
-        #  get fitness
-        #  population = sorted(population, key = fitness)
-        #  if generation < NUM_GENERATIONS - 1:
-        #  unfit = population[NUM_KEEP_BEST:]
-        #  population = population[:NUM_KEEP_BEST]
-        #  apply crossover
-        #  while len(population) < NUM_INDIVIDUALS:
-        #  if random() < CHANCE_KEEP_BAD:
-        #  population.append(unfit[len(population)])
-        #  else
-        #  population.append(get_new_individual())
-        #  for idx in range(len(population)):
-        #  if random() < CHANCE_MUTATION:
-        #  population[idx] = operator_mutation(population[idx])
-        pass
+        fitness = get_fitness(individual, fitness)
+    population = sorted(population, key = lambda individual: fitness[individual])
+    if generation < NUM_GENERATIONS - 1:
+        unfit = population[NUM_KEEP_BEST:]
+        population = population[:NUM_KEEP_BEST]
+        # TODO: apply crossover
+        while len(population) < NUM_INDIVIDUALS:
+            if random() < CHANCE_KEEP_BAD:
+                population.append(unfit[NUM_INDIVIDUALS - len(population) - 1])
+            else:
+                population.append(get_new_individual())
+            for idx in range(len(population)):
+                if random() < CHANCE_MUTATION:
+                    population[idx] = operator_mutation(population[idx])
 
 # Select first (best)
 best = population[0]
