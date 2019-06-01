@@ -1,6 +1,7 @@
-from random import seed, random, randint
+from random import seed, random, randint, sample
 
 from src.Constants import Constants
+from src.Core import Core
 from src.Parameters import Parameters
 
 """
@@ -112,10 +113,24 @@ def individual_to_parameters(individual):
 def get_fitness(individual, fitness):
     """ reads stats from the default output_file and determines the viability and benefits """
     if individual not in fitness:
+        total_service = 0
+        total_idle = Constants.SIMULATION_DURATION * parameters.num_processors
         with open('../output/' + parameters.output_file + '.stats.csv', 'r') as ifs:
-            pass
-        # Placeholder
-        fitness[individual] = 0
+            exceeds_capacity = False
+            headers = ifs.readline()[:-1].split(',')
+            data = ifs.readline()[:-1].split(',')
+            for idx in range(len(headers)):
+                if headers[idx] == 'Shift_Type':
+                    duration = float(data[idx + 1])
+                    capacity_usage = float(data[idx + 2])
+                    if capacity_usage > 70.0:
+                        exceeds_capacity = True
+                    total_service += capacity_usage * duration * parameters.num_processors
+        total_idle -= total_service
+        if exceeds_capacity:
+            fitness[individual] = 0
+        else:
+            fitness[individual] = total_idle
     return fitness
 
 
@@ -150,6 +165,11 @@ parameters = Parameters()
 
 population = []
 
+# Check consistency
+while NUM_KEEP_BEST < 0 or NUM_KEEP_BEST > int(NUM_INDIVIDUALS / 2):
+    print('NUM_INDIVIDUALS cannot be higher than', int(NUM_INDIVIDUALS / 2))
+    NUM_INDIVIDUALS = int(input('Enter new value:'))
+
 # GEN 0
 for _ in range(NUM_INDIVIDUALS):
     new_individual = get_new_individual()
@@ -160,14 +180,18 @@ for generation in range(NUM_GENERATIONS):
     fitness = {}
     for individual in population:
         shift_type, shift_duration = individual_to_parameters(individual)
-        # TODO: set parameters
-        #  run core
+        parameters.setParameters(shift_duration, shift_type, 3600)
+        core = Core()
+        core.run()
         fitness = get_fitness(individual, fitness)
-    population = sorted(population, key = lambda individual: fitness[individual])
+    population = sorted(population, key=lambda individual: fitness[individual])
     if generation < NUM_GENERATIONS - 1:
+        fittest = population[:NUM_KEEP_BEST]
         unfit = population[NUM_KEEP_BEST:]
-        population = population[:NUM_KEEP_BEST]
-        # TODO: apply crossover
+        population = fittest
+        while len(population) < 2 * NUM_KEEP_BEST:
+            individual1, individual2 = sample(fittest, 2)
+            population.append(operator_crossover(individual1, individual2))
         while len(population) < NUM_INDIVIDUALS:
             if random() < CHANCE_KEEP_BAD:
                 population.append(unfit[NUM_INDIVIDUALS - len(population) - 1])

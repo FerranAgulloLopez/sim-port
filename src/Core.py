@@ -14,10 +14,10 @@ from src.Source import Source
 class Core:
     # CLASS FUNCTIONS
 
-    def __init__(self, parameters):
-        self.parameters = parameters
+    def __init__(self):
+        self.parameters = Parameters()
         num_sources = Constants.DEFAULT_SOURCES
-        num_processors = parameters.num_processors
+        num_processors = self.parameters.num_processors
         # Attributes initialization
         self.processors = []
         self.sources = []
@@ -257,5 +257,5 @@ if __name__ == "__main__":
     # DEBUG END
 
     # Start core
-    core = Core(parameters)
+    core = Core()
     core.run()
