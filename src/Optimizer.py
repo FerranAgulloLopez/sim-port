@@ -18,6 +18,8 @@ OPTIMIZER
 - Operators:
     Crossover
     Mutation
+- Fitness:
+    Processors idle time
 """
 
 
@@ -70,14 +72,6 @@ def operator_crossover(first_individual, second_individual):
                 new_individual += second_individual[2*idx:2*idx+2]
         if not at_least_one_shift_each(new_individual):
             new_individual = ''
-    # DEBUG
-    if len(new_individual) > 2 * int(Constants.SIMULATION_DURATION / 3600):
-        print('operator_crossover')
-        print(first_individual)
-        print(second_individual)
-        print(new_individual)
-        exit(-1)
-    #
     return new_individual
 
 
@@ -94,13 +88,6 @@ def operator_mutation(old_individual):
         while new_shift == old_shift:
             new_shift = str(randint(0, 1)) + str(randint(0, 1))
             new_individual = old_individual[:2*idx] + new_shift + old_individual[2*idx+2:]
-    # DEBUG
-    if len(new_individual) > 2 * int(Constants.SIMULATION_DURATION / 3600):
-        print('operator_mutation')
-        print(old_individual)
-        print(new_individual)
-        exit(-1)
-    #
     return new_individual
 
 
@@ -139,7 +126,7 @@ def get_fitness():
                 capacity_usage = float(data[idx + 2])
                 if capacity_usage > 70.0:
                     exceeds_capacity = True
-                total_service += capacity_usage * duration * parameters.num_processors
+                total_service += capacity_usage * duration * parameters.num_processors / 100  # capacity_usage in %
     total_idle -= total_service
     if exceeds_capacity:
         return 0
@@ -186,7 +173,7 @@ while NUM_KEEP_BEST < 0 or NUM_OFFSPRING < 0 or NUM_KEEP_BEST + NUM_OFFSPRING > 
     NUM_OFFSPRING = int(input('Enter new value for NUM_OFFSPRING:'))
 
 # GEN 0
-for _ in range(NUM_INDIVIDUALS):
+while len(population) < NUM_INDIVIDUALS:
     gen_individual = get_new_individual()
     population.append(gen_individual)
 
@@ -215,9 +202,9 @@ for generation in range(NUM_GENERATIONS):
                 population.append(unfit[NUM_INDIVIDUALS - len(population) - 1])
             else:
                 population.append(get_new_individual())
-            for ind in range(len(population)):
-                if random() < CHANCE_MUTATION:
-                    population[ind] = operator_mutation(population[ind])
+        for ind in range(len(population)):
+            if random() < CHANCE_MUTATION:
+                population[ind] = operator_mutation(population[ind])
 
 # Select first (best)
 print('\nBest configuration:')
@@ -226,3 +213,11 @@ print(best)
 best_type, best_duration = individual_to_parameters(best)
 print(str(best_type))
 print(str(best_duration))
+print('Average idle time per processor per day:', fitness[best] / (3600 * parameters.num_processors), 'h')
+
+# DEBUG
+# Sets trace to best configuration
+parameters.setParameters(best_duration, best_type, 3600)
+core = Core()
+core.run()
+#
