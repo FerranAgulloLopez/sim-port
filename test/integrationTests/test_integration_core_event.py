@@ -6,7 +6,7 @@ from src.Event import Event
 from src.Source import Source
 
 
-class TestIntegrationCoreProcessor(TestCase):
+class TestIntegrationCoreEvent(TestCase):
     def setUp(self):
         self.coreObj = Core()
         self.event = Event(eventCreator=self.coreObj)

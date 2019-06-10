@@ -8,7 +8,7 @@ from src.Parameters import Parameters
 from src.Source import Source
 
 
-class TestIntegrationCoreProcessor(TestCase):
+class TestIntegrationCoreOtherClasses(TestCase):
     def setUp(self):
         self.coreObj = Core()
 

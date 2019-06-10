@@ -4,7 +4,7 @@ from src.Constants import Constants
 from src.Random import Random
 
 
-class TestRandomClass(unittest.TestCase):
+class TestRandom(unittest.TestCase):
     def setUp(self):
         self.randObj = Random()
 

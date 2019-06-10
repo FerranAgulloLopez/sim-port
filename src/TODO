@@ -23,3 +23,4 @@
 Notas:
     No hay tests unitarios de Source (no hacen falta, solo hacen falta los de integridad y sistema)
     - Añadida línea que controla que no haya una excepción de overflow de índice, línea 131 del código Core
+    - Añadir a la memoria la decisión de diseño: los camiones que siguen en la cola, son tratados aunque la terminal esté cerrada; como hipótesis, la decisión de diseño.

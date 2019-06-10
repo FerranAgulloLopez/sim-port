@@ -135,8 +135,8 @@ class Core:
                 self.service_per_shift.append(self.serviceProcessors - self.service_per_total[-1])
 
     def getCurrentShift(self):
-        param = Parameters()
-        return param.getCurrentShift(self.currentTime)
+        # print("DEBUG: getCurrentShift", self.currentTime, "and it returns:", self.parameters.getCurrentShift(self.currentTime))
+        return self.parameters.getCurrentShift(self.currentTime)
 
     def logHeaders(self):
         s = 'Current_Time,'
@@ -148,7 +148,8 @@ class Core:
         s += 'Number_Idle_Processors,'
         s += 'Buffer_Length,'
         s += 'Queue_Length,'
-        s += 'Entities_System'
+        s += 'Entities_System,'
+        s += 'Shift'
         # print(s)
         with open('../output/' + self.parameters.output_file + '.csv', "w+") as output_file:
             output_file.write(s + '\n')
@@ -163,7 +164,8 @@ class Core:
         s += str(self.numberOfIdleProcessors) + ','
         s += str(self.queue.getQueueLength()) + ','
         s += str(self.parking.getQueueLength()) + ','
-        s += str(self.entitiesSystem)
+        s += str(self.entitiesSystem) + ','
+        s += str(self.parameters.getCurrentShift(currentEvent.eventScheduled))
         # print(s)
         self.output_file.write(s + '\n')
 
