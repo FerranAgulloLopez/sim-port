@@ -2,11 +2,19 @@ import unittest
 
 from src.Constants import Constants
 from src.Random import Random
+from src.Parameters import Parameters
 
 
 class TestRandom(unittest.TestCase):
-    def setUp(self):
+
+    def setWithShifts(self, value):
+        param = Parameters()
+        param.WITH_SHIFTS = value
         self.randObj = Random()
+        self.randObj.initialization()
+
+    def setUp(self):
+        self.setWithShifts(True)
 
     def tearDown(self):
         self.randObj = None
@@ -21,6 +29,11 @@ class TestRandom(unittest.TestCase):
 
     def test_range_of_source_increment_DUALES(self):
         i = self.randObj.sourceIncrement(Constants.DUAL)
+        self.assertGreater(i, 0, "The number returned must be greater than 0")
+
+    def test_range_of_source_increment_NO_SHIFTS(self):
+        self.setWithShifts(False)
+        i = self.randObj.sourceIncrement(None)
         self.assertGreater(i, 0, "The number returned must be greater than 0")
 
     def test_range_of_processor_increment_ENTREGA(self):
@@ -44,6 +57,14 @@ class TestRandom(unittest.TestCase):
         self.assertLessEqual(i, Constants.MAXIMUM_TIME_DUAL,
                              "The number returned must be lower than MAXIMUM_TIME_DUAL")
 
+    def test_range_of_processor_increment_NO_SHIFTS(self):
+        self.setWithShifts(False)
+        i = self.randObj.processorIncrement(None)
+        self.assertGreaterEqual(i, Constants.MINIMUM_TIME,
+                                "The number returned must be greater than MINIMUM_TIME")
+        self.assertLessEqual(i, Constants.MAXIMUM_TIME,
+                             "The number returned must be lower than MAXIMUM_TIME")
+
     def test_get_num_trucks_ENTREGA(self):
         i = self.randObj.getNumTrucks(Constants.ENTREGA)
         self.assertGreaterEqual(i, Constants.MINIMUM_TRUCKS_ENTREGA,
@@ -64,6 +85,14 @@ class TestRandom(unittest.TestCase):
                                 "The number returned must be greater than MINIMUM_TRUCKS_DUAL")
         self.assertLessEqual(i, Constants.MAXIMUM_TRUCKS_DUAL,
                              "The number returned must be lower than MAXIMUM_TRUCKS_DUAL")
+
+    def test_test_get_num_trucks_NO_SHIFTS(self):
+        self.setWithShifts(False)
+        i = self.randObj.getNumTrucks(None)
+        self.assertGreaterEqual(i, Constants.MINIMUM_TRUCKS,
+                                "The number returned must be greater than MINIMUM_TRUCKS")
+        self.assertLessEqual(i, Constants.MAXIMUM_TRUCKS,
+                             "The number returned must be lower than MAXIMUM_TRUCKS")
 
     def test_ensure_there_s_one_instance(self):
         rand = Random()

@@ -7,6 +7,9 @@ class _Parameters:
 
     # Simulator parameters
     def __init__(self):
+        # Type of Execution
+        self.WITH_SHIFTS = True
+
         self.shift_duration = [5, 5, 2, 2]
         self.shift_type = [Constants.ENTREGA, Constants.ENTREGA, Constants.RECOGIDA, Constants.DUAL]
         self.shift_factor = 3600  # hours
@@ -25,12 +28,17 @@ class _Parameters:
         return self.shift_type, self.shift_duration
 
     def getTotalTime(self, shift):
-        duration = 0
-        idx = 0
-        for i in self.shift_type:
-            if i == shift:
-                duration += self.shift_duration[idx]
-            idx += 1
+        if self.WITH_SHIFTS:
+            duration = 0
+            idx = 0
+            for i in self.shift_type:
+                if i == shift:
+                    duration += self.shift_duration[idx]
+                idx += 1
+        else:
+            duration = 0
+            for i in self.shift_duration:
+                duration += i
         return duration
 
     def getCurrentShift(self, currentTime):
