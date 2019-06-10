@@ -7,7 +7,7 @@ class Queue:
         self.inputModule = None
         self.entitiesList = []
         self.outputList = []
-        self.maxQueueLength = 0 # Estadistico
+        self.maxQueueLength = 0  # Estadistico
         self.timeAtMaxCapacity = 0  # TODO: update (stat for capacity-limited queue)
 
     def addOutput(self, outputElement):

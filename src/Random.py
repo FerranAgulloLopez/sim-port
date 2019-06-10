@@ -1,5 +1,5 @@
-from numpy import random
 from math import ceil
+from numpy import random
 
 from src.Constants import Constants
 from src.Parameters import Parameters

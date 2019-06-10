@@ -44,6 +44,6 @@ class Source:
         if self.outputModule is not None:
             self.outputModule.nextArrival(entity)
             # TODO: (optional) check instead num of entities dispatched
-            if self.core.currentTime < Constants.SIMULATION_DURATION:
+            if self.core.currentTime < Constants.SIMULATION_FINAL_TIME:
                 arrivalEvent = self.scheduleNextArrival()
                 self.core.addEvent(arrivalEvent)

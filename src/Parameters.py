@@ -11,6 +11,7 @@ class _Parameters:
         self.shift_type = [Constants.ENTREGA, Constants.ENTREGA, Constants.RECOGIDA, Constants.DUAL]
         self.shift_factor = 3600  # hours
         self.num_processors = Constants.DEFAULT_PROCESSORS
+        self.output_file = "../output/trace"
 
     def setNumProcessors(self, num_processors):
         self.num_processors = num_processors
@@ -19,6 +20,9 @@ class _Parameters:
         self.shift_duration = shift_duration
         self.shift_type = shift_type
         self.shift_factor = shift_factor
+
+    def getParameters(self):
+        return self.shift_type, self.shift_duration
 
     def getTotalTime(self, shift):
         duration = 0
@@ -43,6 +47,7 @@ class _Parameters:
         # print(index, len(self.shift_type))
         # print(seconds_incremental, currentTime)
         return self.shift_type[index]
+
 
 def Parameters():
     if _Parameters._instance is None:
