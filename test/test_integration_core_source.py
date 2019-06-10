@@ -93,7 +93,7 @@ class TestIntegrationCoreSource(TestCase):
         self.assertFalse(self.coreObj.eventsList.empty(), "The system should have one entity")
 
     def test_executeEvent_after_SIMULATION_DURATION(self):
-        self.coreObj.currentTime = Constants.SIMULATION_DURATION
+        self.coreObj.currentTime = Constants.SIMULATION_FINAL_TIME
         source = Source(self.coreObj)
         queue = Queue(1)
         source.addOutput(queue)

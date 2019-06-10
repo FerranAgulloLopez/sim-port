@@ -25,44 +25,44 @@ class TestRandomClass(unittest.TestCase):
 
     def test_range_of_processor_increment_ENTREGA(self):
         i = self.randObj.processorIncrement(Constants.ENTREGA)
-        self.assertGreater(i, Constants.MINIMUM_TIME_ENTREGA,
+        self.assertGreaterEqual(i, Constants.MINIMUM_TIME_ENTREGA,
                            "The number returned must be greater than MINIMUM_TIME_ENTREGA")
-        self.assertLess(i, Constants.MAXIMUM_TIME_ENTREGA,
+        self.assertLessEqual(i, Constants.MAXIMUM_TIME_ENTREGA,
                         "The number returned must be lower than MAXIMUM_TIME_ENTREGA")
 
     def test_range_of_processor_increment_RECOGIDA(self):
         i = self.randObj.processorIncrement(Constants.RECOGIDA)
-        self.assertGreater(i, Constants.MINIMUM_TIME_RECOGIDA,
+        self.assertGreaterEqual(i, Constants.MINIMUM_TIME_RECOGIDA,
                            "The number returned must be greater than MINIMUM_TIME_RECOGIDA")
-        self.assertLess(i, Constants.MAXIMUM_TIME_RECOGIDA,
+        self.assertLessEqual(i, Constants.MAXIMUM_TIME_RECOGIDA,
                         "The number returned must be lower than MAXIMUM_TIME_RECOGIDA")
 
     def test_range_of_processor_increment_DUALES(self):
         i = self.randObj.processorIncrement(Constants.DUAL)
-        self.assertGreater(i, Constants.MINIMUM_TIME_DUAL,
+        self.assertGreaterEqual(i, Constants.MINIMUM_TIME_DUAL,
                            "The number returned must be greater than MINIMUM_TIME_DUAL")
-        self.assertLess(i, Constants.MAXIMUM_TIME_DUAL,
+        self.assertLessEqual(i, Constants.MAXIMUM_TIME_DUAL,
                         "The number returned must be lower than MAXIMUM_TIME_DUAL")
 
     def test_get_num_trucks_ENTREGA(self):
         i = self.randObj.getNumTrucks(Constants.ENTREGA)
-        self.assertGreater(i, Constants.MINIMUM_TRUCKS_ENTREGA,
+        self.assertGreaterEqual(i, Constants.MINIMUM_TRUCKS_ENTREGA,
                            "The number returned must be greater than MINIMUM_TRUCKS_ENTREGA")
-        self.assertLess(i, Constants.MAXIMUM_TRUCKS_ENTREGA,
+        self.assertLessEqual(i, Constants.MAXIMUM_TRUCKS_ENTREGA,
                         "The number returned must be lower than MAXIMUM_TRUCKS_ENTREGA")
 
     def test_get_num_trucks_RECOGIDA(self):
         i = self.randObj.getNumTrucks(Constants.RECOGIDA)
-        self.assertGreater(i, Constants.MINIMUM_TRUCKS_RECOGIDA,
+        self.assertGreaterEqual(i, Constants.MINIMUM_TRUCKS_RECOGIDA,
                            "The number returned must be greater than MINIMUM_TRUCKS_RECOGIDA")
-        self.assertLess(i, Constants.MAXIMUM_TRUCKS_RECOGIDA,
+        self.assertLessEqual(i, Constants.MAXIMUM_TRUCKS_RECOGIDA,
                         "The number returned must be lower than MAXIMUM_TRUCKS_RECOGIDA")
 
     def test_test_get_num_trucks_DUALES(self):
         i = self.randObj.getNumTrucks(Constants.DUAL)
-        self.assertGreater(i, Constants.MINIMUM_TRUCKS_DUAL,
+        self.assertGreaterEqual(i, Constants.MINIMUM_TRUCKS_DUAL,
                            "The number returned must be greater than MINIMUM_TRUCKS_DUAL")
-        self.assertLess(i, Constants.MAXIMUM_TRUCKS_DUAL,
+        self.assertLessEqual(i, Constants.MAXIMUM_TRUCKS_DUAL,
                         "The number returned must be lower than MAXIMUM_TRUCKS_DUAL")
 
     def test_ensure_there_s_one_instance(self):
