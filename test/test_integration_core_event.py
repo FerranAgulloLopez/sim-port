@@ -26,6 +26,5 @@ class TestIntegrationCoreProcessor(TestCase):
                           "The length should be two: start simulation event + first event from source")
         obj = self.coreObj.eventsList
         self.assertIsNotNone("The object is not none", obj)
-        read = open('./TEST.txt', "r")
-        self.assertNotEquals(len(read.read()), 0, "The file should not be empty")
-        read.close()
+        with open('./TEST.txt', "r") as read:
+            self.assertNotEquals(len(read.read()), 0, "The file should not be empty")

@@ -24,9 +24,8 @@ class TestIntegrationCoreProcessor(TestCase):
                           "The length should be two: start simulation event + first event from source")
         obj = self.coreObj.eventsList
         self.assertIsNotNone(obj, "The object is not none")
-        read = open('./TEST.txt', "r")
-        self.assertNotEquals(len(read.read()), 0, "The file should not be empty")
-        read.close()
+        with open('./TEST.txt', "r") as read:
+            self.assertNotEquals(len(read.read()), 0, "The file should not be empty")
 
     def test_executeEvent_Start_Simulation(self):
         source_obj = Source(self.coreObj)
@@ -38,9 +37,8 @@ class TestIntegrationCoreProcessor(TestCase):
                           "The length should be two: start simulation event + first event from source")
         obj = self.coreObj.eventsList
         self.assertIsNotNone("The object is not none", obj)
-        read = open('./TEST.txt', "r")
-        self.assertNotEquals(len(read.read()), 0, "The file should not be empty")
-        read.close()
+        with open('./TEST.txt', "r") as read:
+            self.assertNotEquals(len(read.read()), 0, "The file should not be empty")
 
     def test_executeEvent_OtherEvent(self):
         source_obj = Source(self.coreObj)
@@ -52,9 +50,8 @@ class TestIntegrationCoreProcessor(TestCase):
                           "The length should be 0 because the simulation did not start")
         obj = self.coreObj.eventsList
         self.assertIsNotNone("The object is not none", obj)
-        read = open('./TEST.txt', "r")
-        self.assertEquals(len(read.read()), 0, "The file should be empty")
-        read.close()
+        with open('./TEST.txt', "r") as read:
+            self.assertEquals(len(read.read()), 0, "The file should be empty")
 
     def test_endSimulation(self):
         self.coreObj.output_file = open('./TEST.txt', "w+")
@@ -64,9 +61,8 @@ class TestIntegrationCoreProcessor(TestCase):
                           "The length should be 0 because the simulation ended")
         obj = self.coreObj.eventsList
         self.assertIsNotNone("The object is not none", obj)
-        read = open('./TEST.txt', "r")
-        self.assertNotEquals(len(read.read()), 0, "The file should not be empty")
-        read.close()
+        with open('./TEST.txt', "r") as read:
+            self.assertNotEquals(len(read.read()), 0, "The file should not be empty")
 
     def test_run(self):
         param = Parameters()
@@ -80,9 +76,8 @@ class TestIntegrationCoreProcessor(TestCase):
                           "The length should be 0 because the simulation ended")
         obj = self.coreObj.eventsList
         self.assertIsNotNone("The object is not none", obj)
-        read = open('./TEST.stats.csv', "r")
-        self.assertNotEquals(len(read.read()), 0, "The file should not be empty")
-        read.close()
+        with open('./TEST.stats.csv', "r") as read:
+            self.assertNotEquals(len(read.read()), 0, "The file should not be empty")
 
     def test_getCurrentShift(self):
         source_obj = Source(self.coreObj)
@@ -90,4 +85,5 @@ class TestIntegrationCoreProcessor(TestCase):
         self.coreObj.output_file = open('./TEST.txt', "w+")
         self.coreObj.executeEvent(Event(eventName=Constants.START_SIMULATION))
         self.coreObj.output_file.close()
-        self.assertEquals(self.coreObj.getCurrentShift(), Constants.ENTREGA, "The first shift should be of type ENTREGA")
+        self.assertEquals(self.coreObj.getCurrentShift(), Constants.ENTREGA,
+                          "The first shift should be of type ENTREGA")

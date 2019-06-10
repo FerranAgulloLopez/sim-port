@@ -67,9 +67,9 @@ def operator_crossover(first_individual, second_individual):
     while new_individual == '':
         for idx in range(int(len(first_individual) / 2)):
             if randint(0, 1) > 0:
-                new_individual += first_individual[2*idx:2*idx+2]
+                new_individual += first_individual[2 * idx:2 * idx + 2]
             else:
-                new_individual += second_individual[2*idx:2*idx+2]
+                new_individual += second_individual[2 * idx:2 * idx + 2]
         if not at_least_one_shift_each(new_individual):
             new_individual = ''
     return new_individual
@@ -83,11 +83,11 @@ def operator_mutation(old_individual):
     while new_individual == old_individual or not first_shift_is_valid(
             new_individual) or not at_least_one_shift_each(new_individual):
         idx = randint(0, int(len(old_individual)) / 2 - 1)
-        old_shift = old_individual[2*idx:2*idx+2]
+        old_shift = old_individual[2 * idx:2 * idx + 2]
         new_shift = old_shift
         while new_shift == old_shift:
             new_shift = str(randint(0, 1)) + str(randint(0, 1))
-            new_individual = old_individual[:2*idx] + new_shift + old_individual[2*idx+2:]
+            new_individual = old_individual[:2 * idx] + new_shift + old_individual[2 * idx + 2:]
     return new_individual
 
 

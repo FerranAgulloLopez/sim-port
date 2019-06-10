@@ -10,13 +10,15 @@
 
 ## Unit Tests: Done
 ## Integration Tests:
-    Experimenter,
+    Optimizer, (no es clase)
+    Experimenter, (no es clase)
     Core: Done
-    Event: In Process
+    Event: Done
     Processor: Done
     Queue: Done
     Source: Done
-    ViewController?
+    ViewController? (tests manuales, no automáticos)
+## System test: In progress
 
 Notas:
     No hay tests unitarios de Source (no hacen falta, solo hacen falta los de integridad y sistema)

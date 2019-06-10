@@ -59,7 +59,7 @@ if __name__ == "__main__":
 
                 # RUN CORE
                 path_list = output_file.split('/')
-                filename = str(path_list[len(path_list)-1:][0])
+                filename = str(path_list[len(path_list) - 1:][0])
                 s = '    Testing ' + filename + '...'
                 # s += '    Parameters set.'
                 print(s)
@@ -74,8 +74,8 @@ if __name__ == "__main__":
                     data = ifs2.readline()[:-1].split(',')
                     for idx in range(len(headers)):
                         if headers[idx] == 'Shift_Type':
-                            duration = float(data[idx+1])
-                            capacity_usage = float(data[idx+2])
+                            duration = float(data[idx + 1])
+                            capacity_usage = float(data[idx + 2])
                             if capacity_usage > 70.0:
                                 exceeds_capacity = True
                             total_service += capacity_usage * duration * parameters.num_processors

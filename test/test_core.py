@@ -103,19 +103,19 @@ class TestCore(TestCase):
 
         mock_event = Event()
         mock_event.executeEvent = MagicMock()
-        mock_event.eventTime = Constants.SIMULATION_INITIAL_TIME + 1*3600 + 1
+        mock_event.eventTime = Constants.SIMULATION_INITIAL_TIME + 1 * 3600 + 1
 
         self.coreObj.updateState(mock_event)
 
         mock_event = Event()
         mock_event.executeEvent = MagicMock()
-        mock_event.eventTime = Constants.SIMULATION_INITIAL_TIME + 5*3600 + 1
+        mock_event.eventTime = Constants.SIMULATION_INITIAL_TIME + 5 * 3600 + 1
 
         self.coreObj.updateState(mock_event)
 
-        self.assertEqual(self.coreObj.currentTime, Constants.SIMULATION_INITIAL_TIME + 5*3600 + 1,
+        self.assertEqual(self.coreObj.currentTime, Constants.SIMULATION_INITIAL_TIME + 5 * 3600 + 1,
                          "The current time should be updated to SIMULATION_INITIAL_TIME + 5*3600 + 1")
         print("SERVICE_PER_SHIFT", self.coreObj.service_per_shift)
-        self.assertEqual(self.coreObj.serviceProcessors, (5*3600 + 1) * 2,
+        self.assertEqual(self.coreObj.serviceProcessors, (5 * 3600 + 1) * 2,
                          "The service processors time should be (5*3600 + 1) * 2 (2 service processors)")
         self.assertEqual(self.coreObj.idleProcessors, 0, "The idle time should be 0")
