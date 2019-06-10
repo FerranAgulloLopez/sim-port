@@ -32,14 +32,9 @@ class Core:
         self.entitiesSystem = 0
         self.service_per_shift = []
         self.service_per_total = []
-        self.shift_next_index = 0
+        self.shift_next_index = 1
         self.shift_durations = self.parameters.getParameters()[1]
         self.shift_next_time = self.shift_durations[self.shift_next_index]
-
-        # DEBUG BEGIN
-        # print(str(self.shift_durations))
-        # print(str(self.shift_next_time))
-        # DEBUG END
 
         # Instance creation
         self.queue = Queue(Constants.SLOTS_BUFFER)
@@ -87,7 +82,8 @@ class Core:
             self.currentTime  # eventTime
         )
         self.logEvent(endEvent)
-        print('    Simulation finished.')
+        self.updateState(endEvent)
+        # print('    Simulation finished.')
 
     def executeEvent(self, currentEvent):
         """Implemented by all event creator modules"""
@@ -95,7 +91,7 @@ class Core:
             self.startSimulation()
 
     def run(self):
-        print('    Core running...')
+        # print('    Core running...')
         self.logHeaders()  # creates output file with flag w+
         with open('../output/' + self.parameters.output_file + '.csv', "a+") as self.output_file:
             self.startSimulation()
@@ -105,7 +101,7 @@ class Core:
                 self.logEvent(currentEvent)
                 currentEvent.executeEvent()
             self.endSimulation()
-            self.stats()  # DEBUG
+            self.stats()
 
     def addEvent(self, addedEvent):
         self.eventsList.put(addedEvent, addedEvent.eventTime)
@@ -126,8 +122,6 @@ class Core:
                 self.serviceProcessors += timeStep
 
         if self.currentTime > self.shift_next_time * 3600:
-            # print(self.currentTime, self.shift_next_time * 3600, self.shift_next_index)
-            print(self.shift_durations, self.shift_next_index)
             if self.shift_next_index < len(self.shift_durations):
                 self.shift_next_time += self.shift_durations[self.shift_next_index]
                 self.shift_next_index += 1
@@ -135,8 +129,10 @@ class Core:
                     self.service_per_shift.append(self.serviceProcessors)
                 else:
                     self.service_per_shift.append(
-                        self.serviceProcessors - self.service_per_total[len(self.service_per_total) - 1])
+                        self.serviceProcessors - self.service_per_total[-1])
                 self.service_per_total.append(self.serviceProcessors)
+            elif event.eventName == Constants.END_SIMULATION:
+                self.service_per_shift.append(self.serviceProcessors - self.service_per_total[-1])
 
     def getCurrentShift(self):
         param = Parameters()
@@ -172,11 +168,6 @@ class Core:
         self.output_file.write(s + '\n')
 
     def stats(self):
-        # DEBUG BEGIN
-        # print()
-        # print(str(self.service_per_shift))
-        # print()
-        # DEBUG END
         s = 'Max_Queue_Length'
         r = str(self.parking.getMaxQueueLength())
         s += ',Processors_Capacity_Used'
@@ -190,8 +181,8 @@ class Core:
             r += ',' + str(shift_duration[idx])
             s += ',Shift_Capacity_Usage'
             r += ',' + str(round(100 * self.service_per_shift[idx] /
-                                 (self.parameters.num_processors * Constants.SIMULATION_DURATION), 2))
-        with open(self.parameters.output_file + '.stats.csv', "w+") as output_file:
+                                 (self.parameters.num_processors * self.shift_durations[idx] * 3600), 2))
+        with open('../output/' + self.parameters.output_file + '.stats.csv', "w+") as output_file:
             output_file.write(s + '\n')
             output_file.write(r + '\n')
 
@@ -234,32 +225,22 @@ if __name__ == "__main__":
         sys.exit()
 
     duration_total = 0
-    if not flag_experimenter:
-        while duration_total < int(Constants.SIMULATION_DURATION / 3600):
-            in_shift_type = str(input('Enter shift type:'))
-            if in_shift_type not in (Constants.ENTREGA, Constants.RECOGIDA, Constants.DUAL):
-                print('Shift type not recognized. Shifts are:', Constants.ENTREGA, Constants.RECOGIDA, Constants.DUAL)
+    while duration_total < int(Constants.SIMULATION_DURATION / 3600):
+        in_shift_type = str(input('Enter shift type:'))
+        if in_shift_type not in (Constants.ENTREGA, Constants.RECOGIDA, Constants.DUAL):
+            print('Shift type not recognized. Shifts are:', Constants.ENTREGA, Constants.RECOGIDA, Constants.DUAL)
+        else:
+            in_shift_duration = int(input('Enter shift duration in hours:'))
+            if duration_total + in_shift_duration <= int(Constants.SIMULATION_DURATION / 3600):
+                duration_total += in_shift_duration
+                shift_duration.append(in_shift_duration)
+                shift_type.append(in_shift_type)
             else:
-                in_shift_duration = int(input('Enter shift duration in hours:'))
-                if duration_total + in_shift_duration <= int(Constants.SIMULATION_DURATION / 3600):
-                    duration_total += in_shift_duration
-                    shift_duration.append(in_shift_duration)
-                    shift_type.append(in_shift_type)
-                else:
-                    print('Not enough time. Remaining time is:',
-                          int(Constants.SIMULATION_DURATION / 3600) - duration_total, 'h.')
-        # Still inside if not flag_experimenter
-        parameters.setParameters(shift_duration, shift_type, shift_factor)
-        print('    Parameters set.')
-    # else, set by Experimenter
-
-    # DEBUG BEGIN
-    # with open("debug_info.txt", "w+") as dbg:
-    #     dbg.write(str(parameters.shift_type) + '\n')
-    #     dbg.write(str(parameters.shift_duration) + '\n')
-    #     dbg.write(str(parameters.shift_factor) + '\n')
-    # DEBUG END
+                print('Not enough time. Remaining time is:',
+                      int(Constants.SIMULATION_DURATION / 3600) - duration_total, 'h.')
+    parameters.setParameters(shift_duration, shift_type, shift_factor)
+    print('    Parameters set.')
 
     # Start core
-    core = Core(parameters)
+    core = Core()
     core.run()

@@ -26,6 +26,8 @@ if __name__ == "__main__":
 
     # Start core
     with open('../input/' + inputFile, 'r') as ifs:
+        best_configuration = ''
+        best_idle = 0
         content = ifs.readlines()
         for line in content:
             if line:
@@ -57,22 +59,28 @@ if __name__ == "__main__":
 
                 # RUN CORE
                 path_list = output_file.split('/')
-                filename = str(path_list[len(path_list) - 1:][0])
-                s = '[Configuration: ' + filename + ']\n'
-                s += '    Parameters set.'
+                filename = str(path_list[len(path_list)-1:][0])
+                s = '    Testing ' + filename + '...'
+                # s += '    Parameters set.'
                 print(s)
-                core = Core(parameters)
+                core = Core()
                 core.run()
 
-                # TODO: analyze trace
                 with open('../output/' + output_file + '.stats.csv', 'r') as ifs2:
+                    total_service = 0
+                    total_idle = Constants.SIMULATION_DURATION * parameters.num_processors
+                    exceeds_capacity = False
                     headers = ifs2.readline()[:-1].split(',')
                     data = ifs2.readline()[:-1].split(',')
-                    print(headers)
-                    print(data)
-                    for header in headers:
-                        pass
-                    # TODO: read idle times by shift, more idle time = better (less workers needed)
-                    # TODO: update best configuration
-                    pass
-        # TODO: print best configuration
+                    for idx in range(len(headers)):
+                        if headers[idx] == 'Shift_Type':
+                            duration = float(data[idx+1])
+                            capacity_usage = float(data[idx+2])
+                            if capacity_usage > 70.0:
+                                exceeds_capacity = True
+                            total_service += capacity_usage * duration * parameters.num_processors
+                    total_idle -= total_service
+                    if not exceeds_capacity and total_idle > best_idle:
+                        best_idle = total_idle
+                        best_configuration = filename
+        print('\nBest configuration: ' + best_configuration)
