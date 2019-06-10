@@ -1,3 +1,4 @@
+import os
 from unittest import TestCase
 
 from src.Constants import Constants
@@ -13,6 +14,18 @@ class TestIntegrationCoreProcessor(TestCase):
 
     def tearDown(self):
         self.coreObj = None
+        try:
+            os.remove("../output/TEST.csv")
+        except:
+            pass
+        try:
+            os.remove("../output/TEST.stats.csv")
+        except:
+            pass
+        try:
+            os.remove("./TEST.txt")
+        except:
+            pass
 
     def test_startSimulation(self):
         source_obj = Source(self.coreObj)
@@ -76,7 +89,7 @@ class TestIntegrationCoreProcessor(TestCase):
                           "The length should be 0 because the simulation ended")
         obj = self.coreObj.eventsList
         self.assertIsNotNone("The object is not none", obj)
-        with open('./TEST.stats.csv', "r") as read:
+        with open('../output/TEST.stats.csv', "r") as read:
             self.assertNotEquals(len(read.read()), 0, "The file should not be empty")
 
     def test_getCurrentShift(self):
