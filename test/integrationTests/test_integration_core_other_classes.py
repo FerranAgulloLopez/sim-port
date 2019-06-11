@@ -10,16 +10,18 @@ from src.Source import Source
 
 class TestIntegrationCoreOtherClasses(TestCase):
     def setUp(self):
+        Constants.INPUT_PATH = "../../input/"
+        Constants.OUTPUT_PATH = "../../output/"
         self.coreObj = Core()
 
     def tearDown(self):
         self.coreObj = None
         try:
-            os.remove("../output/TEST.csv")
+            os.remove(Constants.OUTPUT_PATH + "TEST.csv")
         except:
             pass
         try:
-            os.remove("../output/TEST.stats.csv")
+            os.remove(Constants.OUTPUT_PATH + "TEST.stats.csv")
         except:
             pass
         try:
@@ -89,7 +91,7 @@ class TestIntegrationCoreOtherClasses(TestCase):
                           "The length should be 0 because the simulation ended")
         obj = self.coreObj.eventsList
         self.assertIsNotNone("The object is not none", obj)
-        with open('../output/TEST.stats.csv', "r") as read:
+        with open(Constants.OUTPUT_PATH + 'TEST.stats.csv', "r") as read:
             self.assertNotEquals(len(read.read()), 0, "The file should not be empty")
 
     def test_getCurrentShift(self):

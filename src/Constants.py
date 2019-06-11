@@ -1,4 +1,7 @@
 class Constants:
+    INPUT_PATH = '../input/'
+    OUTPUT_PATH = '../output/'
+
     # Default values
     DEFAULT_SOURCES = 1
     DEFAULT_PROCESSORS = 52

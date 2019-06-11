@@ -29,7 +29,7 @@ def parse_time(time):
 # Main program
 
 # load trace
-df = pd.read_csv("../output/trace.csv")
+df = pd.read_csv(Constants.OUTPUT_PATH + "/trace.csv")
 parameters = Parameters()
 charts = Charts()
 

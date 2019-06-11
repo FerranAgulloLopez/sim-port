@@ -25,7 +25,7 @@ if __name__ == "__main__":
     # DEBUG END
 
     # Start core
-    with open('../input/' + inputFile, 'r') as ifs:
+    with open(Constants.INPUT_PATH + inputFile, 'r') as ifs:
         best_configuration = ''
         best_idle = 0
         content = ifs.readlines()
@@ -66,7 +66,7 @@ if __name__ == "__main__":
                 core = Core()
                 core.run()
 
-                with open('../output/' + output_file + '.stats.csv', 'r') as ifs2:
+                with open(Constants.OUTPUT_PATH + output_file + '.stats.csv', 'r') as ifs2:
                     total_service = 0
                     total_idle = Constants.SIMULATION_DURATION * parameters.num_processors
                     exceeds_capacity = False

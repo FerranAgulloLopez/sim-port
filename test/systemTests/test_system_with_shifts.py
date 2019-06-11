@@ -27,6 +27,8 @@ class TestSystemWithShifts(TestCase):
 
     @classmethod
     def setUpClass(cls):
+        Constants.INPUT_PATH = "../../input/"
+        Constants.OUTPUT_PATH = "../../output/"
         param = Parameters()
         param.num_processors = Constants.DEFAULT_PROCESSORS
         cls.coreObj = Core(param)
