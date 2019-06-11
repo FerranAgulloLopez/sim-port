@@ -10,8 +10,6 @@ from src.Source import Source
 
 class TestIntegrationCoreOtherClasses(TestCase):
     def setUp(self):
-        Constants.INPUT_PATH = "../../input/"
-        Constants.OUTPUT_PATH = "../../output/"
         self.coreObj = Core()
 
     def tearDown(self):

@@ -1,6 +1,8 @@
+from definitions import ROOT_DIR
+
 class Constants:
-    INPUT_PATH = '../input/'
-    OUTPUT_PATH = '../output/'
+    INPUT_PATH = ROOT_DIR + 'input/'
+    OUTPUT_PATH = ROOT_DIR + '/output/'
 
     # Default values
     DEFAULT_SOURCES = 1
