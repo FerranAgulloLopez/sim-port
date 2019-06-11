@@ -42,19 +42,22 @@ class _Parameters:
         return duration
 
     def getCurrentShift(self, currentTime):
-        currentTime -= Constants.SIMULATION_INITIAL_TIME
-        seconds_incremental = []
-        accum = 0
-        seconds_incremental.append(accum)
-        for i in self.shift_duration:
-            accum += i * self.shift_factor
+        if self.WITH_SHIFTS:
+            currentTime -= Constants.SIMULATION_INITIAL_TIME
+            seconds_incremental = []
+            accum = 0
             seconds_incremental.append(accum)
-        aux = Auxiliary()
-        index = aux.binarySearch(seconds_incremental, currentTime)
-        index = min(index, len(self.shift_type) - 1)
-        # print(index, len(self.shift_type))
-        # print(seconds_incremental, currentTime)
-        return self.shift_type[index]
+            for i in self.shift_duration:
+                accum += i * self.shift_factor
+                seconds_incremental.append(accum)
+            aux = Auxiliary()
+            index = aux.binarySearch(seconds_incremental, currentTime)
+            index = min(index, len(self.shift_type) - 1)
+            # print(index, len(self.shift_type))
+            # print(seconds_incremental, currentTime)
+            return self.shift_type[index]
+        else:
+            return '-'
 
 
 def Parameters():
