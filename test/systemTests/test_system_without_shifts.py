@@ -39,7 +39,7 @@ class TestSystemWithoutShifts(TestCase):
         param.num_processors = Constants.DEFAULT_PROCESSORS
         cls.coreObj = Core(param)
         cls.coreObj.output_file = open('./TEST_System.txt', "w+")
-        cls.coreObj.parameters.output_file = "TEST_System"
+        cls.coreObj.parameters.output_file = Constants.OUTPUT_PATH + "TEST_System"
         cls.coreObj.run()
         cls.coreObj.output_file.close()
         with open(Constants.OUTPUT_PATH + 'TEST_System.csv', "r") as read:

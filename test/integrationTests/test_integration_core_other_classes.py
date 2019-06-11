@@ -15,11 +15,11 @@ class TestIntegrationCoreOtherClasses(TestCase):
     def tearDown(self):
         self.coreObj = None
         try:
-            os.remove(Constants.OUTPUT_PATH + "TEST.csv")
+            os.remove("./TEST.csv")
         except:
             pass
         try:
-            os.remove(Constants.OUTPUT_PATH + "TEST.stats.csv")
+            os.remove("./TEST.stats.csv")
         except:
             pass
         try:
@@ -89,7 +89,7 @@ class TestIntegrationCoreOtherClasses(TestCase):
                           "The length should be 0 because the simulation ended")
         obj = self.coreObj.eventsList
         self.assertIsNotNone("The object is not none", obj)
-        with open(Constants.OUTPUT_PATH + 'TEST.stats.csv', "r") as read:
+        with open('./TEST.stats.csv', "r") as read:
             self.assertNotEquals(len(read.read()), 0, "The file should not be empty")
 
     def test_getCurrentShift(self):

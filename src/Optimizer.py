@@ -116,7 +116,8 @@ def get_fitness():
     """ reads stats from the default output_file and determines the viability and benefits """
     total_service = 0
     total_idle = Constants.SIMULATION_DURATION * parameters.num_processors
-    with open(Constants.OUTPUT_PATH + parameters.output_file + '.stats.csv', 'r') as ifs:
+    print("ARCHIVO", parameters.output_file + '.stats.csv')
+    with open(parameters.output_file + '.stats.csv', 'r') as ifs:
         exceeds_capacity = False
         headers = ifs.readline()[:-1].split(',')
         data = ifs.readline()[:-1].split(',')

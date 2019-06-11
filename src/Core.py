@@ -93,7 +93,7 @@ class Core:
     def run(self):
         # print('    Core running...')
         self.logHeaders()  # creates output file with flag w+
-        with open(Constants.OUTPUT_PATH + self.parameters.output_file + '.csv', "a+") as self.output_file:
+        with open(self.parameters.output_file + '.csv', "a+") as self.output_file:
             self.startSimulation()
             while not self.eventsList.empty():
                 currentEvent = self.eventsList.get()
@@ -151,7 +151,8 @@ class Core:
         s += 'Entities_System,'
         s += 'Shift'
         # print(s)
-        with open(Constants.OUTPUT_PATH + self.parameters.output_file + '.csv', "w+") as output_file:
+        print("ARCHIVO EN CORE", self.parameters.output_file + '.csv')
+        with open(self.parameters.output_file + '.csv', "w+") as output_file:
             output_file.write(s + '\n')
 
     def logEvent(self, currentEvent):
@@ -184,7 +185,7 @@ class Core:
             s += ',Shift_Capacity_Usage'
             r += ',' + str(round(100 * self.service_per_shift[idx] /
                                  (self.parameters.num_processors * self.shift_durations[idx] * 3600), 2))
-        with open(Constants.OUTPUT_PATH + self.parameters.output_file + '.stats.csv', "w+") as output_file:
+        with open(self.parameters.output_file + '.stats.csv', "w+") as output_file:
             output_file.write(s + '\n')
             output_file.write(r + '\n')
 
