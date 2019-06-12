@@ -7,11 +7,14 @@ class _Parameters:
 
     # Simulator parameters
     def __init__(self):
-        self.shift_duration = [5, 5, 2, 1]
+        # Type of Execution
+        self.WITH_SHIFTS = True
+
+        self.shift_duration = [5, 5, 2, 2]
         self.shift_type = [Constants.ENTREGA, Constants.ENTREGA, Constants.RECOGIDA, Constants.DUAL]
         self.shift_factor = 3600  # hours
         self.num_processors = Constants.DEFAULT_PROCESSORS
-        self.output_file = "../output/trace"
+        self.output_file = Constants.OUTPUT_PATH + "trace"
 
     def setNumProcessors(self, num_processors):
         self.num_processors = num_processors
@@ -25,28 +28,37 @@ class _Parameters:
         return self.shift_type, self.shift_duration
 
     def getTotalTime(self, shift):
-        duration = 0
-        idx = 0
-        for i in self.shift_type:
-            if i == shift:
-                duration += self.shift_duration[idx]
-            idx += 1
+        if self.WITH_SHIFTS:
+            duration = 0
+            idx = 0
+            for i in self.shift_type:
+                if i == shift:
+                    duration += self.shift_duration[idx]
+                idx += 1
+        else:
+            duration = 0
+            for i in self.shift_duration:
+                duration += i
         return duration
 
     def getCurrentShift(self, currentTime):
-        currentTime -= Constants.SIMULATION_INITIAL_TIME
-        seconds_incremental = []
-        accum = 0
-        seconds_incremental.append(accum)
-        for i in self.shift_duration:
-            accum += i * self.shift_factor
+        if self.WITH_SHIFTS:
+            currentTime -= Constants.SIMULATION_INITIAL_TIME
+            seconds_incremental = []
+            accum = 0
             seconds_incremental.append(accum)
-        aux = Auxiliary()
-        index = aux.binarySearch(seconds_incremental, currentTime)
-        index = min(index, len(self.shift_type) - 1)
-        # print(index, len(self.shift_type))
-        # print(seconds_incremental, currentTime)
-        return self.shift_type[index]
+            for i in self.shift_duration:
+                accum += i * self.shift_factor
+                seconds_incremental.append(accum)
+            aux = Auxiliary()
+            index = aux.binarySearch(seconds_incremental, currentTime)
+            index = min(index, len(self.shift_type) - 1)
+            # print(index, len(self.shift_type))
+            # print(seconds_incremental, currentTime)
+            return self.shift_type[index]
+        else:
+            return '-'
+
 
 def Parameters():
     if _Parameters._instance is None:

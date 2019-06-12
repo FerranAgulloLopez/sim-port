@@ -1,4 +1,9 @@
+from definitions import ROOT_DIR
+
 class Constants:
+    INPUT_PATH = ROOT_DIR + 'input/'
+    OUTPUT_PATH = ROOT_DIR + '/output/'
+
     # Default values
     DEFAULT_SOURCES = 1
     DEFAULT_PROCESSORS = 52
@@ -34,6 +39,9 @@ class Constants:
     MINIMUM_TIME_DUAL = 1957
     MAXIMUM_TIME_DUAL = 1957
 
+    MINIMUM_TIME = 1578
+    MAXIMUM_TIME = 1578
+
     # Source parameters
     BETA_ENTREGA = 340
     LAMBDA_ENTREGA = 1 / BETA_ENTREGA
@@ -56,3 +64,7 @@ class Constants:
     MINIMUM_TRUCKS_DUAL = 212
     MAXIMUM_TRUCKS_DUAL = 464
     MEDIAN_TRUCKS_DUAL = 380
+
+    MINIMUM_TRUCKS = 1075
+    MAXIMUM_TRUCKS = 1452
+    MEDIAN_TRUCKS = 1313

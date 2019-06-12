@@ -8,11 +8,11 @@ from src.Queue import Queue
 
 class TestProcessor(TestCase):
     def setUp(self):
-        mock_output = Core()
-        mock_output.canHostEntity = MagicMock(return_value=True)
-        mock_output.nextArrival = MagicMock()
-        mock_output.decreaseEntitiesSystem = MagicMock()
-        self.processorObj = Processor(mock_output)
+        mock_core = Core()
+        mock_core.canHostEntity = MagicMock(return_value=True)
+        mock_core.nextArrival = MagicMock()
+        mock_core.decreaseEntitiesSystem = MagicMock()
+        self.processorObj = Processor(mock_core)
 
     def tearDown(self):
         self.processorObj = None

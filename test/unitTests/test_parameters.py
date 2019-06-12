@@ -2,12 +2,16 @@ from unittest import TestCase
 
 from src.Constants import Constants
 from src.Parameters import Parameters
+from src.Random import Random
 
 
 class TestParameters(TestCase):
 
     def setUp(self):
         self.parametersObj = Parameters()
+        self.parametersObj.WITH_SHIFTS = True
+        rand = Random()
+        rand.initialization()
 
     def tearDown(self):
         self.parametersObj = None

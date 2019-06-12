@@ -4,7 +4,7 @@ from unittest.mock import MagicMock
 from src.Queue import Queue
 
 
-class TestQueueClass(unittest.TestCase):
+class TestQueue(unittest.TestCase):
     def setUp(self):
         self.queueObj = Queue()
 

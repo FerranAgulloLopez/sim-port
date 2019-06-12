@@ -14,10 +14,13 @@ from src.Source import Source
 class Core:
     # CLASS FUNCTIONS
 
-    def __init__(self, parameters):
-        self.parameters = parameters
+    def __init__(self, parameters=None):
+        if parameters is None:
+            self.parameters = Parameters()
+        else:
+            self.parameters = parameters
         num_sources = Constants.DEFAULT_SOURCES
-        num_processors = parameters.num_processors
+        num_processors = self.parameters.num_processors
         # Attributes initialization
         self.processors = []
         self.sources = []
@@ -29,14 +32,9 @@ class Core:
         self.entitiesSystem = 0
         self.service_per_shift = []
         self.service_per_total = []
-        self.shift_next_index = 0
+        self.shift_next_index = 1
         self.shift_durations = self.parameters.getParameters()[1]
         self.shift_next_time = self.shift_durations[self.shift_next_index]
-
-        # DEBUG BEGIN
-        # print(str(self.shift_durations))
-        # print(str(self.shift_next_time))
-        #DEBUG END
 
         # Instance creation
         self.queue = Queue(Constants.SLOTS_BUFFER)
@@ -84,7 +82,8 @@ class Core:
             self.currentTime  # eventTime
         )
         self.logEvent(endEvent)
-        print('    Simulation finished.')
+        self.updateState(endEvent)
+        # print('    Simulation finished.')
 
     def executeEvent(self, currentEvent):
         """Implemented by all event creator modules"""
@@ -92,9 +91,9 @@ class Core:
             self.startSimulation()
 
     def run(self):
-        print('    Core running...')
+        # print('    Core running...')
         self.logHeaders()  # creates output file with flag w+
-        with open('../output/' + self.parameters.output_file + '.csv', "a+") as self.output_file:
+        with open(self.parameters.output_file + '.csv', "a+") as self.output_file:
             self.startSimulation()
             while not self.eventsList.empty():
                 currentEvent = self.eventsList.get()
@@ -102,7 +101,7 @@ class Core:
                 self.logEvent(currentEvent)
                 currentEvent.executeEvent()
             self.endSimulation()
-            self.stats()  # DEBUG
+            self.stats()
 
     def addEvent(self, addedEvent):
         self.eventsList.put(addedEvent, addedEvent.eventTime)
@@ -123,20 +122,21 @@ class Core:
                 self.serviceProcessors += timeStep
 
         if self.currentTime > self.shift_next_time * 3600:
-            print(self.currentTime, self.shift_next_time * 3600, self.shift_next_index)
             if self.shift_next_index < len(self.shift_durations):
                 self.shift_next_time += self.shift_durations[self.shift_next_index]
                 self.shift_next_index += 1
-            if not self.service_per_shift:  # first shift - empty list
-                self.service_per_shift.append(self.serviceProcessors)
-            else:
-                self.service_per_shift.append(
-                    self.serviceProcessors - self.service_per_total[len(self.service_per_total)-1])
-            self.service_per_total.append(self.serviceProcessors)
+                if not self.service_per_shift:  # first shift - empty list; if == 0
+                    self.service_per_shift.append(self.serviceProcessors)
+                else:
+                    self.service_per_shift.append(
+                        self.serviceProcessors - self.service_per_total[-1])
+                self.service_per_total.append(self.serviceProcessors)
+            elif event.eventName == Constants.END_SIMULATION:
+                self.service_per_shift.append(self.serviceProcessors - self.service_per_total[-1])
 
     def getCurrentShift(self):
-        param = Parameters()
-        return param.getCurrentShift(self.currentTime)
+        # print("DEBUG: getCurrentShift", self.currentTime, "and it returns:", self.parameters.getCurrentShift(self.currentTime))
+        return self.parameters.getCurrentShift(self.currentTime)
 
     def logHeaders(self):
         s = 'Current_Time,'
@@ -148,9 +148,11 @@ class Core:
         s += 'Number_Idle_Processors,'
         s += 'Buffer_Length,'
         s += 'Queue_Length,'
-        s += 'Entities_System'
+        s += 'Entities_System,'
+        s += 'Shift'
         # print(s)
-        with open('../output/' + self.parameters.output_file + '.csv', "w+") as output_file:
+        print("ARCHIVO EN CORE", self.parameters.output_file + '.csv')
+        with open(self.parameters.output_file + '.csv', "w+") as output_file:
             output_file.write(s + '\n')
 
     def logEvent(self, currentEvent):
@@ -163,21 +165,17 @@ class Core:
         s += str(self.numberOfIdleProcessors) + ','
         s += str(self.queue.getQueueLength()) + ','
         s += str(self.parking.getQueueLength()) + ','
-        s += str(self.entitiesSystem)
+        s += str(self.entitiesSystem) + ','
+        s += str(self.parameters.getCurrentShift(currentEvent.eventScheduled))
         # print(s)
         self.output_file.write(s + '\n')
 
     def stats(self):
-        # DEBUG BEGIN
-        # print()
-        # print(str(self.service_per_shift))
-        # print()
-        # DEBUG END
         s = 'Max_Queue_Length'
         r = str(self.parking.getMaxQueueLength())
         s += ',Processors_Capacity_Used'
         r += ',' + str(round(100 * self.serviceProcessors /
-                       (self.parameters.num_processors * Constants.SIMULATION_DURATION), 2))  # in %
+                             (self.parameters.num_processors * Constants.SIMULATION_DURATION), 2))  # in %
         shift_type, shift_duration = self.parameters.getParameters()
         for idx in range(len(shift_type)):
             s += ',Shift_Type'
@@ -186,7 +184,7 @@ class Core:
             r += ',' + str(shift_duration[idx])
             s += ',Shift_Capacity_Usage'
             r += ',' + str(round(100 * self.service_per_shift[idx] /
-                                 (self.parameters.num_processors * Constants.SIMULATION_DURATION),2))
+                                 (self.parameters.num_processors * self.shift_durations[idx] * 3600), 2))
         with open(self.parameters.output_file + '.stats.csv', "w+") as output_file:
             output_file.write(s + '\n')
             output_file.write(r + '\n')
@@ -230,32 +228,22 @@ if __name__ == "__main__":
         sys.exit()
 
     duration_total = 0
-    if not flag_experimenter:
-        while duration_total < int(Constants.SIMULATION_DURATION / 3600):
-            in_shift_type = str(input('Enter shift type:'))
-            if in_shift_type not in (Constants.ENTREGA, Constants.RECOGIDA, Constants.DUAL):
-                print('Shift type not recognized. Shifts are:', Constants.ENTREGA, Constants.RECOGIDA, Constants.DUAL)
+    while duration_total < int(Constants.SIMULATION_DURATION / 3600):
+        in_shift_type = str(input('Enter shift type:'))
+        if in_shift_type not in (Constants.ENTREGA, Constants.RECOGIDA, Constants.DUAL):
+            print('Shift type not recognized. Shifts are:', Constants.ENTREGA, Constants.RECOGIDA, Constants.DUAL)
+        else:
+            in_shift_duration = int(input('Enter shift duration in hours:'))
+            if duration_total + in_shift_duration <= int(Constants.SIMULATION_DURATION / 3600):
+                duration_total += in_shift_duration
+                shift_duration.append(in_shift_duration)
+                shift_type.append(in_shift_type)
             else:
-                in_shift_duration = int(input('Enter shift duration in hours:'))
-                if duration_total + in_shift_duration <= int(Constants.SIMULATION_DURATION / 3600):
-                    duration_total += in_shift_duration
-                    shift_duration.append(in_shift_duration)
-                    shift_type.append(in_shift_type)
-                else:
-                    print('Not enough time. Remaining time is:',
-                          int(Constants.SIMULATION_DURATION / 3600) - duration_total, 'h.')
-        # Still inside if not flag_experimenter
-        parameters.setParameters(shift_duration, shift_type, shift_factor)
-        print('    Parameters set.')
-    # else, set by Experimenter
-
-    # DEBUG BEGIN
-    # with open("debug_info.txt", "w+") as dbg:
-    #     dbg.write(str(parameters.shift_type) + '\n')
-    #     dbg.write(str(parameters.shift_duration) + '\n')
-    #     dbg.write(str(parameters.shift_factor) + '\n')
-    # DEBUG END
+                print('Not enough time. Remaining time is:',
+                      int(Constants.SIMULATION_DURATION / 3600) - duration_total, 'h.')
+    parameters.setParameters(shift_duration, shift_type, shift_factor)
+    print('    Parameters set.')
 
     # Start core
-    core = Core(parameters)
+    core = Core()
     core.run()

@@ -1,4 +1,3 @@
-
 class Charts:
     _instance = None
 
@@ -96,8 +95,8 @@ class Charts:
         return figure
 
     def build_timeline(self, time, timeline_cargas, timeline_descargas, timeline_duo):
-        hour = time/3600
-        if hour > 20 :
+        hour = time / 3600
+        if hour > 20:
             hour = 20
         figure = {
             "data": [
@@ -178,7 +177,8 @@ class Charts:
         }
         return figure
 
-    def build_queue_pies(self, buffer_slots_busy, queue_slots_busy, processors_free, buffer_max_size, queue_max_size, processors_max_number):
+    def build_queue_pies(self, buffer_slots_busy, queue_slots_busy, processors_free, buffer_max_size, queue_max_size,
+                         processors_max_number):
         figure = {
             "data": [
                 {
@@ -278,7 +278,7 @@ class Charts:
                 {
                     "type": "bar",
                     'x': x,
-                    'y': [entries_carregues,entries_descarregues,entries_duo],
+                    'y': [entries_carregues, entries_descarregues, entries_duo],
                     'text': x,
                     'textposition': 'auto',
                     'marker': {
@@ -304,7 +304,7 @@ class Charts:
                 {
                     "type": "bar",
                     'x': x,
-                    'y': [max_queue_carregues,max_queue_descarregues,max_queue_entries_duo],
+                    'y': [max_queue_carregues, max_queue_descarregues, max_queue_entries_duo],
                     'text': x,
                     'textposition': 'auto',
                     'marker': {
@@ -330,7 +330,7 @@ class Charts:
                 {
                     "type": "bar",
                     'x': x,
-                    'y': [max_par_carregues,max_par_descarregues,max_par_duo],
+                    'y': [max_par_carregues, max_par_descarregues, max_par_duo],
                     'text': x,
                     'textposition': 'auto',
                     'marker': {
@@ -348,8 +348,6 @@ class Charts:
             }
         }
         return figure
-
-
 
 
 def Parameters():
