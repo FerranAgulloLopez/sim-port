@@ -89,7 +89,9 @@ while (count < size):
     aux_num_par = event['Queue_Length']
     aux_idle = idle - last_idle
     aux_service = service - last_service
+    # print(event_time)
     phase = parameters.getCurrentShift(event_time)
+    # print(phase)
     if (phase == 'ENTREGA'):
         idle_1 += aux_idle
         service_1 += aux_service
@@ -100,6 +102,7 @@ while (count < size):
         if aux_num_par > max_par_descarregues:
             max_par_descarregues = aux_num_par
     if (phase == 'RECOGIDA'):
+        # print('ei')
         idle_2 += aux_idle
         service_2 += aux_service
         if event['Event_Name'] == 'NEXT_ARRIVAL':
@@ -122,6 +125,12 @@ while (count < size):
     count += 1
 
 #########################################################
+
+print(idle_2)
+print(service_2)
+print(idle_3)
+print(service_3)
+
 
 
 
