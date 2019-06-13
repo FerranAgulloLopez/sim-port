@@ -1,5 +1,6 @@
 import sys
 
+from src import Auxiliary
 from src.Constants import Constants
 from src.Core import Core
 from src.Parameters import Parameters
@@ -26,8 +27,8 @@ if __name__ == "__main__":
 
     # Start core
     with open(Constants.INPUT_PATH + inputFile, 'r') as ifs:
-        best_configuration = ''
-        best_idle = 0
+        population = []
+        fitness = {}
         content = ifs.readlines()
         for line in content:
             if line:
@@ -56,31 +57,22 @@ if __name__ == "__main__":
                 output_file = str(args[0])
                 # print(output_file)
                 parameters.output_file = Constants.OUTPUT_PATH + output_file
-                print("PARAMETERS:OUTPUT_FILE", parameters.output_file)
+                # print("PARAMETERS:OUTPUT_FILE", parameters.output_file)
                 # RUN CORE
                 path_list = output_file.split('/')
                 filename = str(path_list[len(path_list) - 1:][0])
-                s = '    Testing ' + filename + '...'
-                # s += '    Parameters set.'
-                print(s)
-                core = Core()
-                core.run()
+                if filename not in fitness:
+                    population.append(filename)
+                    s = '    Testing ' + filename + '...'
+                    # s += '    Parameters set.'
+                    print(s)
+                    core = Core()
+                    core.run()
+                    fitness[filename] = Auxiliary.get_fitness(parameters.output_file)
+                    # DEBUG
+                    # print(fitness[filename])
+                    #
 
-                with open(parameters.output_file + '.stats.csv', 'r') as ifs2:
-                    total_service = 0
-                    total_idle = Constants.SIMULATION_DURATION * parameters.num_processors
-                    exceeds_capacity = False
-                    headers = ifs2.readline()[:-1].split(',')
-                    data = ifs2.readline()[:-1].split(',')
-                    for idx in range(len(headers)):
-                        if headers[idx] == 'Shift_Type':
-                            duration = float(data[idx + 1])
-                            capacity_usage = float(data[idx + 2])
-                            if capacity_usage > Constants.MAX_CAPACITY_USAGE:
-                                exceeds_capacity = True
-                            total_service += capacity_usage * duration * parameters.num_processors
-                    total_idle -= total_service
-                    if not exceeds_capacity and total_idle > best_idle:
-                        best_idle = total_idle
-                        best_configuration = filename
-        print('\nBest configuration: ' + best_configuration)
+        population = sorted(population, key=lambda idv: fitness[idv], reverse=True)
+        best = population[0]
+        print('\nBest configuration: ' + best)
