@@ -5,11 +5,16 @@ from src.Constants import Constants
 from src.Core import Core
 from src.Event import Event
 from src.Parameters import Parameters
+from src.Random import Random
 from src.Source import Source
 
 
 class TestIntegrationCoreOtherClasses(TestCase):
     def setUp(self):
+        param = Parameters()
+        param.WITH_SHIFTS = True
+        self.randObj = Random()
+        self.randObj.initialization()
         self.coreObj = Core()
 
     def tearDown(self):

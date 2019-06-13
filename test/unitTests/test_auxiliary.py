@@ -3,7 +3,7 @@ import unittest
 from src.Auxiliary import Auxiliary
 
 
-class TestAuxiliaryClass(unittest.TestCase):
+class TestAuxiliary(unittest.TestCase):
     def setUp(self):
         self.auxObj = Auxiliary()
 

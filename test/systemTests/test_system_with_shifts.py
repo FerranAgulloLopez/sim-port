@@ -26,7 +26,15 @@ class TestSystemWithShifts(TestCase):
         return row
 
     @classmethod
+    def setWithShifts(cls, value):
+        param = Parameters()
+        param.WITH_SHIFTS = value
+        cls.randObj = Random()
+        cls.randObj.initialization()
+
+    @classmethod
     def setUpClass(cls):
+        cls.setWithShifts(True)
         param = Parameters()
         param.num_processors = Constants.DEFAULT_PROCESSORS
         cls.coreObj = Core(param)

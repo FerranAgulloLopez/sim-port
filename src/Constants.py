@@ -10,7 +10,7 @@ class Constants:
 
     # Default values
     DEFAULT_SOURCES = 1
-    DEFAULT_PROCESSORS = 45
+    DEFAULT_PROCESSORS = 52
 
     # Queue
     SLOTS_QUEUE = 90
