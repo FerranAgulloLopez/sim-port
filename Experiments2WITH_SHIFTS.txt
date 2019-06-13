@@ -1,0 +1,79 @@
+['RECOGIDA', 'ENTREGA', 'DUAL']
+[3, 1, 10]
+Sum of idle time squared (magnitude): 322868.41250000003
+
+['ENTREGA', 'RECOGIDA', 'DUAL']
+[1, 7, 6]
+Sum of idle time squared (magnitude): 518121.30250000005
+
+['DUAL', 'RECOGIDA', 'ENTREGA', 'ENTREGA']
+[2, 1, 7, 4]
+Sum of idle time squared (magnitude): 443312.3489000001
+
+['ENTREGA', 'ENTREGA', 'RECOGIDA', 'DUAL', 'ENTREGA']
+[4, 2, 1, 1, 6]
+Sum of idle time squared (magnitude): 327075.6157
+
+['RECOGIDA', 'RECOGIDA', 'ENTREGA', 'RECOGIDA', 'DUAL', 'RECOGIDA']
+[1, 1, 1, 2, 1, 8]
+Sum of idle time squared (magnitude): 444629.18760000006
+
+['ENTREGA', 'DUAL', 'ENTREGA', 'RECOGIDA']
+[2, 6, 1, 5]
+Sum of idle time squared (magnitude): 400408.47300000006
+
+['ENTREGA', 'RECOGIDA', 'DUAL', 'RECOGIDA']
+[1, 9, 1, 3]
+Sum of idle time squared (magnitude): 703870.3225
+
+['ENTREGA', 'DUAL', 'RECOGIDA']
+[9, 1, 4]
+Sum of idle time squared (magnitude): 785757.4961000001
+
+['ENTREGA', 'DUAL', 'RECOGIDA']
+[1, 1, 12]
+Sum of idle time squared (magnitude): 779405.6737
+
+['ENTREGA', 'RECOGIDA', 'DUAL', 'ENTREGA']
+[7, 1, 1, 5]
+Sum of idle time squared (magnitude): 580354.0159000001
+
+['DUAL', 'RECOGIDA', 'ENTREGA', 'RECOGIDA', 'RECOGIDA']
+[1, 8, 1, 1, 3]
+Sum of idle time squared (magnitude): 683920.0164999999
+
+['RECOGIDA', 'ENTREGA', 'DUAL']
+[3, 1, 10]
+Sum of idle time squared (magnitude): 442094.01489999995
+
+['ENTREGA', 'RECOGIDA', 'DUAL', 'ENTREGA']
+[1, 1, 1, 11]
+Sum of idle time squared (magnitude): 832899.5340000001
+
+['RECOGIDA', 'DUAL', 'ENTREGA']
+[3, 1, 10]
+Sum of idle time squared (magnitude): 692128.2501000001
+
+['DUAL', 'RECOGIDA', 'ENTREGA']
+[8, 1, 5]
+Sum of idle time squared (magnitude): 650192.4852
+
+['RECOGIDA', 'ENTREGA', 'DUAL']
+[4, 4, 6]
+Sum of idle time squared (magnitude): 359889.064
+
+['ENTREGA', 'DUAL', 'ENTREGA', 'RECOGIDA']
+[1, 1, 2, 10]
+Sum of idle time squared (magnitude): 441242.282
+
+['ENTREGA', 'DUAL', 'ENTREGA', 'RECOGIDA']
+[4, 1, 6, 3]
+Sum of idle time squared (magnitude): 427699.8404
+
+['DUAL', 'RECOGIDA', 'ENTREGA', 'RECOGIDA']
+[1, 5, 1, 7]
+Sum of idle time squared (magnitude): 593459.3525999999
+
+['DUAL', 'ENTREGA', 'RECOGIDA']
+[1, 9, 4]
+Sum of idle time squared (magnitude): 671987.9304999999
