@@ -37,7 +37,7 @@ Next instructions are mandatory to configure the service in Linux
     - Activate the virtual environment: source env/bin/activate
     - Install component dependencies with the requirements file: pip3 install -r requirements.txt
     - Configure python path. Type the next commands in terminal changing the path to your project folder path: 
-        - PYTHONPATH=$PYTHONPATH:/home/user/documents/sim-port/src
+        - PYTHONPATH=$PYTHONPATH:/home/user/documents/sim-port/src  # or your path to sim-port/src
         - export PYTHONPATH
 
 ### How to use it
@@ -55,6 +55,8 @@ Falta poner el testRunner
     python3 src/Optimizer.py
 
     python3 src/ViewController.py
+
+    python3 test/TestRunner.py
     
 ## License
 
