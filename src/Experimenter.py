@@ -76,7 +76,7 @@ if __name__ == "__main__":
                         if headers[idx] == 'Shift_Type':
                             duration = float(data[idx + 1])
                             capacity_usage = float(data[idx + 2])
-                            if capacity_usage > 70.0:
+                            if capacity_usage > Constants.MAX_CAPACITY_USAGE:
                                 exceeds_capacity = True
                             total_service += capacity_usage * duration * parameters.num_processors
                     total_idle -= total_service
