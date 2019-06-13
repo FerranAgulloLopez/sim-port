@@ -23,10 +23,20 @@ Next sections provide a general overview of the technical details of the simulat
 
 This project has five different runnable modules each one with a specific purpose.
 
-    - Core.py: Runs the simulation with the params specified in the Constants and Parameters classes. It asks for the composition of the different time-slots when they are activated. It generates two traces that describe the execution
-    - Experimenter.py: Runs the simulation with the params specified in the Constants and Parameters classes. It takes the time-slots configuration from the specified input file. It generates two traces that describe the execution
+    - Core.py: Runs the simulation with the params specified in the Constants and Parameters classes.
+     It asks for the composition of the different time-slots when they are activated. It generates 
+     two traces that describe the execution
+    
+    - Experimenter.py: Runs the simulation with the params specified in the Constants and Parameters 
+    classes. It takes the time-slots configuration from the specified input file. It generates two 
+    traces that describe the execution
+    
     - Optimizer.py: Runs a genetic algorithm to find an approximation to the best configuration
-    - ViewController.py: Runs a web server in localhost to visualize a execution loaded from one specified trace file. It displays different charts that show the main features of the chosen execution
+    
+    - ViewController.py: Runs a web server in localhost to visualize a execution loaded from one 
+    specified trace file. It displays different charts that show the main features of the 
+    chosen execution
+    
     - TestRunner.py: Allows the user to select and run automatic tests through a CLI interface
 
 ### How to install
@@ -66,7 +76,8 @@ Falta explicar los comandos para cada uno de los ejecutables: core, experimenter
     python -m src.ViewController
     
     python -m test.TestRunner
-    Next, the user would have to enter which type of tests he wants to run or wheter or whether he wants to stop the execution of the program:
+    Next, the user would have to enter which type of tests he wants to run or wheter or 
+    whether he wants to stop the execution of the program:
         a - All
         u - Unit Tests
         i - Integration Tests

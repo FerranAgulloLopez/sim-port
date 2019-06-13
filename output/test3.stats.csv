@@ -1,2 +1,2 @@
 Max_Queue_Length,Processors_Capacity_Used,Shift_Type,Shift_Duration,Shift_Capacity_Usage,Shift_Type,Shift_Duration,Shift_Capacity_Usage,Shift_Type,Shift_Duration,Shift_Capacity_Usage,Shift_Type,Shift_Duration,Shift_Capacity_Usage,Shift_Type,Shift_Duration,Shift_Capacity_Usage
-0,16.48,ENTREGA,3,0.0,ENTREGA,3,0.0,RECOGIDA,2,6.93,DUAL,1,7.88,ENTREGA,5,41.78
+0,14.26,ENTREGA,3,0.0,ENTREGA,3,0.0,RECOGIDA,2,6.0,DUAL,1,6.82,ENTREGA,5,36.16
