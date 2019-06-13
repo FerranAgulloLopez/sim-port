@@ -55,7 +55,7 @@ if __name__ == "__main__":
 
                 output_file = str(args[0])
                 # print(output_file)
-                parameters.output_file = output_file
+                parameters.output_file = Constants.OUTPUT_PATH + output_file
 
                 # RUN CORE
                 path_list = output_file.split('/')
@@ -66,7 +66,7 @@ if __name__ == "__main__":
                 core = Core()
                 core.run()
 
-                with open(Constants.OUTPUT_PATH + output_file + '.stats.csv', 'r') as ifs2:
+                with open(output_file + '.stats.csv', 'r') as ifs2:
                     total_service = 0
                     total_idle = Constants.SIMULATION_DURATION * parameters.num_processors
                     exceeds_capacity = False
