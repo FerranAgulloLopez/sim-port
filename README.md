@@ -45,18 +45,18 @@ Next instructions are mandatory to configure the service in Linux
 Falta explicar los comandos para cada uno de los ejecutables: core, experimenter...
 Falta poner el testRunner
     
-    python3 src/Core.py [options]
+    python3 -m src.Core [options]
     Options:
     -h, --help              Shows the program usage help.
     -p, --processors=...    Sets the number of processors.
     
-    python3 src/Experimenter.py inputFile.txt
+    python3 -m src.Experimenter.py inputFile.txt
     
-    python3 src/Optimizer.py
+    python3 -m src.Optimizer.py
 
-    python3 src/ViewController.py
+    python3 -m src.ViewController.py
 
-    python3 test/TestRunner.py
+    python3 -m test.TestRunner.py
     
 ## License
 
