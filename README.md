@@ -36,10 +36,19 @@ Next instructions are mandatory to configure the service in Linux
     - Generate a virtual environment: python3 -m venv env
     - Activate the virtual environment: source env/bin/activate
     - Install component dependencies with the requirements file: pip3 install -r requirements.txt
+    - Configure python path. Type the next commands in terminal changing the path to your project folder path: 
+        - PYTHONPATH=$PYTHONPATH:/home/user/documents/sim-port/src
+        - export PYTHONPATH
 
 ### How to use it
 
 Falta explicar los comandos para cada uno de los ejecutables: core, experimenter...
+
+    python3 src/ViewController.py
+    
+    python3 src/Core.py -p 52
+    
+    ...
 
     Core.py [options]
     Options:
