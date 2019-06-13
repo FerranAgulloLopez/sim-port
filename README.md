@@ -33,13 +33,13 @@ This project has five different runnable modules each one with a specific purpos
 
 Next instructions are mandatory to configure the service in Linux
 
-    - Install python3 and pip3
+    - Install python3, python3-venv and pip3: sudo apt-get install python3 python3-venv pip3
     - Install virtualenv: python3 -m pip install --user virtualenv
     - Generate a virtual environment: python3 -m venv env
     - Activate the virtual environment: source env/bin/activate
     - Install component dependencies with the requirements file: pip3 install -r requirements.txt
     - Configure python path. Type the next commands in terminal changing the path to your project folder path: 
-        - PYTHONPATH=$PYTHONPATH:/home/user/documents/sim-port/src
+        - PYTHONPATH=$PYTHONPATH:/home/user/documents/sim-port/src  # or your path to sim-port/src
         - export PYTHONPATH
 
 Next instructions are mandatory to configure the service in Windows
