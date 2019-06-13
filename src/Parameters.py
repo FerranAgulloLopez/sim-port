@@ -8,7 +8,7 @@ class _Parameters:
     # Simulator parameters
     def __init__(self):
         # Type of Execution
-        self.WITH_SHIFTS = False
+        self.WITH_SHIFTS = True
 
         self.shift_duration = [5, 5, 2, 2]
         self.shift_type = [Constants.ENTREGA, Constants.ENTREGA, Constants.RECOGIDA, Constants.DUAL]
