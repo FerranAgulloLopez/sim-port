@@ -70,12 +70,9 @@ class TestCore(TestCase):
         self.assertEqual(self.coreObj.serviceProcessors, 0, "The service processors time should be 0")
 
     def test_updateState_With_2Service_Processors(self):
-        print(self.coreObj.eventsList)
         param = Parameters()
         param.num_processors = 2
         self.coreObj = Core(param)
-        print(self.coreObj.eventsList)
-        print("LONGITUD", len(self.coreObj.processors))
 
         for mock_processor in self.coreObj.processors:
             mock_processor.isIdle = MagicMock(return_value=False)
@@ -93,7 +90,6 @@ class TestCore(TestCase):
         self.assertEqual(self.coreObj.idleProcessors, 0, "The idle time should be 0")
 
     def test_updateState_Not_First_Shift(self):
-        print(self.coreObj.eventsList)
         param = Parameters()
         param.num_processors = 2
         self.coreObj = Core(param)
@@ -115,7 +111,6 @@ class TestCore(TestCase):
 
         self.assertEqual(self.coreObj.currentTime, Constants.SIMULATION_INITIAL_TIME + 5 * 3600 + 1,
                          "The current time should be updated to SIMULATION_INITIAL_TIME + 5*3600 + 1")
-        print("SERVICE_PER_SHIFT", self.coreObj.service_per_shift)
         self.assertEqual(self.coreObj.serviceProcessors, (5 * 3600 + 1) * 2,
                          "The service processors time should be (5*3600 + 1) * 2 (2 service processors)")
         self.assertEqual(self.coreObj.idleProcessors, 0, "The idle time should be 0")

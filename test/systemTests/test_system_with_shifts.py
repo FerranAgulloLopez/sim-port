@@ -37,12 +37,16 @@ class TestSystemWithShifts(TestCase):
         cls.setWithShifts(True)
         param = Parameters()
         param.num_processors = Constants.DEFAULT_PROCESSORS
+        shift_duration = [5, 5, 2, 2]
+        shift_type = [Constants.ENTREGA, Constants.ENTREGA, Constants.RECOGIDA, Constants.DUAL]
+        shift_factor = 3600  # hours
+        param.setParameters(shift_duration, shift_type, shift_factor)
         cls.coreObj = Core(param)
-        cls.coreObj.output_file = open('./TEST_System.txt', "w+")
-        cls.coreObj.parameters.output_file = Constants.OUTPUT_PATH + "TEST_System"
+        cls.coreObj.output_file = open('./TEST_System_With_Shifts.txt', "w+")
+        cls.coreObj.parameters.output_file = Constants.OUTPUT_PATH + "TEST_System_With_Shifts"
         cls.coreObj.run()
         cls.coreObj.output_file.close()
-        with open(Constants.OUTPUT_PATH + 'TEST_System.csv', "r") as read:
+        with open(Constants.OUTPUT_PATH + 'TEST_System_With_Shifts.csv', "r") as read:
             header = read.readline().split(',')
             header = [tmp.split('\n')[0] for tmp in header]
             for i in range(len(header)):
@@ -58,9 +62,9 @@ class TestSystemWithShifts(TestCase):
     @classmethod
     def tearDownClass(cls):
         cls.coreObj = None
-        os.remove(Constants.OUTPUT_PATH + "TEST_System.csv")
-        os.remove(Constants.OUTPUT_PATH + "TEST_System.stats.csv")
-        os.remove("./TEST_System.txt")
+        os.remove(Constants.OUTPUT_PATH + "TEST_System_With_Shifts.csv")
+        os.remove(Constants.OUTPUT_PATH + "TEST_System_With_Shifts.stats.csv")
+        os.remove("./TEST_System_With_Shifts.txt")
 
     def setUp(self):
         self.big_matrix = self.static_big_matrix.copy()
@@ -83,8 +87,6 @@ class TestSystemWithShifts(TestCase):
         processing_times = transformCols([1, 2], 1, lambda x, y: y / x, processing_times)  # average
         processing_times = projection([0, 1, 3, 4], processing_times)
         self.assertEquals(len(processing_times), 3, "There should be 3 shifts")
-
-        print(processing_times)
 
         shift3 = processing_times[0]
         self.assertGreaterEqual(shift3[2], Constants.MINIMUM_TIME_DUAL,
@@ -120,8 +122,6 @@ class TestSystemWithShifts(TestCase):
         processing_times = transformCols([1, 2], 1, lambda x, y: y / x, processing_times)  # average
         processing_times = projection([0, 1, 3, 4], processing_times)
         self.assertEquals(len(processing_times), 3, "There should be 3 shifts")
-
-        print(processing_times)
 
         shift3 = processing_times[0]
         self.assertGreater(shift3[2], 0,

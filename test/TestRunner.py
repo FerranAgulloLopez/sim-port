@@ -1,3 +1,4 @@
+import time
 import unittest
 
 from test.unitTests.test_auxiliary import TestAuxiliary
@@ -48,24 +49,27 @@ def suite_system_tests():
 # MAIN FUNCTION
 if __name__ == "__main__":
     in_tests_run = str(input('Enter which type of tests you want to run (a - All; u - Unit Tests; i - Integration '
-                             'Tests; s - System Tests; x - Exit):'))
+                             'Tests; s - System Tests; x - Exit): '))
 
     def run_unit_tests():
         mySuit = suite_unit_tests()
         runner = unittest.TextTestRunner()
         runner.run(mySuit)
+        time.sleep(0.1)
         print("All unit tests passed successfully!")
 
     def run_integration_tests():
         mySuit = suite_integration_tests()
         runner = unittest.TextTestRunner()
         runner.run(mySuit)
+        time.sleep(0.1)
         print("All integration tests passed successfully!")
 
     def run_system_tests():
         mySuit = suite_system_tests()
         runner = unittest.TextTestRunner()
         runner.run(mySuit)
+        time.sleep(0.1)
         print("All system tests passed successfully!")
 
     while in_tests_run != 'x':
@@ -84,4 +88,4 @@ if __name__ == "__main__":
         print()
         in_tests_run = str(
             input('Enter which type of tests you want to run (a - All; u - Unit Tests; i - Integration '
-                  'Tests; s - System Tests; x - Exit):'))
+                  'Tests; s - System Tests; x - Exit): '))

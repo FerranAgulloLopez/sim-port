@@ -83,8 +83,6 @@ class TestSystemWithoutShifts(TestCase):
         processing_times = transformCols([1, 2], 1, lambda x, y: y / x, processing_times)  # average
         processing_times = projection([0, 1, 3, 4], processing_times)
 
-        print(processing_times)
-
         self.assertEquals(len(processing_times), 1, "There should not be any shifts")
 
         shift3 = processing_times[0]
@@ -104,8 +102,6 @@ class TestSystemWithoutShifts(TestCase):
                                     self.cols['Current_Time']], [countA, sumA, minA, maxA], processing_times, True)
         processing_times = transformCols([1, 2], 1, lambda x, y: y / x, processing_times)  # average
         processing_times = projection([0, 1, 3, 4], processing_times)
-
-        print(processing_times)
 
         self.assertEquals(len(processing_times), 1, "There should not be any shifts")
 
