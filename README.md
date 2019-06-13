@@ -31,7 +31,7 @@ This project has four different runnable modules each one with a specific purpos
 
 Next instructions are mandatory to configure the service in Linux
 
-    - Install python3 and pip3
+    - Install python3, python3-venv and pip3: sudo apt-get install python3 python3-venv pip3
     - Install virtualenv: python3 -m pip install --user virtualenv
     - Generate a virtual environment: python3 -m venv env
     - Activate the virtual environment: source env/bin/activate
