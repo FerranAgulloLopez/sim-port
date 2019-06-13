@@ -124,7 +124,7 @@ def get_fitness():
             if headers[idx] == 'Shift_Type':
                 duration = float(data[idx + 1])
                 capacity_usage = float(data[idx + 2])
-                if capacity_usage > 70.0:
+                if capacity_usage > Constants.MAX_CAPACITY_USAGE:
                     exceeds_capacity = True
                 total_service += capacity_usage * duration * parameters.num_processors / 100  # capacity_usage in %
     total_idle -= total_service
@@ -161,7 +161,7 @@ NUM_OFFSPRING = int(2 * NUM_INDIVIDUALS / 5)  # 2/5
 CHANCE_KEEP_BAD = 0.05
 CHANCE_MUTATION = 0.05
 
-seed(664)  # seed 6, 1, 21, 25, 200, 212, 60, 78, 1024, 789
+seed(45)  # seed 6, 1, 21, 25, 200, 212, 60, 78, 1024, 789
 parameters = Parameters()
 
 population = []

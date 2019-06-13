@@ -131,8 +131,8 @@ class Core:
                     self.service_per_shift.append(
                         self.serviceProcessors - self.service_per_total[-1])
                 self.service_per_total.append(self.serviceProcessors)
-            elif event.eventName == Constants.END_SIMULATION:
-                self.service_per_shift.append(self.serviceProcessors - self.service_per_total[-1])
+        if event.eventName == Constants.END_SIMULATION and len(self.service_per_shift) < len(self.shift_durations):
+            self.service_per_shift.append(self.serviceProcessors - self.service_per_total[-1])
 
     def getCurrentShift(self):
         # print("DEBUG: getCurrentShift", self.currentTime, "and it returns:", self.parameters.getCurrentShift(self.currentTime))
@@ -227,6 +227,15 @@ if __name__ == "__main__":
         sys.exit()
 
     duration_total = 0
+
+    # DEBUG
+    # Genome 0111000000000000001001010001
+    duration_total = 999
+    shift_duration = [1,             8,              1,                  1,                 2,                 1]
+    shift_type = [Constants.ENTREGA, Constants.DUAL, Constants.RECOGIDA, Constants.ENTREGA, Constants.ENTREGA, Constants.ENTREGA]
+    parameters.setParameters(shift_duration, shift_type, shift_factor)
+    #
+
     while duration_total < int(Constants.SIMULATION_DURATION / 3600):
         in_shift_type = str(input('Enter shift type:'))
         if in_shift_type not in (Constants.ENTREGA, Constants.RECOGIDA, Constants.DUAL):
