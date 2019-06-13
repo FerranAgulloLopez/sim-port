@@ -42,11 +42,11 @@ class TestSystemWithShifts(TestCase):
         shift_factor = 3600  # hours
         param.setParameters(shift_duration, shift_type, shift_factor)
         cls.coreObj = Core(param)
-        cls.coreObj.output_file = open('./TEST_System_With_Shifts.txt', "w+")
-        cls.coreObj.parameters.output_file = Constants.OUTPUT_PATH + "TEST_System_With_Shifts"
+        cls.coreObj.output_file = open('./TEST_System.txt', "w+")
+        cls.coreObj.parameters.output_file = Constants.OUTPUT_PATH + "TEST_System"
         cls.coreObj.run()
         cls.coreObj.output_file.close()
-        with open(Constants.OUTPUT_PATH + 'TEST_System_With_Shifts.csv', "r") as read:
+        with open(Constants.OUTPUT_PATH + 'TEST_System.csv', "r") as read:
             header = read.readline().split(',')
             header = [tmp.split('\n')[0] for tmp in header]
             for i in range(len(header)):
@@ -62,9 +62,9 @@ class TestSystemWithShifts(TestCase):
     @classmethod
     def tearDownClass(cls):
         cls.coreObj = None
-        os.remove(Constants.OUTPUT_PATH + "TEST_System_With_Shifts.csv")
-        os.remove(Constants.OUTPUT_PATH + "TEST_System_With_Shifts.stats.csv")
-        os.remove("./TEST_System_With_Shifts.txt")
+        os.remove(Constants.OUTPUT_PATH + "TEST_System.csv")
+        os.remove(Constants.OUTPUT_PATH + "TEST_System.stats.csv")
+        os.remove("./TEST_System.txt")
 
     def setUp(self):
         self.big_matrix = self.static_big_matrix.copy()
