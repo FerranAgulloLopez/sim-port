@@ -1,180 +1,266 @@
 class Charts:
     _instance = None
 
-    def build_static_charts(self, idle_1, service_1, idle_2, service_2, idle_3, service_3):
-        figure = {
-            'data': [
-                {
-                    "values": [idle_1, service_1],
-                    "labels": [
-                        "Grues en repòs",
-                        "Grues en servei"
-                    ],
-                    'marker': {'colors': ['rgb(255, 140, 0)',
-                                          'rgb(65, 105, 225)']},
-                    "domain": {"column": 0},
-                    "hoverinfo": "label+value+name",
-                    "hole": .4,
-                    "type": "pie",
-                    "title": "Descàrregues",
-                    'textinfo': 'label+text+percent',
-                    'direction': 'clockwise',
-                    'sort': False
-                },
-                {
-                    "values": [idle_2, service_2],
-                    "labels": [
-                        "Grues en repòs",
-                        "Grues en servei"
-                    ],
-                    'marker': {'colors': ['rgb(255, 140, 0)',
-                                          'rgb(65, 105, 225)']},
-                    "textposition": "inside",
-                    "domain": {"column": 1},
-                    "title": "Càrregues",
-                    "hoverinfo": "label+value+name",
-                    "hole": .4,
-                    "type": "pie",
-                    'textinfo': 'label+text+percent',
-                    'direction': 'clockwise',
-                    'sort': False
-                },
-                {
-                    "values": [idle_3, service_3],
-                    "labels": [
-                        "Grues en repòs",
-                        "Grues en servei"
-                    ],
-                    'marker': {'colors': ['rgb(255, 140, 0)',
-                                          'rgb(65, 105, 225)']},
-                    "textposition": "inside",
-                    "domain": {"column": 2},
-                    "title": "Càrregues+Descàrregues",
-                    "hoverinfo": "label+value+name",
-                    "hole": .4,
-                    "type": "pie",
-                    'textinfo': 'label+text+percent',
-                    'direction': 'clockwise',
-                    'sort': False
-                }
-            ],
-            'layout': {
-                "title": "Estat de les grues durant tota l'execució segons el tipus d'operació",
-                "grid": {"rows": 1, "columns": 3},
-                "annotations": [
+    def build_static_charts(self, idle_1, service_1, idle_2, service_2, idle_3, service_3, shifts, idle_total, service_total):
+        if shifts:
+            figure = {
+                'data': [
                     {
-                        "font": {
-                            "size": 20
-                        },
-                        "text": "",
-                        "showarrow": False,
-                        "x": 0.0,
-                        "y": 0.5
+                        "values": [idle_1, service_1],
+                        "labels": [
+                            "Grues en repòs",
+                            "Grues en servei"
+                        ],
+                        'marker': {'colors': ['rgb(255, 140, 0)',
+                                              'rgb(65, 105, 225)']},
+                        "domain": {"column": 0},
+                        "hoverinfo": "label+value+name",
+                        "hole": .4,
+                        "type": "pie",
+                        "title": "Descàrregues",
+                        'textinfo': 'label+text+percent',
+                        'direction': 'clockwise',
+                        'sort': False
                     },
                     {
-                        "font": {
-                            "size": 20
-                        },
-                        "text": "",
-                        "showarrow": False,
-                        "x": 0.30,
-                        "y": 0.5
+                        "values": [idle_2, service_2],
+                        "labels": [
+                            "Grues en repòs",
+                            "Grues en servei"
+                        ],
+                        'marker': {'colors': ['rgb(255, 140, 0)',
+                                              'rgb(65, 105, 225)']},
+                        "textposition": "inside",
+                        "domain": {"column": 1},
+                        "title": "Càrregues",
+                        "hoverinfo": "label+value+name",
+                        "hole": .4,
+                        "type": "pie",
+                        'textinfo': 'label+text+percent',
+                        'direction': 'clockwise',
+                        'sort': False
                     },
                     {
-                        "font": {
-                            "size": 20
-                        },
-                        "text": "",
-                        "showarrow": False,
-                        "x": 0.6,
-                        "y": 0.5
+                        "values": [idle_3, service_3],
+                        "labels": [
+                            "Grues en repòs",
+                            "Grues en servei"
+                        ],
+                        'marker': {'colors': ['rgb(255, 140, 0)',
+                                              'rgb(65, 105, 225)']},
+                        "textposition": "inside",
+                        "domain": {"column": 2},
+                        "title": "Càrregues+Descàrregues",
+                        "hoverinfo": "label+value+name",
+                        "hole": .4,
+                        "type": "pie",
+                        'textinfo': 'label+text+percent',
+                        'direction': 'clockwise',
+                        'sort': False
                     }
-                ]
+                ],
+                'layout': {
+                    "title": "Estat de les grues durant tota l'execució segons el tipus d'operació en hores",
+                    "grid": {"rows": 1, "columns": 3},
+                    "annotations": [
+                        {
+                            "font": {
+                                "size": 20
+                            },
+                            "text": "",
+                            "showarrow": False,
+                            "x": 0.0,
+                            "y": 0.5
+                        },
+                        {
+                            "font": {
+                                "size": 20
+                            },
+                            "text": "",
+                            "showarrow": False,
+                            "x": 0.30,
+                            "y": 0.5
+                        },
+                        {
+                            "font": {
+                                "size": 20
+                            },
+                            "text": "",
+                            "showarrow": False,
+                            "x": 0.6,
+                            "y": 0.5
+                        }
+                    ],
+                    "margin-left": 10,
+                    "margin-right": 10
+                }
             }
-        }
+        else:
+            figure = {
+                'data': [
+                    {
+                        "values": [idle_total, service_total],
+                        "labels": [
+                            "Grues en repòs",
+                            "Grues en servei"
+                        ],
+                        'marker': {'colors': ['rgb(255, 140, 0)',
+                                              'rgb(65, 105, 225)']},
+                        "domain": {"column": 0},
+                        "hoverinfo": "label+value+name",
+                        "hole": .4,
+                        "type": "pie",
+                        "title": "",
+                        'textinfo': 'label+text+percent',
+                        'direction': 'clockwise',
+                        'sort': False
+                    }
+                ],
+                'layout': {
+                    "title": "Estat de les grues durant tota l'execució en hores",
+                    "annotations": [
+                        {
+                            "font": {
+                                "size": 20
+                            },
+                            "text": "",
+                            "showarrow": False,
+                            "x": 0.0,
+                            "y": 0.5
+                        }
+                    ]
+                }
+            }
         return figure
 
-    def build_timeline(self, time, timeline_cargas, timeline_descargas, timeline_duo):
+    def build_timeline(self, time, timeline_cargas, timeline_descargas, timeline_duo, shifts):
         hour = time / 3600
         if hour > 20:
             hour = 20
-        figure = {
-            "data": [
-                {
-                    "name": "moment actual",
-                    "mode": 'markers',
-                    "showlegend": False,
-                    "x": [hour],
-                    "y": [0],
-                    'marker': dict(
-                        color='rgb(238, 32, 77)',
-                        symbol=20,
-                        size=20,
-                        line=dict(
-                            color='rgb(0, 0, 0)',
-                            width=0.5
+        if shifts:
+            figure = {
+                "data": [
+                    {
+                        "name": "moment actual",
+                        "mode": 'markers',
+                        "showlegend": False,
+                        "x": [hour],
+                        "y": [0],
+                        'marker': dict(
+                            color='rgb(238, 32, 77)',
+                            symbol=20,
+                            size=20,
+                            line=dict(
+                                color='rgb(0, 0, 0)',
+                                width=0.5
+                            )
                         )
-                    )
-                },
-                {
-                    "type": "scatter",
-                    "uid": "1bec64",
-                    "line": {
-                        "color": "rgb(51, 153, 102)",
-                        "shape": "spline",
-                        "width": 4
                     },
-                    "mode": "lines",
-                    "name": "Càrregues",
-                    "x": timeline_cargas,
-                    "y": [0] * len(timeline_cargas),
-                    "error_y": {
-                        "visible": False
-                    }
-                },
-                {
-                    "type": "scatter",
-                    "uid": "1bec64",
-                    "line": {
-                        "color": "rgb(255, 153, 51)",
-                        "shape": "spline",
-                        "width": 4
+                    {
+                        "type": "scatter",
+                        "uid": "1bec64",
+                        "line": {
+                            "color": "rgb(51, 153, 102)",
+                            "shape": "spline",
+                            "width": 4
+                        },
+                        "mode": "lines",
+                        "name": "Càrregues",
+                        "x": timeline_cargas,
+                        "y": [0] * len(timeline_cargas),
+                        "error_y": {
+                            "visible": False
+                        }
                     },
-                    "mode": "lines",
-                    "name": "Descàrregues",
-                    "x": timeline_descargas,
-                    "y": [0] * len(timeline_descargas),
-                    "error_y": {
-                        "visible": False
-                    }
-                },
-                {
-                    "type": "scatter",
-                    "uid": "1bec64",
-                    "line": {
-                        "color": "rgb(51, 153, 255)",
-                        "shape": "spline",
-                        "width": 4
+                    {
+                        "type": "scatter",
+                        "uid": "1bec64",
+                        "line": {
+                            "color": "rgb(255, 153, 51)",
+                            "shape": "spline",
+                            "width": 4
+                        },
+                        "mode": "lines",
+                        "name": "Descàrregues",
+                        "x": timeline_descargas,
+                        "y": [0] * len(timeline_descargas),
+                        "error_y": {
+                            "visible": False
+                        }
                     },
-                    "mode": "lines",
-                    "name": "Càrregues+Descàrregues",
-                    "x": timeline_duo,
-                    "y": [0] * len(timeline_duo),
-                    "error_y": {
-                        "visible": False
+                    {
+                        "type": "scatter",
+                        "uid": "1bec64",
+                        "line": {
+                            "color": "rgb(51, 153, 255)",
+                            "shape": "spline",
+                            "width": 4
+                        },
+                        "mode": "lines",
+                        "name": "Càrregues+Descàrregues",
+                        "x": timeline_duo,
+                        "y": [0] * len(timeline_duo),
+                        "error_y": {
+                            "visible": False
+                        }
                     }
+                ],
+                'layout': {
+                    'title': 'Les diferents etapes de la simulació',
+                    'xaxis': {'title': '', 'showgrid': False, 'ticktext': list(range(6, 21)),
+                              'tickvals': list(range(6, 21)),
+                              'ticklen': 10, 'tickwidth': 2, 'tickcolor': '#000', 'anchor': 'free', 'overlaying': 'y',
+                              'position': 0.5},
+                    'yaxis': {'title': '', 'showgrid': False, 'ticktext': [], 'tickvals': []},
+                    'height': 250,
                 }
-            ],
-            'layout': {
-                'title': 'Les diferents etapes de la simulació',
-                'xaxis': {'title': '', 'showgrid': False, 'ticktext': list(range(6, 21)),
-                          'tickvals': list(range(6, 21)),
-                          'ticklen': 10, 'tickwidth': 2, 'tickcolor': '#000', 'anchor': 'free', 'overlaying': 'y',
-                          'position': 0.5},
-                'yaxis': {'title': '', 'showgrid': False, 'ticktext': [], 'tickvals': []},
-                'height': 250,
             }
-        }
+        else:
+            figure = {
+                "data": [
+                    {
+                        "name": "moment actual",
+                        "mode": 'markers',
+                        "showlegend": False,
+                        "x": [hour],
+                        "y": [0],
+                        'marker': dict(
+                            color='rgb(238, 32, 77)',
+                            symbol=20,
+                            size=20,
+                            line=dict(
+                                color='rgb(0, 0, 0)',
+                                width=0.5
+                            )
+                        )
+                    },
+                    {
+                        "type": "scatter",
+                        "uid": "1bec64",
+                        "showlegend": False,
+                        "line": {
+                            "color": "rgb(51, 153, 102)",
+                            "shape": "spline",
+                            "width": 4
+                        },
+                        "mode": "lines",
+                        "x": list(range(6,21)),
+                        "y": [0] * len(list(range(6,21))),
+                        "error_y": {
+                            "visible": False
+                        }
+                    }
+                ],
+                'layout': {
+                    'title': 'Línea temporal de la simulació en hores',
+                    'xaxis': {'title': '', 'showgrid': False, 'ticktext': list(range(6, 21)),
+                              'tickvals': list(range(6, 21)),
+                              'ticklen': 10, 'tickwidth': 2, 'tickcolor': '#000', 'anchor': 'free', 'overlaying': 'y',
+                              'position': 0.5},
+                    'yaxis': {'title': '', 'showgrid': False, 'ticktext': [], 'tickvals': []},
+                    'height': 250,
+                }
+            }
         return figure
 
     def build_queue_pies(self, buffer_slots_busy, queue_slots_busy, processors_free, buffer_max_size, queue_max_size,
@@ -184,8 +270,8 @@ class Charts:
                 {
                     "values": [buffer_slots_busy, buffer_max_size - buffer_slots_busy],
                     "labels": [
-                        "Busy slots",
-                        "Free Slots"
+                        "Llocs ocupats",
+                        "Llocs lliures"
                     ],
                     'marker': {'colors': ['rgb(255, 140, 0)',
                                           'rgb(65, 105, 225)']},
@@ -201,8 +287,8 @@ class Charts:
                 {
                     "values": [queue_slots_busy, queue_max_size - queue_slots_busy],
                     "labels": [
-                        "Busy slots",
-                        "Free Slots"
+                        "Llocs ocupats",
+                        "Llocs lliures"
                     ],
                     'marker': {'colors': ['rgb(255, 140, 0)',
                                           'rgb(65, 105, 225)']},
@@ -219,8 +305,8 @@ class Charts:
                 {
                     "values": [processors_max_number - processors_free, processors_free],
                     "labels": [
-                        "Service-Processors",
-                        "Idle-Processors"
+                        "Grues en servei",
+                        "Grues en repòs"
                     ],
                     'marker': {'colors': ['rgb(255, 140, 0)',
                                           'rgb(65, 105, 225)']},
@@ -271,82 +357,147 @@ class Charts:
         }
         return figure
 
-    def build_static_entries(self, entries_carregues, entries_descarregues, entries_duo):
-        x = ['Càrregues', 'Descàrregues', 'Càrregues+Descàrregues']
-        figure = {
-            "data": [
-                {
-                    "type": "bar",
-                    'x': x,
-                    'y': [entries_carregues, entries_descarregues, entries_duo],
-                    'text': x,
-                    'textposition': 'auto',
-                    'marker': {
-                        'color': 'rgb(158,202,225)',
-                        'line': {
-                            'color': 'rgb(8,48,107)',
-                            'width': 1.5
+    def build_static_entries(self, entries_carregues, entries_descarregues, entries_duo, shifts, entries_total, max_queue_total, max_par_total):
+        if shifts:
+            x = ['Càrregues', 'Descàrregues', 'Càrregues+Descàrregues']
+            figure = {
+                "data": [
+                    {
+                        "type": "bar",
+                        'x': x,
+                        'y': [entries_carregues, entries_descarregues, entries_duo],
+                        'text': x,
+                        'textposition': 'auto',
+                        'marker': {
+                            'color': 'rgb(158,202,225)',
+                            'line': {
+                                'color': 'rgb(8,48,107)',
+                                'width': 1.5
+                            },
                         },
-                    },
-                    'opacity': 0.6
+                        'opacity': 0.6
+                    }
+                ],
+                "layout": {
+                    "title": "Entrades a la terminal segons el tipus d'operació"
                 }
-            ],
-            "layout": {
-                "title": "Entrades a la terminal segons el tipus d'operació"
             }
-        }
+        else:
+            x = ['Total entrades', 'Màxim número de camions a la cua', 'Màxim número de camions al pàrking']
+            figure = {
+                "data": [
+                    {
+                        "type": "bar",
+                        'x': x,
+                        'y': [entries_total, max_queue_total, max_par_total],
+                        'text': x,
+                        'textposition': 'auto',
+                        'marker': {
+                            'color': 'rgb(158,202,225)',
+                            'line': {
+                                'color': 'rgb(8,48,107)',
+                                'width': 1.5
+                            },
+                        },
+                        'opacity': 0.6
+                    }
+                ],
+                "layout": {
+                    "title": "Número màxim d'entitats a cada etapa durant tota l'execució"
+                }
+            }
         return figure
 
-    def build_static_queue(self, max_queue_carregues, max_queue_descarregues, max_queue_entries_duo):
-        x = ['Càrregues', 'Descàrregues', 'Càrregues+Descàrregues']
-        figure = {
-            "data": [
-                {
-                    "type": "bar",
-                    'x': x,
-                    'y': [max_queue_carregues, max_queue_descarregues, max_queue_entries_duo],
-                    'text': x,
-                    'textposition': 'auto',
-                    'marker': {
-                        'color': 'rgb(158,202,225)',
-                        'line': {
-                            'color': 'rgb(8,48,107)',
-                            'width': 1.5
+    def build_static_queue(self, max_queue_carregues, max_queue_descarregues, max_queue_entries_duo, shifts):
+        if shifts:
+            x = ['Càrregues', 'Descàrregues', 'Càrregues+Descàrregues']
+            figure = {
+                "data": [
+                    {
+                        "type": "bar",
+                        'x': x,
+                        'y': [max_queue_carregues, max_queue_descarregues, max_queue_entries_duo],
+                        'text': x,
+                        'textposition': 'auto',
+                        'marker': {
+                            'color': 'rgb(158,202,225)',
+                            'line': {
+                                'color': 'rgb(8,48,107)',
+                                'width': 1.5
+                            },
                         },
-                    },
-                    'opacity': 0.6
+                        'opacity': 0.6
+                    }
+                ],
+                "layout": {
+                    "title": "Número màxim de camions a la cua segons el tipus d'operació"
                 }
-            ],
-            "layout": {
-                "title": "Número màxim de camions a la cua segons el tipus d'operació"
             }
-        }
+        else:
+            figure = {
+                "data": [
+                    {
+                        "type": "bar",
+                        'x': [],
+                        'y': [],
+                        'text': []
+                    }
+                ],
+                "layout": {
+                    'xaxis': {'title': '', 'showgrid': False, 'ticktext': [],
+                              'tickvals': [],
+                              'tickwidth': 2, 'tickcolor': '#000', 'anchor': 'free', 'overlaying': 'y',
+                              },
+                    'yaxis': {'title': '', 'showgrid': False, 'ticktext': [], 'tickvals': []},
+                    'height': 10,
+                }
+            }
         return figure
 
-    def build_static_parquink(self, max_par_carregues, max_par_descarregues, max_par_duo):
-        x = ['Càrregues', 'Descàrregues', 'Càrregues+Descàrregues']
-        figure = {
-            "data": [
-                {
-                    "type": "bar",
-                    'x': x,
-                    'y': [max_par_carregues, max_par_descarregues, max_par_duo],
-                    'text': x,
-                    'textposition': 'auto',
-                    'marker': {
-                        'color': 'rgb(158,202,225)',
-                        'line': {
-                            'color': 'rgb(8,48,107)',
-                            'width': 1.5
+    def build_static_parquink(self, max_par_carregues, max_par_descarregues, max_par_duo, shifts):
+        if shifts:
+            x = ['Càrregues', 'Descàrregues', 'Càrregues+Descàrregues']
+            figure = {
+                "data": [
+                    {
+                        "type": "bar",
+                        'x': x,
+                        'y': [max_par_carregues, max_par_descarregues, max_par_duo],
+                        'text': x,
+                        'textposition': 'auto',
+                        'marker': {
+                            'color': 'rgb(158,202,225)',
+                            'line': {
+                                'color': 'rgb(8,48,107)',
+                                'width': 1.5
+                            },
                         },
-                    },
-                    'opacity': 0.6
+                        'opacity': 0.6
+                    }
+                ],
+                "layout": {
+                    "title": "Número màxim de camions al pàrking segons el tipus d'operació"
                 }
-            ],
-            "layout": {
-                "title": "Número màxim de camions al pàrking segons el tipus d'operació"
             }
-        }
+        else:
+            figure = {
+                "data": [
+                    {
+                        "type": "bar",
+                        'x': [],
+                        'y': [],
+                        'text': []
+                    }
+                ],
+                "layout": {
+                    'xaxis': {'title': '', 'showgrid': False, 'ticktext': [],
+                              'tickvals': [],
+                              'tickwidth': 2, 'tickcolor': '#000', 'anchor': 'free', 'overlaying': 'y',
+                              },
+                    'yaxis': {'title': '', 'showgrid': False, 'ticktext': [], 'tickvals': []},
+                    'height': 10,
+                }
+            }
         return figure
 
 

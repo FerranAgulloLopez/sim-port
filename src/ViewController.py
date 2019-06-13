@@ -35,6 +35,15 @@ ds = pd.read_csv(Constants.OUTPUT_PATH + "/trace.stats.csv")
 parameters = Parameters()
 charts = Charts()
 
+if len(df.index) == 0:
+    raise Exception("The trace file is empty")
+
+shifts = True
+event = df.iloc[0]
+if event['Shift'] == '-':
+    shifts = False
+
+
 ######################################################### timeline chart
 
 total_time_cargas = 0
@@ -51,41 +60,43 @@ timeline_duo = [None] * 26
 phases = [None] * 26
 count = 2
 aux_time = 6
-while (count < len(data_timeline)):
-    phase = data_timeline[count]
-    hours = data_timeline[count+1]
-    aux_service = data_timeline[count+2]
-    if aux_service > 100:
-        aux_service = 100
-    if (phase == 'ENTREGA'):
-        total_time_descargas += hours
-        service_processors_descargas += hours*aux_service/100
-        for i in range(aux_time,aux_time+hours+1):
-            timeline_descargas[i] = i
-            if i < aux_time+hours:
-                phases[i] = 'ENTREGA'
-    if (phase == 'RECOGIDA'):
-        total_time_cargas += hours
-        service_processors_cargas += hours * aux_service / 100
-        for i in range(aux_time,aux_time+hours+1):
-            timeline_cargas[i] = i
-            if i < aux_time+hours:
-                phases[i] = 'RECOGIDA'
-    if (phase == 'DUAL'):
-        total_time_duo += hours
-        service_processors_duo += hours * aux_service / 100
-        for i in range(aux_time,aux_time+hours+1):
-            timeline_duo[i] = i
-            if i < aux_time+hours:
-                phases[i] = 'DUAL'
-    aux_time += hours
-    count += 3
+if shifts:
+    while (count < len(data_timeline)):
+        phase = data_timeline[count]
+        hours = data_timeline[count+1]
+        aux_service = data_timeline[count+2]
+        if aux_service > 100:
+            aux_service = 100
+        if (phase == 'ENTREGA'):
+            total_time_descargas += hours
+            service_processors_descargas += hours*aux_service/100
+            for i in range(aux_time,aux_time+hours+1):
+                timeline_descargas[i] = i
+                if i < aux_time+hours:
+                    phases[i] = 'ENTREGA'
+        if (phase == 'RECOGIDA'):
+            total_time_cargas += hours
+            service_processors_cargas += hours * aux_service / 100
+            for i in range(aux_time,aux_time+hours+1):
+                timeline_cargas[i] = i
+                if i < aux_time+hours:
+                    phases[i] = 'RECOGIDA'
+        if (phase == 'DUAL'):
+            total_time_duo += hours
+            service_processors_duo += hours * aux_service / 100
+            for i in range(aux_time,aux_time+hours+1):
+                timeline_duo[i] = i
+                if i < aux_time+hours:
+                    phases[i] = 'DUAL'
+        aux_time += hours
+        count += 3
 timeline_cargas = timeline_cargas[6:21]
 timeline_descargas = timeline_descargas[6:21]
 timeline_duo = timeline_duo[6:21]
 phases = phases[0:20]
 
-print(phases)
+total_time_total = 14
+service_processors_total = (data_timeline['Processors_Capacity_Used']/100)*total_time_total
 
 ######################################################### summary graphs
 
@@ -93,13 +104,16 @@ print(phases)
 entries_carregues = 0
 entries_descarregues = 0
 entries_duo = 0
+entries_total = 0
 
 max_queue_carregues = 0
 max_queue_descarregues = 0
 max_queue_duo = 0
+max_queue_total = 0
 max_par_carregues = 0
 max_par_descarregues = 0
 max_par_duo = 0
+max_par_total = 0
 
 size = len(df.index)
 count = 0
@@ -135,6 +149,13 @@ while (count < size):
             max_queue_duo = aux_num_queue
         if aux_num_par > max_par_duo:
             max_par_duo = aux_num_par
+    if (phase == None):
+        if event['Event_Name'] == 'NEXT_ARRIVAL':
+            entries_total += 1
+        if aux_num_queue > max_queue_total:
+            max_queue_total = aux_num_queue
+        if aux_num_par > max_par_total:
+            max_par_total = aux_num_par
     count += 1
 
 #########################################################
@@ -203,21 +224,21 @@ app.layout = html.Div(
                             dcc.Graph(
                                 id='services-graph',
                                 figure=charts.build_static_charts(total_time_descargas-service_processors_descargas, service_processors_descargas, total_time_cargas-service_processors_cargas
-                                                                  , service_processors_cargas, total_time_duo, service_processors_duo)
+                                                                  , service_processors_cargas, total_time_duo, service_processors_duo, shifts, total_time_total - service_processors_total, service_processors_total)
                             ),
                             dcc.Graph(
                                 id='entries-graph',
-                                figure=charts.build_static_entries(entries_carregues, entries_descarregues, entries_duo)
+                                figure=charts.build_static_entries(entries_carregues, entries_descarregues, entries_duo, shifts, entries_total, max_queue_total, max_par_total)
                             ),
                             dcc.Graph(
                                 id='queue-graph',
                                 figure=charts.build_static_queue(max_queue_carregues, max_queue_descarregues,
-                                                                 max_queue_duo)
+                                                                 max_queue_duo, shifts)
                             ),
                             dcc.Graph(
                                 id='parking-graph',
                                 figure=charts.build_static_parquink(max_par_carregues, max_par_descarregues,
-                                                                    max_par_duo)
+                                                                    max_par_duo, shifts)
                             )
                         ]),
                     ]),
@@ -251,7 +272,7 @@ app.layout = html.Div(
               [Input('interval-component', 'n_intervals')])
 def update_graph_live(n):
     global mainTime, df, entries, entriesTime, buffer_slots_busy, queue_slots_busy, buffer_max_size, queue_max_size, processors_max_number, processors_free, old_event_time, totalEntities, charts
-    global timeline_cargas, timeline_descargas, timeline_duo
+    global timeline_cargas, timeline_descargas, timeline_duo, shifts
 
     mainTime += 60
 
@@ -311,7 +332,7 @@ def update_graph_live(n):
 
     fig2 = charts.build_queue_pies(buffer_slots_busy, queue_slots_busy, processors_free, buffer_max_size,
                                    queue_max_size, processors_max_number)
-    fig3 = charts.build_timeline(mainTime, timeline_cargas, timeline_descargas, timeline_duo)
+    fig3 = charts.build_timeline(mainTime, timeline_cargas, timeline_descargas, timeline_duo, shifts)
 
     return fig3, fig2, fig1
 
