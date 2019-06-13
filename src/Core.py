@@ -234,11 +234,25 @@ if __name__ == "__main__":
 
     duration_total = 0
 
+    def setWithShifts(value):
+        param = Parameters()
+        param.WITH_SHIFTS = value
+        randObj = Random()
+        randObj.initialization()
+
+    withShifts = True
+
     while duration_total < int(Constants.SIMULATION_DURATION / 3600):
-        in_shift_type = str(input('Enter shift type:'))
-        if in_shift_type not in (Constants.ENTREGA, Constants.RECOGIDA, Constants.DUAL):
+        in_shift_type = str(input('Enter shift type ("-" to disable shifts):'))
+        if in_shift_type not in (Constants.ENTREGA, Constants.RECOGIDA, Constants.DUAL, '-'):
             print('Shift type not recognized. Shifts are:', Constants.ENTREGA, Constants.RECOGIDA, Constants.DUAL)
         else:
+            if in_shift_type == '-':
+                withShifts = False
+                setWithShifts(False)
+                break
+            else:
+                setWithShifts(True)
             in_shift_duration = int(input('Enter shift duration in hours:'))
             if duration_total + in_shift_duration <= int(Constants.SIMULATION_DURATION / 3600):
                 duration_total += in_shift_duration
@@ -247,7 +261,8 @@ if __name__ == "__main__":
             else:
                 print('Not enough time. Remaining time is:',
                       int(Constants.SIMULATION_DURATION / 3600) - duration_total, 'h.')
-    parameters.setParameters(shift_duration, shift_type, shift_factor)
+    if withShifts:
+        parameters.setParameters(shift_duration, shift_type, shift_factor)
     print('    Parameters set.')
 
     # Start core
