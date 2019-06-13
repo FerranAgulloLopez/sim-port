@@ -292,10 +292,10 @@ def update_graph_live(n):
         else:
             if event['Event_Name'] == 'NEXT_ARRIVAL':
                 entries[-1] += 1
-                queue_slots_busy = event['Queue_Length']
-                processors_free = event['Number_Idle_Processors']
-                buffer_slots_busy = event['Buffer_Length']
-                totalEntities[-1] = event['Entities_System']
+            queue_slots_busy = event['Queue_Length']
+            processors_free = event['Number_Idle_Processors']
+            buffer_slots_busy = event['Buffer_Length']
+            totalEntities[-1] = event['Entities_System']
             count += 1
     df = df.iloc[count:]
 
