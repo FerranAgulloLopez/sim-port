@@ -6,7 +6,7 @@ class Constants:
     OUTPUT_PATH = ROOT_DIR + '/output/'
 
     # Infrastructure usage restrictions
-    MAX_CAPACITY_USAGE = 70
+    MAX_CAPACITY_USAGE = 70.0
 
     # Default values
     DEFAULT_SOURCES = 1

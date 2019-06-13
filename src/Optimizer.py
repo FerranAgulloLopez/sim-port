@@ -1,5 +1,6 @@
 from random import seed, random, randint, sample
 
+from src import Auxiliary
 from src.Constants import Constants
 from src.Core import Core
 from src.Parameters import Parameters
@@ -112,28 +113,6 @@ def individual_to_parameters(cur_individual):
     return new_shift_type, new_shift_duration
 
 
-def get_fitness():
-    """ reads stats from the default output_file and determines the viability and benefits """
-    total_service = 0
-    total_idle = Constants.SIMULATION_DURATION * parameters.num_processors
-    with open(parameters.output_file + '.stats.csv', 'r') as ifs:
-        exceeds_capacity = False
-        headers = ifs.readline()[:-1].split(',')
-        data = ifs.readline()[:-1].split(',')
-        for idx in range(len(headers)):
-            if headers[idx] == 'Shift_Type':
-                duration = float(data[idx + 1])
-                capacity_usage = float(data[idx + 2])
-                if capacity_usage > Constants.MAX_CAPACITY_USAGE:
-                    exceeds_capacity = True
-                total_service += capacity_usage * duration * parameters.num_processors / 100  # capacity_usage in %
-    total_idle -= total_service
-    if exceeds_capacity:
-        return 0
-    else:
-        return total_idle
-
-
 # DEBUG
 # NOTE: these are random, seed is fixed below
 individual1 = get_new_individual()
@@ -161,7 +140,7 @@ NUM_OFFSPRING = int(2 * NUM_INDIVIDUALS / 5)  # 2/5
 CHANCE_KEEP_BAD = 0.05
 CHANCE_MUTATION = 0.05
 
-seed(6)  # seeds 6, 1, 21, 25, 200, 212, 60, 78, 1024, 789
+seed(200)  # seed 6, 1, 21, 25, 200, 212, 60, 78, 1024, 789, 3379, 567, 4655, 878, 123, 46, 1221, 111, 777, 664
 parameters = Parameters()
 
 population = []
@@ -188,7 +167,7 @@ for generation in range(NUM_GENERATIONS):
             print('    Testing ' + individual + '...')
             core = Core()
             core.run()
-            fitness[individual] = get_fitness()
+            fitness[individual] = Auxiliary.get_fitness(parameters.output_file)
     population = sorted(population, key=lambda idv: fitness[idv], reverse=True)
     if generation < NUM_GENERATIONS - 1:
         fittest = population[:NUM_KEEP_BEST]
@@ -213,11 +192,9 @@ print(best)
 best_type, best_duration = individual_to_parameters(best)
 print(str(best_type))
 print(str(best_duration))
-print('Average idle time per processor per day:', fitness[best] / (3600 * parameters.num_processors), 'h')
+print('Sum of idle time squared (magnitude):', fitness[best])
 
-# DEBUG
 # Sets trace to best configuration
 parameters.setParameters(best_duration, best_type, 3600)
 core = Core()
 core.run()
-#

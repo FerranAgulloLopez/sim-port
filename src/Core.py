@@ -32,9 +32,9 @@ class Core:
         self.entitiesSystem = 0
         self.service_per_shift = []
         self.service_per_total = []
-        self.shift_next_index = 1
         self.shift_durations = self.parameters.getParameters()[1]
-        self.shift_next_time = self.shift_durations[self.shift_next_index]
+        self.shift_next_time = self.shift_durations[0]
+        self.shift_next_index = 1
 
         # Instance creation
         self.queue = Queue(Constants.SLOTS_BUFFER)
@@ -132,6 +132,7 @@ class Core:
                         self.serviceProcessors - self.service_per_total[-1])
                 self.service_per_total.append(self.serviceProcessors)
         if event.eventName == Constants.END_SIMULATION and len(self.service_per_shift) < len(self.shift_durations):
+            # print('END_SIMULATION')
             self.service_per_shift.append(self.serviceProcessors - self.service_per_total[-1])
 
     def getCurrentShift(self):
@@ -182,6 +183,11 @@ class Core:
             s += ',Shift_Duration'
             r += ',' + str(shift_duration[idx])
             s += ',Shift_Capacity_Usage'
+            # DEBUG
+            # print(idx)
+            # print(str(self.service_per_shift))
+            # print(str(self.shift_durations))
+            #
             r += ',' + str(round(100 * self.service_per_shift[idx] /
                                  (self.parameters.num_processors * self.shift_durations[idx] * 3600), 2))
         with open(self.parameters.output_file + '.stats.csv', "w+") as output_file:
@@ -227,14 +233,6 @@ if __name__ == "__main__":
         sys.exit()
 
     duration_total = 0
-
-    # DEBUG
-    # Genome 0111000000000000001001010001
-    duration_total = 999
-    shift_duration = [1,             8,              1,                  1,                 2,                 1]
-    shift_type = [Constants.ENTREGA, Constants.DUAL, Constants.RECOGIDA, Constants.ENTREGA, Constants.ENTREGA, Constants.ENTREGA]
-    parameters.setParameters(shift_duration, shift_type, shift_factor)
-    #
 
     while duration_total < int(Constants.SIMULATION_DURATION / 3600):
         in_shift_type = str(input('Enter shift type:'))
