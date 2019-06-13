@@ -2,7 +2,7 @@ from definitions import ROOT_DIR
 
 
 class Constants:
-    INPUT_PATH = ROOT_DIR + 'input/'
+    INPUT_PATH = ROOT_DIR + '/input/'
     OUTPUT_PATH = ROOT_DIR + '/output/'
 
     # Infrastructure usage restrictions

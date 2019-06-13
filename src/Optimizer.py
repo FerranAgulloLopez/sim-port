@@ -161,7 +161,7 @@ NUM_OFFSPRING = int(2 * NUM_INDIVIDUALS / 5)  # 2/5
 CHANCE_KEEP_BAD = 0.05
 CHANCE_MUTATION = 0.05
 
-seed(45)  # seed 6, 1, 21, 25, 200, 212, 60, 78, 1024, 789
+seed(98)  # seed 6, 1, 21, 25, 200, 212, 60, 78, 1024, 789
 parameters = Parameters()
 
 population = []
