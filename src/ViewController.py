@@ -35,14 +35,13 @@ ds = pd.read_csv(Constants.OUTPUT_PATH + "/trace.stats.csv")
 parameters = Parameters()
 charts = Charts()
 
-if len(df.index) == 0:
+if (len(df.index) == 0) or (len(ds.index) == 0):
     raise Exception("The trace file is empty")
 
 shifts = True
 event = df.iloc[0]
 if event['Shift'] == '-':
     shifts = False
-
 
 ######################################################### timeline chart
 

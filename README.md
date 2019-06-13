@@ -62,19 +62,29 @@ Next instructions are mandatory to configure the service in Windows
 
 ### How to use it
 
-Falta explicar los comandos para cada uno de los ejecutables: core, experimenter...
+To run the different modules follow the next instructions
+
+1. Run Core
     
     python -m src.Core [options]
     Options:
     -h, --help              Shows the program usage help.
     -p, --processors=...    Sets the number of processors.
     
+2. Run Experimenter
+
     python -m src.Experimenter ../input/testInput.txt
     
+3. Run Optimizer
+
     python -m src.Optimizer
 
+4. Run ViewController (go to http://127.0.0.1:8050/)
+
     python -m src.ViewController
-    
+
+5. Run tests
+
     python -m test.TestRunner
     Next, the user would have to enter which type of tests he wants to run or wheter or 
     whether he wants to stop the execution of the program:

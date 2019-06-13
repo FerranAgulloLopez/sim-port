@@ -19,6 +19,7 @@ class Charts:
                         "type": "pie",
                         "title": "Descàrregues",
                         'textinfo': 'label+text+percent',
+                        "textposition": "inside",
                         'direction': 'clockwise',
                         'sort': False
                     },
@@ -281,6 +282,7 @@ class Charts:
                     "type": "pie",
                     "title": "Cua",
                     'textinfo': 'label+text+value+percent',
+                    "textposition": "inside",
                     'direction': 'clockwise',
                     'sort': False
                 },
