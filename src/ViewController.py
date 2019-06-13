@@ -9,6 +9,7 @@ from dash.dependencies import Input, Output
 
 from src.Charts import Charts
 from src.Parameters import Parameters
+from src.Constants import Constants
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -28,41 +29,67 @@ def parse_time(time):
 
 # Main program
 
-# load trace
+# load traces
 df = pd.read_csv(Constants.OUTPUT_PATH + "/trace.csv")
+ds = pd.read_csv(Constants.OUTPUT_PATH + "/trace.stats.csv")
 parameters = Parameters()
 charts = Charts()
 
 ######################################################### timeline chart
 
+total_time_cargas = 0
+total_time_descargas = 0
+total_time_duo = 0
+service_processors_cargas = 0
+service_processors_descargas = 0
+service_processors_duo = 0
+
+data_timeline = ds.iloc[0]
 timeline_cargas = [None] * 26
 timeline_descargas = [None] * 26
 timeline_duo = [None] * 26
+phases = [None] * 26
+count = 2
 aux_time = 6
-while (aux_time <= 20):
-    phase = parameters.getCurrentShift(aux_time * 3600)
+while (count < len(data_timeline)):
+    phase = data_timeline[count]
+    hours = data_timeline[count+1]
+    aux_service = data_timeline[count+2]
+    if aux_service > 100:
+        aux_service = 100
     if (phase == 'ENTREGA'):
-        timeline_descargas[aux_time] = aux_time
-        timeline_descargas[aux_time + 1] = aux_time + 1
+        total_time_descargas += hours
+        service_processors_descargas += hours*aux_service/100
+        for i in range(aux_time,aux_time+hours+1):
+            timeline_descargas[i] = i
+            if i < aux_time+hours:
+                phases[i] = 'ENTREGA'
     if (phase == 'RECOGIDA'):
-        timeline_cargas[aux_time] = aux_time
-        timeline_cargas[aux_time + 1] = aux_time + 1
+        total_time_cargas += hours
+        service_processors_cargas += hours * aux_service / 100
+        for i in range(aux_time,aux_time+hours+1):
+            timeline_cargas[i] = i
+            if i < aux_time+hours:
+                phases[i] = 'RECOGIDA'
     if (phase == 'DUAL'):
-        timeline_duo[aux_time] = aux_time
-        timeline_duo[aux_time + 1] = aux_time + 1
-    aux_time += 1
+        total_time_duo += hours
+        service_processors_duo += hours * aux_service / 100
+        for i in range(aux_time,aux_time+hours+1):
+            timeline_duo[i] = i
+            if i < aux_time+hours:
+                phases[i] = 'DUAL'
+    aux_time += hours
+    count += 3
 timeline_cargas = timeline_cargas[6:21]
 timeline_descargas = timeline_descargas[6:21]
 timeline_duo = timeline_duo[6:21]
+phases = phases[0:20]
+
+print(phases)
 
 ######################################################### summary graphs
 
-idle_1 = 0
-service_1 = 0
-idle_2 = 0
-service_2 = 0
-idle_3 = 0
-service_3 = 0
+
 entries_carregues = 0
 entries_descarregues = 0
 entries_duo = 0
@@ -76,24 +103,18 @@ max_par_duo = 0
 
 size = len(df.index)
 count = 0
-last_service = 0
-last_idle = 0
 
 while (count < size):
     event = df.iloc[count]
     event_time = event['Current_Time']
-    idle = event['Idle_Processors']
-    service = event['Service_Processors']
+    hour = int(event_time/3600)
+    if hour < len(phases):
+        phase = phases[hour]
+    else:
+        phase = phases[-1]
     aux_num_queue = event['Buffer_Length']
     aux_num_par = event['Queue_Length']
-    aux_idle = idle - last_idle
-    aux_service = service - last_service
-    # print(event_time)
-    phase = parameters.getCurrentShift(event_time)
-    # print(phase)
     if (phase == 'ENTREGA'):
-        idle_1 += aux_idle
-        service_1 += aux_service
         if event['Event_Name'] == 'NEXT_ARRIVAL':
             entries_descarregues += 1
         if aux_num_queue > max_queue_descarregues:
@@ -101,9 +122,6 @@ while (count < size):
         if aux_num_par > max_par_descarregues:
             max_par_descarregues = aux_num_par
     if (phase == 'RECOGIDA'):
-        # print('ei')
-        idle_2 += aux_idle
-        service_2 += aux_service
         if event['Event_Name'] == 'NEXT_ARRIVAL':
             entries_carregues += 1
         if aux_num_queue > max_queue_carregues:
@@ -111,24 +129,16 @@ while (count < size):
         if aux_num_par > max_par_carregues:
             max_par_carregues = aux_num_par
     if (phase == 'DUAL'):
-        idle_3 += aux_idle
-        service_3 += aux_service
         if event['Event_Name'] == 'NEXT_ARRIVAL':
             entries_duo += 1
         if aux_num_queue > max_queue_duo:
             max_queue_duo = aux_num_queue
         if aux_num_par > max_par_duo:
             max_par_duo = aux_num_par
-    last_idle = idle
-    last_service = service
     count += 1
 
 #########################################################
 
-print(idle_2)
-print(service_2)
-print(idle_3)
-print(service_3)
 
 
 
@@ -192,8 +202,8 @@ app.layout = html.Div(
                         html.Div([
                             dcc.Graph(
                                 id='services-graph',
-                                figure=charts.build_static_charts(idle_1, service_1, idle_2, service_2, idle_3,
-                                                                  service_3)
+                                figure=charts.build_static_charts(total_time_descargas-service_processors_descargas, service_processors_descargas, total_time_cargas-service_processors_cargas
+                                                                  , service_processors_cargas, total_time_duo, service_processors_duo)
                             ),
                             dcc.Graph(
                                 id='entries-graph',
