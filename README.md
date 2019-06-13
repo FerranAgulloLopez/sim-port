@@ -43,6 +43,7 @@ Next instructions are mandatory to configure the service in Linux
 ### How to use it
 
 Falta explicar los comandos para cada uno de los ejecutables: core, experimenter...
+Falta poner el testRunner
 
     python3 src/ViewController.py
     
