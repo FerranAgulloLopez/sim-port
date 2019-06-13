@@ -59,7 +59,7 @@ Falta explicar los comandos para cada uno de los ejecutables: core, experimenter
     -h, --help              Shows the program usage help.
     -p, --processors=...    Sets the number of processors.
     
-    python -m src.Experimenter inputFile.txt
+    python -m src.Experimenter ../input/testInput.txt
     
     python -m src.Optimizer
 
