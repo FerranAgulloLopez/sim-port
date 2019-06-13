@@ -50,7 +50,7 @@ Falta poner el testRunner
     -h, --help              Shows the program usage help.
     -p, --processors=...    Sets the number of processors.
     
-    python3 -m src.Experimenter.py inputFile.txt
+    python3 -m src.Experimenter.py ../input/testInput.txt
     
     python3 -m src.Optimizer.py
 
