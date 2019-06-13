@@ -67,9 +67,9 @@ To run the different modules follow the next instructions
 1. Run Core
     
     - python -m src.Core [options]
-    Options:
-    -h, --help              Shows the program usage help.
-    -p, --processors=...    Sets the number of processors.
+    - [options]:
+        - -h, --help              Shows the program usage help.
+        - -p, --processors=...    Sets the number of processors.
     
 2. Run Experimenter
 
@@ -89,11 +89,11 @@ To run the different modules follow the next instructions
     - python -m test.TestRunner
     - Next, the user would have to enter which type of tests he wants to run or wheter or 
     whether he wants to stop the execution of the program:
-        a - All
-        u - Unit Tests
-        i - Integration Tests
-        s - System Tests
-        x - Exit
+        - a - All
+        - u - Unit Tests
+        - i - Integration Tests
+        - s - System Tests
+        - x - Exit
     
 ## License
 
