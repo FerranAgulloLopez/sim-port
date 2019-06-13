@@ -1,0 +1,87 @@
+Tests reproduïbles amb els seeds a l'optimizer (línia de codi 164): 
+# seed 6, 1, 21, 25, 200, 212, 60, 78, 1024, 789, 3379, 567, 4655, 878, 123, 46, 1221, 111, 777, 664
+
+WITHOUT SHIFTS: (50 generacions)
+Average idle time per processor per day: 13.998871472222222 h
+Average idle time per processor per day: 13.998883138888889 h
+Average idle time per processor per day: 13.998857277777779 h
+Average idle time per processor per day: 13.998892416666667 h
+Average idle time per processor per day: 13.998857277777779 h
+Average idle time per processor per day: 13.99889713888889 h
+Average idle time per processor per day: 13.998883083333332 h
+Average idle time per processor per day: 13.998838694444444 h
+Average idle time per processor per day: 13.9988245 h
+Average idle time per processor per day: 13.9988035 h
+Average idle time per processor per day: 13.998883083333332 h
+Average idle time per processor per day: 13.998838527777778 h
+Average idle time per processor per day: 13.998815194444445 h
+Average idle time per processor per day: 13.998852694444446 h
+Average idle time per processor per day: 13.998876055555556 h
+Average idle time per processor per day: 13.998857305555557 h
+Average idle time per processor per day: 13.99887611111111 h
+Average idle time per processor per day: 13.998875972222223 h
+Average idle time per processor per day: 13.998831472222223 h
+Average idle time per processor per day: 13.998871333333334 h
+
+
+WITH SHIFTS: (50 generacions)
+Average idle time per processor per day: 13.999235305555557 h
+	['ENTREGA', 'ENTREGA', 'ENTREGA', 'ENTREGA', 'DUAL', 'ENTREGA', 'ENTREGA', 'RECOGIDA', 'ENTREGA', 'ENTREGA']
+	[1, 1, 1, 1, 1, 1, 1, 1, 3, 3]
+Average idle time per processor per day: 13.999145277777776 h
+	['RECOGIDA', 'ENTREGA', 'RECOGIDA', 'ENTREGA', 'RECOGIDA', 'DUAL', 'ENTREGA', 'RECOGIDA']
+	[1, 1, 2, 3, 1, 1, 1, 4]
+Average idle time per processor per day: 13.999384083333334 h	
+	['ENTREGA', 'RECOGIDA', 'DUAL', 'ENTREGA', 'ENTREGA', 'ENTREGA', 'ENTREGA', 'ENTREGA', 'ENTREGA']
+	[1, 1, 1, 1, 2, 1, 1, 2, 4]
+Average idle time per processor per day: 13.99923013888889 h
+	['ENTREGA', 'ENTREGA', 'ENTREGA', 'ENTREGA', 'RECOGIDA', 'DUAL', 'ENTREGA', 'ENTREGA']
+	[1, 2, 1, 2, 1, 1, 2, 4]
+Average idle time per processor per day: 13.999434222222222 h
+	['ENTREGA', 'RECOGIDA', 'RECOGIDA', 'DUAL', 'RECOGIDA', 'RECOGIDA', 'RECOGIDA', 'RECOGIDA']
+	[1, 1, 1, 1, 1, 1, 3, 5]
+Average idle time per processor per day: 13.999195555555554 h
+	['ENTREGA', 'RECOGIDA', 'RECOGIDA', 'RECOGIDA', 'DUAL', 'ENTREGA', 'RECOGIDA', 'RECOGIDA']
+	[1, 1, 1, 3, 2, 1, 1, 4]
+Average idle time per processor per day: 13.999351333333333 h
+	['DUAL', 'RECOGIDA', 'RECOGIDA', 'RECOGIDA', 'ENTREGA', 'RECOGIDA', 'RECOGIDA', 'RECOGIDA']
+	[1, 1, 2, 2, 1, 2, 1, 4]
+Average idle time per processor per day: 13.999443722222223 h
+	['ENTREGA', 'ENTREGA', 'DUAL', 'ENTREGA', 'ENTREGA', 'ENTREGA', 'ENTREGA', 'ENTREGA', 'RECOGIDA', 'ENTREGA']
+	[1, 1, 1, 1, 1, 1, 2, 1, 1, 4]
+Average idle time per processor per day: 13.999176555555556 h
+	['RECOGIDA', 'RECOGIDA', 'RECOGIDA', 'ENTREGA', 'DUAL', 'ENTREGA', 'ENTREGA']
+	[1, 4, 1, 1, 1, 1, 5]
+Average idle time per processor per day: 13.999429583333333 h
+	['ENTREGA', 'ENTREGA', 'DUAL', 'ENTREGA', 'RECOGIDA', 'ENTREGA', 'ENTREGA', 'ENTREGA', 'ENTREGA', 'ENTREGA', 'ENTREGA', 'ENTREGA']
+	[1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2]
+Average idle time per processor per day: 13.999757444444443 h
+	['DUAL', 'RECOGIDA', 'ENTREGA', 'RECOGIDA', 'RECOGIDA', 'RECOGIDA', 'RECOGIDA', 'RECOGIDA', 'RECOGIDA']
+	[1, 1, 1, 3, 1, 1, 1, 1, 4]
+Average idle time per processor per day: 13.999138888888888 h
+	['ENTREGA', 'RECOGIDA', 'DUAL', 'ENTREGA', 'ENTREGA', 'ENTREGA', 'RECOGIDA', 'ENTREGA', 'ENTREGA', 'ENTREGA']
+	[2, 1, 1, 1, 1, 1, 1, 1, 1, 4]
+Average idle time per processor per day: 13.999432527777778 h
+	['ENTREGA', 'ENTREGA', 'ENTREGA', 'RECOGIDA', 'DUAL', 'ENTREGA', 'ENTREGA']
+	[1, 4, 1, 1, 1, 4, 2]
+Average idle time per processor per day: 13.999444638888889 h
+	['ENTREGA', 'RECOGIDA', 'DUAL', 'ENTREGA', 'ENTREGA', 'ENTREGA', 'ENTREGA', 'ENTREGA', 'RECOGIDA', 'RECOGIDA', 'ENTREGA']
+	[1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 2]
+Average idle time per processor per day: 13.999263388888888 h
+	['ENTREGA', 'DUAL', 'RECOGIDA', 'ENTREGA', 'ENTREGA', 'ENTREGA', 'DUAL', 'DUAL', 'ENTREGA', 'ENTREGA']
+	[1, 1, 1, 1, 1, 2, 2, 1, 1, 3]
+Average idle time per processor per day: 13.999152194444445 h
+	['ENTREGA', 'ENTREGA', 'ENTREGA', 'RECOGIDA', 'DUAL', 'RECOGIDA', 'ENTREGA']
+	[1, 3, 1, 1, 2, 1, 5]
+Average idle time per processor per day: 13.999339138888889 h
+	['DUAL', 'ENTREGA', 'ENTREGA', 'RECOGIDA', 'ENTREGA', 'ENTREGA', 'ENTREGA', 'ENTREGA', 'ENTREGA', 'ENTREGA']
+	[1, 1, 1, 1, 1, 2, 2, 1, 1, 3]
+Average idle time per processor per day: 13.99924686111111 h
+	['ENTREGA', 'ENTREGA', 'ENTREGA', 'DUAL', 'RECOGIDA', 'ENTREGA', 'ENTREGA', 'ENTREGA']
+	[1, 1, 2, 1, 1, 2, 1, 5]
+Average idle time per processor per day: 13.999632861111111 h
+	['DUAL', 'RECOGIDA', 'RECOGIDA', 'ENTREGA', 'RECOGIDA', 'RECOGIDA', 'RECOGIDA']
+	[1, 3, 2, 1, 3, 1, 3]
+Average idle time per processor per day: 13.999332722222222 h
+	['RECOGIDA', 'DUAL', 'RECOGIDA', 'RECOGIDA', 'ENTREGA', 'RECOGIDA', 'RECOGIDA', 'ENTREGA', 'RECOGIDA']
+	[1, 1, 2, 1, 1, 1, 2, 1, 4]

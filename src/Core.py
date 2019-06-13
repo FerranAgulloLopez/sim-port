@@ -151,7 +151,6 @@ class Core:
         s += 'Entities_System,'
         s += 'Shift'
         # print(s)
-        print("ARCHIVO EN CORE", self.parameters.output_file + '.csv')
         with open(self.parameters.output_file + '.csv', "w+") as output_file:
             output_file.write(s + '\n')
 

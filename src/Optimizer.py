@@ -116,7 +116,6 @@ def get_fitness():
     """ reads stats from the default output_file and determines the viability and benefits """
     total_service = 0
     total_idle = Constants.SIMULATION_DURATION * parameters.num_processors
-    print("ARCHIVO", parameters.output_file + '.stats.csv')
     with open(parameters.output_file + '.stats.csv', 'r') as ifs:
         exceeds_capacity = False
         headers = ifs.readline()[:-1].split(',')
@@ -162,7 +161,7 @@ NUM_OFFSPRING = int(2 * NUM_INDIVIDUALS / 5)  # 2/5
 CHANCE_KEEP_BAD = 0.05
 CHANCE_MUTATION = 0.05
 
-seed(6)
+seed(664)  # seed 6, 1, 21, 25, 200, 212, 60, 78, 1024, 789
 parameters = Parameters()
 
 population = []
