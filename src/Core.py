@@ -199,7 +199,7 @@ def usage():
     print('Core.py [options]')
     print('Model: source -> queue -> parking -> processor(s) -> sink')
     print('Options:')
-    print('-h, --help\t\t\t\tShows the program usage help.')
+    print('-h, --help\t\tShows the program usage help.')
     print('-p, --processors=...\tSets the number of processors.')
 
 
