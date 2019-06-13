@@ -1,6 +1,6 @@
-# Simulation of the Barcelona port
+# Simulation of the Port of Barcelona
 
-_This service was created as a result of a university project in The Facultat d'Informàtica de Barcelona._
+_This program was created as a result of a university project in the Facultat d'Informàtica de Barcelona._
 
 ## Introduction
 
@@ -24,7 +24,7 @@ This project has four different runnable modules each one with a specific purpos
 
     - Core.py: Runs the simulation with the params specified in the Constants and Parameters classes. It asks for the composition of the different time-slots when they are activated. It generates two traces that describe the execution
     - Experimenter.py: Runs the simulation with the params specified in the Constants and Parameters classes. It takes the time-slots configuration from the specified input file. It generates two traces that describe the execution
-    - Optimizer.py: Runs a genetic algorithm to find the best configuration
+    - Optimizer.py: Runs a genetic algorithm to find an approximation to the best configuration
     - ViewController.py: Runs a web server in localhost to visualize a execution loaded from one specified trace file. It displays different charts that show the main features of the chosen execution
 
 ### How to install
@@ -44,18 +44,17 @@ Next instructions are mandatory to configure the service in Linux
 
 Falta explicar los comandos para cada uno de los ejecutables: core, experimenter...
 Falta poner el testRunner
-
-    python3 src/ViewController.py
     
-    python3 src/Core.py -p 52
-    
-    ...
-
-    Core.py [options]
+    python3 src/Core.py [options]
     Options:
     -h, --help              Shows the program usage help.
     -p, --processors=...    Sets the number of processors.
-    -s, --sources=...       Sets the number of sources.
+    
+    python3 src/Experimenter.py inputFile.txt
+    
+    python3 src/Optimizer.py
+
+    python3 src/ViewController.py
     
 ## License
 
