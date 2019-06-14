@@ -43,7 +43,7 @@ event = df.iloc[0]
 if event['Shift'] == '-':
     shifts = False
 
-######################################################### timeline chart
+# timeline chart
 
 total_time_cargas = 0
 total_time_descargas = 0
@@ -97,7 +97,7 @@ phases = phases[0:20]
 total_time_total = 14
 service_processors_total = (data_timeline['Processors_Capacity_Used']/100)*total_time_total
 
-######################################################### summary graphs
+# summary charts
 
 
 entries_carregues = 0
@@ -157,12 +157,8 @@ while (count < size):
             max_par_total = aux_num_par
     count += 1
 
-#########################################################
+# dynamic charts
 
-
-
-
-######################################################### dynamic graphs
 # general data
 mainTime = 6 * 3600
 old_event_time = mainTime
@@ -189,8 +185,6 @@ queue_slots_busy = 0
 # data for processors
 processors_max_number = df.iloc[0]['Number_Idle_Processors']
 processors_free = 0
-
-#########################################################
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app.layout = html.Div(
@@ -279,7 +273,6 @@ def update_graph_live(n):
     totalEntities.append(totalEntities[-1])
     entriesTime.append(mainTime)
     entriesTimeNames.append(parse_time(mainTime))
-    # print(parse_time(mainTime))
 
     correct = True
     size = len(df.index)
@@ -320,8 +313,7 @@ def update_graph_live(n):
     layout = go.Layout(
         title="Entrades de camions i número d'entitas dintre del port",
         xaxis={'type': 'log', 'title': 'Temps', 'ticktext': list(entriesTimeNames), 'tickvals': list(entriesTime)},
-        yaxis={'title': 'Camions'},  # , 'range': [-10, 20]},
-        # margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
+        yaxis={'title': 'Camions'},
         legend={'x': 0, 'y': 1},
         hovermode='closest'
     )
