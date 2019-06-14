@@ -187,7 +187,7 @@ queue_max_size = 90
 queue_slots_busy = 0
 
 # data for processors
-processors_max_number = 52
+processors_max_number = df.iloc[0]['Number_Idle_Processors']
 processors_free = 0
 
 #########################################################
@@ -296,6 +296,8 @@ def update_graph_live(n):
             processors_free = event['Number_Idle_Processors']
             buffer_slots_busy = event['Buffer_Length']
             totalEntities[-1] = event['Entities_System']
+            if event['Event_Name'] == 'END_SIMULATION':
+                processors_free = processors_max_number
             count += 1
     df = df.iloc[count:]
 
