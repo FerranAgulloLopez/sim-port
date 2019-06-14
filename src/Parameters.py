@@ -53,8 +53,6 @@ class _Parameters:
             aux = Auxiliary()
             index = aux.binarySearch(seconds_incremental, currentTime)
             index = min(index, len(self.shift_type) - 1)
-            # print(index, len(self.shift_type))
-            # print(seconds_incremental, currentTime)
             return self.shift_type[index]
         else:
             return '-'

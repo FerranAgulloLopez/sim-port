@@ -32,7 +32,6 @@ class Constants:
     ENTREGA = "ENTREGA"
     DUAL = "DUAL"
 
-    # TODO: cambiar (5 primeros...)
     # Processor parameters
     MINIMUM_TIME_ENTREGA = 1018
     MAXIMUM_TIME_ENTREGA = 1018

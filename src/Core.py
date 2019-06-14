@@ -83,7 +83,6 @@ class Core:
         )
         self.logEvent(endEvent)
         self.updateState(endEvent)
-        # print('    Simulation finished.')
 
     def executeEvent(self, currentEvent):
         """Implemented by all event creator modules"""
@@ -91,7 +90,6 @@ class Core:
             self.startSimulation()
 
     def run(self):
-        # print('    Core running...')
         self.logHeaders()  # creates output file with flag w+
         with open(self.parameters.output_file + '.csv', "a+") as self.output_file:
             self.startSimulation()
@@ -136,7 +134,6 @@ class Core:
             self.service_per_shift.append(self.serviceProcessors - self.service_per_total[-1])
 
     def getCurrentShift(self):
-        # print("DEBUG: getCurrentShift", self.currentTime, "and it returns:", self.parameters.getCurrentShift(self.currentTime))
         return self.parameters.getCurrentShift(self.currentTime)
 
     def logHeaders(self):
@@ -151,7 +148,6 @@ class Core:
         s += 'Queue_Length,'
         s += 'Entities_System,'
         s += 'Shift'
-        # print(s)
         with open(self.parameters.output_file + '.csv', "w+") as output_file:
             output_file.write(s + '\n')
 
@@ -167,7 +163,6 @@ class Core:
         s += str(self.parking.getQueueLength()) + ','
         s += str(self.entitiesSystem) + ','
         s += str(self.parameters.getCurrentShift(currentEvent.eventScheduled))
-        # print(s)
         self.output_file.write(s + '\n')
 
     def stats(self):
@@ -183,11 +178,6 @@ class Core:
             s += ',Shift_Duration'
             r += ',' + str(shift_duration[idx])
             s += ',Shift_Capacity_Usage'
-            # DEBUG
-            # print(idx)
-            # print(str(self.service_per_shift))
-            # print(str(self.shift_durations))
-            #
             r += ',' + str(round(100 * self.service_per_shift[idx] /
                                  (self.parameters.num_processors * self.shift_durations[idx] * 3600), 2))
         with open(self.parameters.output_file + '.stats.csv', "w+") as output_file:

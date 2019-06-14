@@ -21,10 +21,6 @@ if __name__ == "__main__":
         usage()
         sys.exit()
 
-    # DEBUG BEGIN
-    # print(inputFile)
-    # DEBUG END
-
     # Start core
     with open(Constants.INPUT_PATH + inputFile, 'r') as ifs:
         population = []
@@ -55,23 +51,18 @@ if __name__ == "__main__":
                 parameters.setParameters(shift_duration, shift_type, shift_factor)
 
                 output_file = str(args[0])
-                # print(output_file)
                 parameters.output_file = Constants.OUTPUT_PATH + output_file
-                # print("PARAMETERS:OUTPUT_FILE", parameters.output_file)
+
                 # RUN CORE
                 path_list = output_file.split('/')
                 filename = str(path_list[len(path_list) - 1:][0])
                 if filename not in fitness:
                     population.append(filename)
                     s = '    Testing ' + filename + '...'
-                    # s += '    Parameters set.'
                     print(s)
                     core = Core()
                     core.run()
                     fitness[filename] = Auxiliary.get_fitness(parameters.output_file)
-                    # DEBUG
-                    # print(fitness[filename])
-                    #
 
         population = sorted(population, key=lambda idv: fitness[idv], reverse=True)
         best = population[0]
